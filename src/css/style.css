@@ -1,0 +1,81 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    min-height: 100vh;
+    padding: 0px;
+}
+
+.haut {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.p{
+    text-size-adjust: 16px;
+}
+
+.notifications {
+    width: 20%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#notification-list {
+    width: 100%; 
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#notification-list li {
+    width: 90%; 
+    text-align: center; 
+    padding: 10px;
+    margin: 10px 0;
+    list-style: none;
+    border: 1px solid #000; 
+    border-radius: 10px; 
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
+/* Fusée au centre */
+.rocket-container {
+    flex: 2; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    height: 100vh; 
+    background: url("/asset/fond.jpg");
+    transition: background-position 0.2s;
+}
+
+#rocket {
+    width: 70%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#rocket:active {
+    transform: scale(1.1);
+}
+
+
+.shop {
+    width: 20%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
