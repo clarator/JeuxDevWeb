@@ -16,6 +16,7 @@ body {
     align-items: flex-start; 
     padding: 20px;
 }
+
 .notifContainer {
     display: flex;
     justify-content: center;
@@ -37,11 +38,7 @@ body {
     border-bottom: 3px solid #c0c0c0; 
 }
 
-.p {
-    font-size: 16px;
-    margin: 10px 0;
-    color: #ffd700; 
-}
+
 
 .notifications {
     width: 20%;
@@ -55,6 +52,7 @@ body {
     align-items: center;
     margin-right: 20px;
     border: 2px solid #4a4a4a;
+    max-height: 550px;
 }
 
 #list {
@@ -63,6 +61,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    overflow-y: scroll;
+    
 }
 
 #list li {
@@ -88,18 +88,26 @@ body {
     background-color: rgba(90, 90, 90, 0.9);
 }
 
+
+
 .container {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; 
-    height: 100vh;
+    height: 70vh;
     background: rgba(28, 28, 28, 0.8); 
     padding: 20px;
     margin: 0 20px;
     border-radius: 10px;
     border: 2px solid #ffd700; 
+}
+
+
+.container img {
+    position: absolute;
+    top: 50%;
+    cursor: pointer;
 }
 
 .points {
@@ -110,33 +118,9 @@ body {
     width: 100%;
     flex-direction: row;
     align-self: flex-start;
-    color: #ffd700; /* Or */
+    color: #ffd700; 
 }
 
-#mine {
-    width: 200px;
-    height: 60px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: #cd7f32;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-size: 20px;
-    font-weight: bold;
-    margin: 0 20px;
-    border: 2px solid #ffd700;
-}
-
-#mine:hover {
-    background-color: #b87333;
-    transform: scale(1.05);
-}
-
-#mine:active {
-    transform: scale(0.95);
-    background-color: #8b4513; 
-}
 
 .store {
     width: 20%;
@@ -150,6 +134,7 @@ body {
     align-items: center;
     border: 2px solid #4a4a4a;
     color: #ffd700;
+    max-height: 550px;
 }
 
 .imageContainer {
@@ -160,6 +145,7 @@ body {
     margin: 5px 0;
     width: 60px;
     height: 60px;
+    max-height: 50px;
 }
 
 .imageContainer img {
@@ -172,7 +158,7 @@ body {
     transition: all 0.3s ease;
 }
 
-img:hover {
+.imageContainer img:hover {
     transform: scale(1.1);
     border-color: #daa520; /* Or plus foncé */
     box-shadow: 0 0 10px rgba(255,215,0,0.5);
@@ -213,3 +199,11 @@ img:hover {
     border-radius: 8px;
     border: 1px solid #4a4a4a;
 }
+
+.goldPicture{
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+

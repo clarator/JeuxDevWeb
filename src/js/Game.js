@@ -1,56 +1,104 @@
-import {startUpgrade } from "./upgrade.js";
+import { startUpgrade } from "./upgrade.js";
 import { checkNotifications } from "./notification.js";
-import {startAutomation } from "./automation.js";
-
-export let gameInstance = null;
+import { startAutomation } from "./automation.js";
+import { vibrateGold } from "./animation.js";
+import { applyBonus } from "./bonus.js";
 /*
 chose à ajouter :
-- sons 
-- image d'une pepite et d'une pelle
-- fracment de pepite qui part
-- animation de la pelle
-- animation de la pepite
-- augmentation des prix
-- differencier le score et les sous gagné
-- mettre des trucs genre si tu 
-- score 
+- trouver une musique de fond
+- faire fonctionner automation
+- essayer de rajouter des mini pepites d'or qui apparaissent
+- rajouter des bonus
+- rajouter des animations
+- rajouter des sons genre quand on clique sur une ame ou une auto
+- ajouter des trucs dans le magasin
+Boosts temporaires
+
+    Potion d’endurance (Double les gains pendant 30 secondes)
+    Boost de minage (Accélère la production automatique pendant 1 minute)
+    Tempête de dynamite (Explosion qui génère instantanément X or)
 */
+
 export default class Game {
     constructor(){
-        this.gold = 0;
-        this.goldPerClick = 1;
+        this.score = 0;
+        this.scorePerClick = 1;
+        this.clickCount = 0;
+        this.gold = 500;
+        this.vibrationIntensity = 0.25;
 
-        this.score = document.getElementById('gold');
-        this.mine = document.getElementById('mine');
+        this.scoreDisplay = document.getElementById('score');
+        this.goldDisplay = document.getElementById('gold');
+        this.buttonGold = document.getElementById('goldPicture');
 
-        if (!this.score) {
-            console.error("Erreur : élément #gold introuvable");
+        if (!this.goldDisplay || !this.scoreDisplay) {
+            console.error("Erreur : élément #score ou #gold introuvable");
         }
 
-        if (this.mine) {
-            this.mine.addEventListener("click", () => {
-                this.gold += this.goldPerClick;
-                this.update();
+        if (this.buttonGold) {
+            this.buttonGold.addEventListener("click", () => {
+                this.mineClick();
             });
         } else {
-            console.error("Erreur : élément #mine introuvable");
+            console.error("Erreur : élément #buttonGold introuvable");
         }
 
-        gameInstance = this;  
-        
         this.update();
+
+        //magasin
         startUpgrade(this);
         startAutomation(this);
-        checkNotifications();
+
+        //notification
+        setInterval(() => checkNotifications(this), 1000);
+    }
+
+    mineClick(){
+        this.clickCount++;
+        this.score += this.scorePerClick;
+        this.scoreDisplay.textContent = this.score;
+          
+        //vibration
+        vibrateGold(this.vibrationIntensity, this.buttonGold);
+
+        //effet sonore
+        if (this.clickCount == 10) {
+            this.vibrationIntensity += 0.25;
+            this.clickCount = 0;
+        }
+         
+        //porte monnaie
+        if (this.score % 10 === 0) { 
+            let sound = new Audio("./asset/sons/piecesPorteFeuille.mp3");
+            sound.play();
+            this.gold += 5;
+            this.goldDisplay.textContent = this.gold;
+        }
+    
+          
+        //bonus
+        let bonus = applyBonus(this.score);
+        if(bonus > 0){
+            this.gold += bonus;
+            this.goldDisplay.textContent = this.gold;
+        }
     }
 
     update() {
-        if (this.score) {
-            this.score.textContent = this.gold;
+        if (this.goldDisplay) {
+            this.goldDisplay.textContent = this.gold;
         }
     }
 
     getGold(){
         return this.gold;
+    }
+
+    //gere le porte feuille
+    addGoldWallet(){
+        this.gold += 5;
+        this.goldDisplay.textContent = this.gold;
+
+        //recup le gain dans upgrapes et suivant le gain ajoute l'argent
     }
 }

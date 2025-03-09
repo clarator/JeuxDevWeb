@@ -22,7 +22,7 @@ const automations = [
     }
 ];
 
-// Fonction d'achat d'automatisation
+// Fonction d'achat d'une automation
 function buyAutomation(automation, game) {
     const choice = document.getElementById(automation.id);
     const costChoice = document.getElementById(automation.costId);
@@ -32,9 +32,14 @@ function buyAutomation(automation, game) {
     choice.addEventListener("click", () => {
         if (game.gold >= automation.price) {
             game.gold -= automation.price;
-            automation.number += 1;
+            automation.number += 1;       
+
+            // Augmenter le prix après chaque achat
+            automation.price = Math.floor(automation.price * 1.5); 
+
             game.update();
             updateAutomationDisplay(automation);  
+            costChoice.textContent = `${automation.price} 💰`; 
         } else {
             alert("Pas assez d'or !");
         }
@@ -45,25 +50,30 @@ function buyAutomation(automation, game) {
 function updateAutomationDisplay(automation) {
     const automationElement = document.getElementById(automation.id);
     if (automationElement) {
-        automationElement.querySelector('.count').textContent = `x${automation.number}`;
+        const countElement = automationElement.querySelector('.count');
+        if (countElement) {
+            countElement.textContent = `x${automation.number}`;
+        }
     }
 }
 
-// Fonction de démarrage des automations (ajoute l'or toutes les secondes)
 function startAutomation(game) {
-
     automations.forEach(automation => {
         buyAutomation(automation, game); 
     });
-
     
     setInterval(() => {
+        let totalGain = 0;
         automations.forEach(automation => {
             if (automation.number > 0) {
-                game.gold += automation.gainPerClick * automation.number;
+                totalGain += automation.gainPerClick * automation.number;
             }
         });
-        game.update();  
+
+        if (totalGain > 0) {
+            game.score += totalGain; 
+            game.update();
+        }
     }, 1000);
 }
 

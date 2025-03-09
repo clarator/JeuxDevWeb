@@ -8,11 +8,22 @@
     <div class="haut">
         <h2>Nom du joueur</h2>
         <h1>Mineur Clicker</h1>
-        <button id="stopButton">Stop</button>
+
+        <!--A faire -->
+        <div class="menu">
+            <button id="menuButton">Menu</button>
+            <div class="menuContent">
+                <button id="reprendre">Reprendre</button>
+                <button id="reset">Recommencer</button>
+                <button id="quitter">Quitter</button>
+                <button id="sons">Sons</button>                
+            </div>
+        </div>
+
         <p>Meilleur score : <span id="bestScore">0</span></p>
     </div>       
     
-    <div class="game" style="">
+    <div class="game">
         <div class="notifications">
             <h3>Notifications</h3>
             <ul id="list">
@@ -25,54 +36,58 @@
                 <p>Score : <span id="score">0</span></p>
                 <p>💰<span id="gold">0</span></p>
             </div>
-            <button id="mine">Mine</button>
+            <img src="asset/img/or.png" alt="goldPicture" id="goldPicture">
+            
+
+            <div class="miniGold"></div>
         </div>
+
         
         <div class="store">
-            <h3>Shop</h3>
+            <h3>Magasin</h3>
             
             <p>Améliorations</p>
             <div class="ameContainer">
                 <div class="imageContainer">
-                    <img src="asset/img/pioches.jpg" alt="pickaxe" id="pickaxe">
+                    <img src="asset/img/marteau.jpg" alt="hammer" id="hammer">
                     <div class="tooltip">
-                        <p>Prix : <span id="pickaxeCost">50</span> 💰</p>
-                        <p>Pioches : +2 or/clic</p>
+                        <p>Prix : <span id="hammerCost">50</span> 💰</p>
+                        <p>Marteau : +2 score/clic</p>
                     </div>
                 </div>
                 <div class="imageContainer">
                     <img src="asset/img/piocheFer.jpg" alt="ironPickaxe" id="ironPickaxe">
                     <div class="tooltip">
                         <p>Prix : <span id="ironPickaxeCost">100</span> 💰</p>
-                        <p>Pioche en fer : +5 or/clic</p>
+                        <p>Pioche en fer : +5 score/clic</p>
                     </div>
                 </div>
                 <div class="imageContainer">
                     <img src="asset/img/piocheDiamant.jpg" alt="diamondPickaxe" id="diamondPickaxe">
                     <div class="tooltip">
                         <p>Prix : <span id="diamondPickaxeCost">150</span> 💰</p>
-                        <p>Pioche en diamant : +10 or/clic</p>
+                        <p>Pioche en diamant : +10 score/clic</p>
                     </div>
                 </div>
                 <div class="imageContainer">
                     <img src="asset/img/dynamite.jpg" alt="dynamite" id="dynamite">
                     <div class="tooltip">
                         <p>Prix : <span id="dynamiteCost">200</span> 💰</p>
-                        <p>Dynamite : +20 or/clic</p>
+                        <p>Dynamite : +20 score/clic</p>
                     </div>
                 </div>
                 <div class="imageContainer">
                     <img src="asset/img/tnt.jpg" alt="tnt" id="tnt">
                     <div class="tooltip">
                         <p>Prix : <span id="tntCost">500</span> 💰</p>
-                        <p>TNT : +50 or/clic</p>
+                        <p>TNT : +50 score/clic</p>
                     </div>
                 </div>
                 <div class="imageContainer">
                     <img src="asset/img/foreuse.jpg" alt="drill" id="drill">
                     <div class="tooltip">
                         <p>Prix : <span id="drillCost">1000</span> 💰</p>
-                        <p>Foreuse : +100 or/clic</p>
+                        <p>Foreuse : +100 score/clic</p>
                     </div>
                 </div>
             </div>
@@ -83,21 +98,21 @@
                     <img src="asset/img/mineur.png" alt="miner" id="miner">
                     <div class="tooltip">
                         <p>Prix : <span id="minerCost">200</span> 💰</p>
-                        <p>Mineur : +10 or/sec</p>
+                        <p>Mineur : +10 score/sec</p>
                     </div>
                 </div>
                 <div class="imageContainer">
                     <img src="asset/img/excavateur.jpg" alt="excavator" id="excavator">
                     <div class="tooltip">
                         <p>Prix : <span id="excavatorCost">300</span> 💰</p>
-                        <p>Excavateur : +50 or/sec</p>
+                        <p>Excavateur : +50 score/sec</p>
                     </div>
                 </div>
                 <div class="imageContainer">
                     <img src="asset/img/foreuse2.jpg" alt="drill2" id="drill2">
                     <div class="tooltip">
                         <p>Prix : <span id="drill2Cost">500</span> 💰</p>
-                        <p>Foreuse : +100 or/sec</p>
+                        <p>Foreuse : +100 score/sec</p>
                     </div>
                 </div>
             </div>

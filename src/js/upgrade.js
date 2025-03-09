@@ -1,8 +1,8 @@
 //initialisation des améliorations
 const upgrades = [
     { 
-        id: 'pickaxe', 
-        costId: 'pickaxeCost', 
+        id: 'hammer', 
+        costId: 'hammerCost', 
         price: 50, 
         gain: 2 
     },
@@ -48,8 +48,12 @@ function buyUpgrade(upgrade, game) {
     choice.addEventListener("click", () => {
         if (game.gold >= upgrade.price) {
             game.gold -= upgrade.price;
+            
+            upgrade.price = Math.floor(upgrade.price * 2);
+            
             game.update();
             applyUpgrade(upgrade, game);
+            costChoice.textContent = upgrade.price;
         } else {
             alert("Pas assez d'or !");
         }
@@ -58,7 +62,9 @@ function buyUpgrade(upgrade, game) {
 
 //appliquer l'effet de l'amélioration
 function applyUpgrade(upgrade, game) {
-    game.goldPerClick += upgrade.gain;
+    game.scorePerClick += upgrade.gain;
+    game.gold += upgrade.gain;
+    game.goldDisplay.textContent = game.gold;
 }
 
 //lancer les améliorations
