@@ -1,68 +1,124 @@
 <html lang="fr">
-    <head>
-        <title>Jeux</title>
-        <meta charset="utf-8">
-        <link rel="stylesheet" href="css/style.css">
-    </head>
+<head>
+    <title>Mineur Clicker</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="haut">
+        <h2>Nom du joueur</h2>
+        <h1>Mineur Clicker</h1>
 
-        <div class="haut">
-            <h1>Fusée Clicker</h1>
-            <h2>Nom du joueur</h2>
-            <p>Score : <span id="score">0</span></p>
-            <p>Meilleurs score</p>
-         
-        </div>       
-        
-        <div class="container">
-            <div class="notifications">
-                <h3>Notifications</h3>
-                <ul id="notification-list">
-                    <li>Aucune notification pour le moment.</li>
-                </ul>
-            </div>
-        
-         
-            <div class="rocket-container">
-                <img src= "/asset/fusee.png"  alt="Fusée" id="rocket">
-            </div>
-        
-            
-            <div class="shop">
-                <h3>Store</h3>
-                <ul>
-                    <li>
-                        Auto-Clic (+0.5/s) (200 points) 
-                        <button class="auto-click" data-price="50" data-amount="0.5">Acheter</button>
-                    </li>                  
-                    <li>
-                        Multiplicateur x2 (100 points) 
-                        <button class="upgrade" data-price="100" data-multiplier="2">Acheter</button>
-                    </li>
-                    <li>
-                        Auto-Clic (+1/s) (200 points) 
-                        <button class="auto-click" data-price="200" data-amount="1">Acheter</button>
-                    </li>
-                    <li>
-                        Multiplicateur x2.5 (250 points) 
-                        <button class="upgrade" data-price="250" data-multiplier="2.5">Acheter</button>
-                    </li>
-                    <li>
-                        Multiplicateur x3 (300 points) 
-                        <button class="upgrade" data-price="300" data-multiplier="3">Acheter</button>
-                    </li>
-                    <li>
-                        Multiplicateur x4 (400 points) 
-                        <button class="upgrade" data-price="400" data-multiplier="4">Acheter</button>
-                    </li>
-                    <li>
-                        Multiplicateur x5 (500 points) 
-                        <button class="upgrade" data-price="500" data-multiplier="5">Acheter</button>
-                    </li>
-                
-                </ul>
+        <!--A faire -->
+        <div class="menu">
+            <button id="menuButton">Menu</button>
+            <div class="menuContent">
+                <button id="reprendre">Reprendre</button>
+                <button id="reset">Recommencer</button>
+                <button id="quitter">Quitter</button>
+                <button id="sons">Sons</button>                
             </div>
         </div>
+
+        <p>Meilleur score : <span id="bestScore">0</span></p>
+    </div>       
+    
+    <div class="game">
+        <div class="notifications">
+            <h3>Notifications</h3>
+            <ul id="list">
+                <li>Aucune notification pour le moment.</li>
+            </ul>
+        </div>
         
-       <script src="js/script.js" type="module"></script>
-    </body>
+        <div class="container">
+            <div class="points">
+                <p>Score : <span id="score">0</span></p>
+                <p>💰<span id="gold">0</span></p>
+            </div>
+            <img src="asset/img/or.png" alt="goldPicture" id="goldPicture">
+            
+
+            <div class="miniGold"></div>
+        </div>
+
+        
+        <div class="store">
+            <h3>Magasin</h3>
+            
+            <p>Améliorations</p>
+            <div class="ameContainer">
+                <div class="imageContainer">
+                    <img src="asset/img/marteau.jpg" alt="hammer" id="hammer">
+                    <div class="tooltip">
+                        <p>Prix : <span id="hammerCost">50</span> 💰</p>
+                        <p>Marteau : +2 score/clic</p>
+                    </div>
+                </div>
+                <div class="imageContainer">
+                    <img src="asset/img/piocheFer.jpg" alt="ironPickaxe" id="ironPickaxe">
+                    <div class="tooltip">
+                        <p>Prix : <span id="ironPickaxeCost">100</span> 💰</p>
+                        <p>Pioche en fer : +5 score/clic</p>
+                    </div>
+                </div>
+                <div class="imageContainer">
+                    <img src="asset/img/piocheDiamant.jpg" alt="diamondPickaxe" id="diamondPickaxe">
+                    <div class="tooltip">
+                        <p>Prix : <span id="diamondPickaxeCost">150</span> 💰</p>
+                        <p>Pioche en diamant : +10 score/clic</p>
+                    </div>
+                </div>
+                <div class="imageContainer">
+                    <img src="asset/img/dynamite.jpg" alt="dynamite" id="dynamite">
+                    <div class="tooltip">
+                        <p>Prix : <span id="dynamiteCost">200</span> 💰</p>
+                        <p>Dynamite : +20 score/clic</p>
+                    </div>
+                </div>
+                <div class="imageContainer">
+                    <img src="asset/img/tnt.jpg" alt="tnt" id="tnt">
+                    <div class="tooltip">
+                        <p>Prix : <span id="tntCost">500</span> 💰</p>
+                        <p>TNT : +50 score/clic</p>
+                    </div>
+                </div>
+                <div class="imageContainer">
+                    <img src="asset/img/foreuse.jpg" alt="drill" id="drill">
+                    <div class="tooltip">
+                        <p>Prix : <span id="drillCost">1000</span> 💰</p>
+                        <p>Foreuse : +100 score/clic</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p>Automatisation</p>
+            <div class="ameContainer">
+                <div class="imageContainer">
+                    <img src="asset/img/mineur.png" alt="miner" id="miner">
+                    <div class="tooltip">
+                        <p>Prix : <span id="minerCost">200</span> 💰</p>
+                        <p>Mineur : +10 score/sec</p>
+                    </div>
+                </div>
+                <div class="imageContainer">
+                    <img src="asset/img/excavateur.jpg" alt="excavator" id="excavator">
+                    <div class="tooltip">
+                        <p>Prix : <span id="excavatorCost">300</span> 💰</p>
+                        <p>Excavateur : +50 score/sec</p>
+                    </div>
+                </div>
+                <div class="imageContainer">
+                    <img src="asset/img/foreuse2.jpg" alt="drill2" id="drill2">
+                    <div class="tooltip">
+                        <p>Prix : <span id="drill2Cost">500</span> 💰</p>
+                        <p>Foreuse : +100 score/sec</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js" type="module"></script>
+</body>
 </html>
