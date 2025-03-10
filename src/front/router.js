@@ -1,5 +1,6 @@
 const routes = {
-    "home": "/site/pages/games.html",
+    "/": "/site/pages/games.html",
+    "/login": "/site/pages/login.html",
     "/games/game1": "/games/game1/game1.html",
     "/games/game2": "/games/game1/game2.html"
 };
@@ -24,11 +25,12 @@ const loadComponentFromState = async () => {
         document.getElementById("app").innerHTML = html.body.innerHTML;
         loadStyles(html, path);
         loadScripts(html, path);
-
     } catch (error) {
         console.error("Erreur de chargement:", error);
         document.getElementById("app").innerHTML = "<h1>Erreur de chargement</h1>";
     }
+    document.querySelectorAll("#navBar p[data-active]").forEach(p => p.removeAttribute("data-active"));
+    document.querySelectorAll(`#navBar p[data-link="${state.component}"]`).forEach(p => p.setAttribute("data-active", ""));
 };
 
 const loadScripts = (html, path) => {
