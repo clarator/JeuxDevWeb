@@ -69,7 +69,7 @@ export default class Game {
          
         //porte monnaie
         if (this.score % 10 === 0) { 
-            let sound = new Audio("./asset/sons/piecesPorteFeuille.mp3");
+            let sound = new Audio("./assets/sound/game1/piecesPorteFeuille.mp3");
             sound.play();
             this.gold += 5;
             this.goldDisplay.textContent = this.gold;

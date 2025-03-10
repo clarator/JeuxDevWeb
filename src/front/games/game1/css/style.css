@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-image: url('../asset/img/fond.jpg');
+    background-image: url('/assets/img/game1/fond.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

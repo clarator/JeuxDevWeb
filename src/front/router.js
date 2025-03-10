@@ -2,7 +2,8 @@ const routes = {
     "/": "/site/pages/games.html",
     "/login": "/site/pages/login.html",
     "/games/game1": "/games/game1/game1.html",
-    "/games/game2": "/games/game1/game2.html"
+    "/games/game2": "/games/game2/game2.html",
+    "/games/game3": "/games/game3/game3.html"
 };
 
 const navigateTo = (componentName, data = {}) => {
@@ -43,6 +44,7 @@ const loadScripts = (html, path) => {
         const newScript = document.createElement("script");
         const serverAddress = window.location.origin + "/"; // Dynamically get the server address
         newScript.src = "." + path + script.src.replace(serverAddress, "");
+        newScript.type = script.type;   
         newScript.setAttribute("data-dynamic-script", ""); // Marquer comme script dynamique
         document.body.appendChild(newScript);
     });

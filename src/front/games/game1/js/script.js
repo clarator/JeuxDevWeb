@@ -7,4 +7,4 @@ function init() {
     console.log("DOM chargé, lancement du jeu...");
     game = new Game();
 }
-document.addEventListener("DOMContentLoaded", init);
+init()
