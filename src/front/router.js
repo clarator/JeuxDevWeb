@@ -12,7 +12,7 @@ const navigateTo = (componentName, data = {}) => {
 };
 
 const loadComponentFromState = async () => {
-    const state = history.state || { component: "home" }; 
+    const state = history.state || { component: "/" }; 
     const componentUrl = routes[state.component] || "/site/pages/404.html";
     try {
         const response = await fetch(componentUrl);
