@@ -8,3 +8,5 @@ function init() {
     game = new Game();
 }
 init()
+
+//npm run server:dev

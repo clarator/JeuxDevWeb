@@ -1,6 +1,6 @@
-import { startUpgrade } from "./upgrade.js";
+import { upgrades, startUpgrade } from "./upgrade.js";
 import { checkNotifications } from "./notification.js";
-import { startAutomation } from "./automation.js";
+import { automations, startAutomation } from "./automation.js";
 import { vibrateGold } from "./animation.js";
 import { applyBonus } from "./bonus.js";
 /*
@@ -14,7 +14,7 @@ chose à ajouter :
 - ajouter des trucs dans le magasin
 Boosts temporaires
 
-    Potion d’endurance (Double les gains pendant 30 secondes)
+    Potion d'endurance (Double les gains pendant 30 secondes)
     Boost de minage (Accélère la production automatique pendant 1 minute)
     Tempête de dynamite (Explosion qui génère instantanément X or)
 */
@@ -53,6 +53,8 @@ export default class Game {
         setInterval(() => checkNotifications(this), 1000);
     }
 
+    
+
     mineClick(){
         this.clickCount++;
         this.score += this.scorePerClick;
@@ -61,44 +63,54 @@ export default class Game {
         //vibration
         vibrateGold(this.vibrationIntensity, this.buttonGold);
 
-        //effet sonore
         if (this.clickCount == 10) {
             this.vibrationIntensity += 0.25;
             this.clickCount = 0;
         }
-         
-        //porte monnaie
-        if (this.score % 10 === 0) { 
-            let sound = new Audio("./assets/sound/game1/piecesPorteFeuille.mp3");
-            sound.play();
-            this.gold += 5;
-            this.goldDisplay.textContent = this.gold;
-        }
-    
-          
-        //bonus
-        let bonus = applyBonus(this.score);
-        if(bonus > 0){
-            this.gold += bonus;
-            this.goldDisplay.textContent = this.gold;
-        }
+     
+        this.addGoldWallet();
     }
 
     update() {
         if (this.goldDisplay) {
             this.goldDisplay.textContent = this.gold;
+        
         }
-    }
-
-    getGold(){
-        return this.gold;
     }
 
     //gere le porte feuille
     addGoldWallet(){
-        this.gold += 5;
-        this.goldDisplay.textContent = this.gold;
+        let result = 0;
+    
+        //on ajoute 5 tout les 5 clics
+        if(this.score % 5 === 0){
+            result += 5;
+            this.addSound();
+        }
+        
+        //si une amelioration achetée 
+        //ajoute le gain au porte feuille
+        upgrades.forEach(upgrade => {
+            if (upgrade.active) {
+                result += upgrade.gain / 2;   
+                this.addSound();            
+            }
+        });
 
-        //recup le gain dans upgrapes et suivant le gain ajoute l'argent
+        this.gold += result; 
+        this.goldDisplay.textContent = this.gold;
+        
+        //bonus
+        let bonus = applyBonus(this.score);
+        if(bonus > 0){
+            this.gold += bonus;
+        }
+ 
+        this.update();
+    }
+
+    addSound(){
+        let sound = new Audio("./assets/sound/game1/piecesPorteFeuille.mp3");
+        sound.play();
     }
 }

@@ -4,37 +4,43 @@ const upgrades = [
         id: 'hammer', 
         costId: 'hammerCost', 
         price: 50, 
-        gain: 2 
+        gain: 2,
+        active: false
     },
     { 
         id: 'ironPickaxe', 
         costId: 'ironPickaxeCost', 
         price: 100, 
-        gain: 5 
+        gain: 5 ,
+        active: false
     },
     { 
         id: 'diamondPickaxe', 
         costId: 'diamondPickaxeCost', 
         price: 150, 
-        gain: 10 
+        gain: 10 ,
+        active: false
     },
     { 
         id: 'dynamite', 
         costId: 'dynamiteCost', 
         price: 200, 
-        gain: 20 
+        gain: 20 ,
+        active: false
     },
     { 
         id: 'tnt', 
         costId: 'tntCost', 
         price: 500, 
-        gain: 50 
+        gain: 50 ,
+        active: false
     },
     { 
         id: 'drill', 
         costId: 'drillCost', 
-        price: 500, 
-        gain: 50 
+        price: 1000, 
+        gain: 50 ,
+        active: false
     }
 ];
 
@@ -50,6 +56,7 @@ function buyUpgrade(upgrade, game) {
             game.gold -= upgrade.price;
             
             upgrade.price = Math.floor(upgrade.price * 2);
+            upgrade.active = true;
             
             game.update();
             applyUpgrade(upgrade, game);
@@ -63,9 +70,8 @@ function buyUpgrade(upgrade, game) {
 //appliquer l'effet de l'amélioration
 function applyUpgrade(upgrade, game) {
     game.scorePerClick += upgrade.gain;
-    game.gold += upgrade.gain;
-    game.goldDisplay.textContent = game.gold;
 }
+
 
 //lancer les améliorations
 function startUpgrade(game) {

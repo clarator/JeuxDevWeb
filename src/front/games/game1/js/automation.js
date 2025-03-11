@@ -36,44 +36,39 @@ function buyAutomation(automation, game) {
 
             // Augmenter le prix après chaque achat
             automation.price = Math.floor(automation.price * 1.5); 
-
+            costChoice.textContent = automation.price; 
             game.update();
-            updateAutomationDisplay(automation);  
-            costChoice.textContent = `${automation.price} 💰`; 
+
         } else {
             alert("Pas assez d'or !");
         }
     });
 }
 
-// Mise à jour de l'affichage des automations
-function updateAutomationDisplay(automation) {
-    const automationElement = document.getElementById(automation.id);
-    if (automationElement) {
-        const countElement = automationElement.querySelector('.count');
-        if (countElement) {
-            countElement.textContent = `x${automation.number}`;
-        }
-    }
-}
 
 function startAutomation(game) {
     automations.forEach(automation => {
         buyAutomation(automation, game); 
     });
     
+    // Exécute l'automatisation toutes les secondes
     setInterval(() => {
         let totalGain = 0;
+        let totalGold = 0;
         automations.forEach(automation => {
             if (automation.number > 0) {
                 totalGain += automation.gainPerClick * automation.number;
+                totalGold += (automation.gainPerClick * automation.number) /2;
             }
         });
 
         if (totalGain > 0) {
-            game.score += totalGain; 
-            game.update();
+            game.score += totalGain;
+            game.scoreDisplay.textContent = game.score;
         }
+
+        game.gold += totalGold;
+        game.update();
     }, 1000);
 }
 
