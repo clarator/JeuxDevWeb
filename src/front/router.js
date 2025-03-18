@@ -1,6 +1,6 @@
 const routes = {
-    "/": "/site/pages/games.html",
-    "/login": "/site/pages/login.html",
+    "/": "/site/html/website.html",
+    "/login": "/site/html/login.html",
     "/games/game1": "/games/game1/game1.html",
     "/games/game2": "/games/game2/game2.html",
     "/games/game3": "/games/game3/game3.html"
@@ -13,7 +13,7 @@ const navigateTo = (componentName, data = {}) => {
 
 const loadComponentFromState = async () => {
     const state = history.state || { component: "/" }; 
-    const componentUrl = routes[state.component] || "/site/pages/404.html";
+    const componentUrl = routes[state.component] || "./site/html/404.html";
     try {
         const response = await fetch(componentUrl);
         if (!response.ok) throw new Error("Erreur de chargement du composant");
@@ -26,6 +26,7 @@ const loadComponentFromState = async () => {
         document.getElementById("app").innerHTML = html.body.innerHTML;
         loadStyles(html, path);
         loadScripts(html, path);
+
     } catch (error) {
         console.error("Erreur de chargement:", error);
         document.getElementById("app").innerHTML = "<h1>Erreur de chargement</h1>";
@@ -46,6 +47,7 @@ const loadScripts = (html, path) => {
         newScript.src = "." + path + script.src.replace(serverAddress, "");
         newScript.type = script.type;   
         newScript.setAttribute("data-dynamic-script", ""); // Marquer comme script dynamique
+        console.log("Chemin généré pour le script :", newScript.src);
         document.body.appendChild(newScript);
     });
 
@@ -80,3 +82,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Gérer les boutons "précédent" et "suivant" du navigateur
 window.onpopstate = () => loadComponentFromState();
+

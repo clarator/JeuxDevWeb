@@ -32,11 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (confirm("Voulez-vous recommencer la partie ?")) {
             location.reload(); // Recharge la page pour réinitialiser le jeu
         }
+        console.log("reset");
     });
 
     document.getElementById("exit").addEventListener("click", () => {
         if (confirm("Voulez-vous quitter le jeu ?")) {
-            window.close(); // Ferme l'onglet (ne fonctionne pas toujours selon le navigateur)
+            window.location.href = "/"; // Redirige vers la page d'accueil
         }
     });
 

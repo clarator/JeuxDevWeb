@@ -24,7 +24,7 @@ export default class Game {
         this.score = 0;
         this.scorePerClick = 1;
         this.clickCount = 0;
-        this.gold = 500;
+        this.gold = 0;
         this.vibrationIntensity = 0.25;
 
         this.scoreDisplay = document.getElementById('score');
@@ -113,4 +113,42 @@ export default class Game {
         let sound = new Audio("./assets/sound/game1/piecesPorteFeuille.mp3");
         sound.play();
     }
+
+    mineClick(){
+        this.clickCount++;
+        this.score += this.scorePerClick;
+        this.scoreDisplay.textContent = this.score;
+    
+        // Vérifie si le score atteint un certain nombre pour l'explosion
+        if (this.score >= 10) {
+            this.triggerExplosion();
+        }
+    
+    
+    
+        if (this.clickCount == 10) {
+            this.vibrationIntensity += 0.25;
+            this.clickCount = 0;
+        }
+     
+        this.addGoldWallet();
+    }
+    
+    triggerExplosion() {
+        // Crée des mini images qui sortent de l'image principale
+        for (let i = 0; i < 20; i++) {
+            const miniGold = document.createElement("div");
+            miniGold.classList.add("miniGold");
+            miniGold.style.backgroundImage = "url('assets/img/game1/or.png')"; // même image que le principal
+            miniGold.style.left = `${this.buttonGold.offsetLeft + Math.random() * 100 - 50}px`; // Position aléatoire
+            miniGold.style.top = `${this.buttonGold.offsetTop + Math.random() * 100 - 50}px`; // Position aléatoire
+            document.body.appendChild(miniGold);
+    
+            // Supprimer l'image après l'animation
+            setTimeout(() => {
+                miniGold.remove();
+            }, 1000);
+        }
+    }
+    
 }

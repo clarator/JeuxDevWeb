@@ -1,3 +1,6 @@
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
     fetch("/getUser")
         .then(response => response.json())
@@ -10,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error("Erreur de récupération du pseudo", error));
 });
 
-//TODO recup le pseudo du joeur 
+//TODO recup le pseudo du joueur 
 //s'occuper de recup les scores en fin de jeu
 //faire le site principal
 //faier en sorte que ce soit pas possible de revenir en arriere apres s'etre connecter

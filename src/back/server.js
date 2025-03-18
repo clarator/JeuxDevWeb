@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import bcrypt from "bcrypt"; //pour crypter les mots de passe
+import crypto from "crypto";
 import db from "./db.js";
 
 //express
@@ -16,14 +16,13 @@ const __dirname = path.dirname(__filename);
 
 //serveur
 const PORT = 4000;
+
 app.listen(PORT, () => {
     console.log(`Server started on http://localhost:${PORT}`);
 });
 
 //front
 app.use(express.static(path.join(__dirname, "../front")));
-
-app.use(express.static(path.join(__dirname, "../front/site")));
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../front/index.html"));
@@ -45,21 +44,27 @@ app.post('/register', (req, res) => {
     }
     
     //crypter le mot de passe
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(password, salt);
-
-
-    const query = 'INSERT INTO users (pseudo,password) VALUES (?, ?)';
-
-    db.query(query, [pseudo, hash], (err, result) => {
-        if(err){
-            console.error("Erreur lors de l'inscription", err);
-            res.status(500).send("Erreur lors de l'inscription");
-            return;
-        }
-        res.status(200).send("Inscription réussie");
-    });
+    try{
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
+    
+    
+        const query = 'INSERT INTO users (pseudo,password) VALUES (?, ?)';
+    
+        db.query(query, [pseudo, hash], (err, result) => {
+            if(err){
+                console.error("Erreur lors de l'inscription", err);
+                res.status(500).send("Erreur lors de l'inscription");
+                return;
+            }
+            res.status(200).send("Inscription réussie");
+        });
+    }catch(err){
+        console.error("Erreur lors de l'inscription", err);
+        res.status(500).send("Erreur lors de l'inscription");
+    }
 });
+    
 
 //connexion
 app.post('/login', (req, res) => {
@@ -109,3 +114,5 @@ app.get("/getUser", (req, res) => {
         res.json({ pseudo: null });
     }
 });
+
+
