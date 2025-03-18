@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "../front")));
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front/index.html"));
+    res.redirect("/site");
 });
 
 const PORT = 4000;
