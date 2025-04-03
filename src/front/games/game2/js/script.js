@@ -40,8 +40,24 @@ function init() {
     }
 
     function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const ratio = 16 / 9;
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+    
+        // Ajuster la hauteur en fonction de la largeur
+        if (width / height > ratio) {
+            width = height * ratio;
+        } else { 
+            height = width / ratio;
+        }
+    
+        canvas.width = width;
+        canvas.height = height;
+    
+        // Centrage du canvas en CSS
+        canvas.style.position = "absolute";
+        canvas.style.left = `${(window.innerWidth - width) / 2}px`;
+        canvas.style.top = `${(window.innerHeight - height) / 2}px`;
     }
 
     animate();

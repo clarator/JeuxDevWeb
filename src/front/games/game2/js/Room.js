@@ -8,7 +8,7 @@ export default class Room {
         this.test = performance.now();
         
         this.img = new Image();
-        this.img.src = "assets/img/game2/4 doors room.png";
+        this.img.src = "../../../assets/img/game2/4 doors room.png";
     }
     
     render() {

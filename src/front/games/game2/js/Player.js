@@ -6,7 +6,7 @@ export default class Player{
         this.x = null;
         this.y = null;
         
-        this.pathImg = "assets/img/game2/Necromancer_creativekind-Sheet.png";
+        this.pathImg = "../../../assets/img/game2/Necromancer_creativekind-Sheet.png";
 
         this.img = new Image();
         this.img.src = this.pathImg;

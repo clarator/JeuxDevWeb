@@ -10,7 +10,7 @@ export default class Projectile {
         this.range = range;
 
         this.img = new Image();
-        this.img.src = "assets/img/game2/Animation Pack/Energy ball/EnergyBall.png";
+        this.img.src = "../../../assets/img/game2/Animation Pack/Energy ball/EnergyBall.png";
         this.frameX = 0;
     }
 
