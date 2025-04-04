@@ -1,17 +1,11 @@
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    fetch("/getUser")
-        .then(response => response.json())
+fetch('/site/html/header.html')
+        .then(res => res.text())
         .then(data => {
-            const pseudoSpan = document.getElementById("pseudo");
-            if (pseudoSpan) {
-                pseudoSpan.textContent = data.pseudo ? data.pseudo : "Invité";
-            }
-        })
-        .catch(error => console.error("Erreur de récupération du pseudo", error));
-});
+            document.getElementById("headerContainer").innerHTML = data;
+            const script = document.createElement("script");
+            script.src = "/site/js/header.js";
+            document.body.appendChild(script);
+        });
 
 //TODO recup le pseudo du joueur 
 //s'occuper de recup les scores en fin de jeu

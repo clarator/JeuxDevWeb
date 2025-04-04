@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
-import crypto from "crypto";
+import bcrypt from "bcrypt";
 import db from "./db.js";
+import session from "express-session";
 
 //express
 const app = express();
@@ -73,46 +74,26 @@ app.post('/login', (req, res) => {
     const query = 'SELECT * FROM users WHERE pseudo = ?';
 
     db.query(query, [pseudo], (err, result) => {
-        if(err || result.length === 0){
+        if (err || result.length === 0) {
             res.status(500).send("Pseudo ou mot de passe incorrect");
             return;
         }
 
         const user = result[0];
 
-        //comparer les mots de passe
-        bcrypt.compare(password, user.password, (err, result) => {
-            if(err){
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) {
                 console.error("Erreur lors de la comparaison des mots de passe", err);
                 res.status(500).send("Une erreur s'est produite");
                 return;
             }
 
-            if(result){
-                res.status(200).send("Connexion réussie");
+            if (isMatch) {
+                res.json({ message: "Connexion réussie" });
                 return;
-            }
-
-            if(user.password == password){
-                res.status(200).send("Connexion réussie");
-                return;
-            }else{
+            } else {
                 res.status(500).send("Pseudo ou mot de passe incorrect");
-                return;
             }
         });
-    }
-    );
+    });
 });
-
-
-//recup le pseudo
-app.get("/getUser", (req, res) => {
-    if (req.session && req.session.user) {
-        res.json({ pseudo: req.session.user.pseudo });
-    } else {
-        res.json({ pseudo: null });
-    }
-});
-
-

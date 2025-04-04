@@ -10,3 +10,4 @@ function init() {
 init()
 
 //npm run server:dev
+//sudo /opt/lampp/lampp start

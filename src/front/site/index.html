@@ -1,13 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <p onclick="window.location.href='/games/game1/'">game1</p>
-    <p onclick="window.location.href='/games/game2/'">game2</p>
-    <p onclick="window.location.href='/games/game3/'">game3</p>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/site/css/website.css">
+        <title>Games</title>
+    </head>
+    <body>
+        <header>
+            <div id="headerContainer"></div>
+        </header>
+        <div class="game">
+            <p>Mine Clicker</p>
+            <button onclick="window.location.href='/games/game1/'">Jouer</button>
+            <button>Règle du jeu</button>
+            <button>Score</button>
+        </div>
+
+        <div class="game" >
+            <p>Jeux 2</p>
+            <button onclick="window.location.href='/games/game2/'">Jouer</button>
+            <button>Règle du jeu</button>
+            <button>Score</button>
+        </div>
+
+        <div class="game" >
+            <p>Jeux 3</p>
+            <button onclick="window.location.href='/games/game3/'">Jouer</button>
+            <button>Règle du jeu</button>
+            <button>Score</button>
+        </div>
+
+
+        <script src="/site/js/website.js"></script>
+    </body>
 </html>
