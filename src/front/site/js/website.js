@@ -1,3 +1,28 @@
+//redirection
+const game1 = document.getElementById("game1");
+const game2 = document.getElementById("game2");
+const game3 = document.getElementById("game3");
+const rules1 = document.getElementById("rules1");
+const rules2 = document.getElementById("rules2");
+const rules3 = document.getElementById("rules3");
+
+
+game1.addEventListener("click", function () {
+    window.location.href = "/games/game1/";
+});
+
+game2.addEventListener("click", function () {
+    window.location.href = "/games/game2/";
+});
+
+game3.addEventListener("click", function () {
+    window.location.href = "/games/game3/";
+});
+
+rules1.addEventListener("click", function () {
+    window.location.href = "/games/game1/html/rules.html";
+});
+
 fetch('/site/html/header.html')
         .then(res => res.text())
         .then(data => {
@@ -5,7 +30,8 @@ fetch('/site/html/header.html')
             const script = document.createElement("script");
             script.src = "/site/js/header.js";
             document.body.appendChild(script);
-        });
+});
+
 
 //TODO recup le pseudo du joueur 
 //s'occuper de recup les scores en fin de jeu

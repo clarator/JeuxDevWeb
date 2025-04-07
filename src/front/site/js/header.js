@@ -11,7 +11,6 @@ login.addEventListener("click", function () {
 });
 
 
-//recup le pseudo du joueur (marche pas)
 document.addEventListener("DOMContentLoaded", function () {
     fetch("/getUser", { credentials: "include" }) // Important pour envoyer les cookies
     .then(response => response.json())
@@ -24,3 +23,4 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => console.error("Erreur de récupération du pseudo :", error));
 
 });
+
