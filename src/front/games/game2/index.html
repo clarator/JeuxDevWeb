@@ -3,11 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game 2</title>
+    <title>Jeu Canvas 2D - Style Binding of Isaac</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <canvas id="canvasGame2"></canvas>
-    <script src="js/script.js" type="module"></script>
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Utilitaires -->
+    <script src="js/utils.js"></script>
+    <script src="js/collision.js"></script>
+    <script src="js/input.js"></script>
+    
+    <!-- Classes de base -->
+    <script src="js/Projectile.js"></script>
+    <script src="js/Character.js"></script>
+    
+    <!-- Classes du joueur -->
+    <script src="js/Player.js"></script>
+    
+    <!-- Classes d'ennemis -->
+    <script src="js/Enemy.js"></script>
+    <script src="js/ChaserEnemy.js"></script>
+    <script src="js/ShooterEnemy.js"></script>
+    <script src="js/WandererEnemy.js"></script>
+    
+    <!-- Gestion du jeu -->
+    <script src="js/Game.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

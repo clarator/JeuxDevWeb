@@ -1,44 +1,45 @@
-export default class Projectile {
-    constructor(ctx, x, y, range) {
-        this.ctx = ctx;
+// Classe pour gérer les projectiles
+class Projectile {
+    constructor(x, y, direction, speed, size, scaleRatio, source = 'player') {
         this.x = x;
         this.y = y;
-
-        this.hitBoxHeight = 30;
-        this.hitBoxWidth = 60;
-
-        this.range = range;
-
-        this.img = new Image();
-        this.img.src = "../../../assets/img/game2/Animation Pack/Energy ball/EnergyBall.png";
-        this.frameX = 0;
+        this.direction = { ...direction }; // Copie de l'objet direction
+        this.speed = Utils.scaleValue(speed, scaleRatio);
+        this.width = Utils.scaleValue(size, scaleRatio);
+        this.height = Utils.scaleValue(size, scaleRatio);
+        this.active = true;
+        this.source = source; // 'player' ou 'enemy'
     }
-
-    render(removeSelf) {    
-        this.move();
-        if (this.range < 0) {
-            removeSelf();
+    
+    // Mettre à jour la position du projectile
+    update(deltaTime, walls, scaleRatio) {
+        // Mettre à jour la position en fonction de la direction et de la vitesse
+        this.x += this.direction.x * this.speed * deltaTime;
+        this.y += this.direction.y * this.speed * deltaTime;
+        
+        // Vérifier les collisions avec les murs
+        const collision = Collision.handleWallCollision(this, walls);
+        
+        // Si collision avec un mur, désactiver le projectile
+        if (collision) {
+            this.active = false;
         }
-        this.ctx.save();
-
-        this.frameX += 0.08;
-        this.frameX = (this.frameX % 8);
-
-
-        this.ctx.drawImage(this.img, Math.floor(this.frameX) * (this.img.width/9)+5, 38, this.img.width/9, this.img.height, this.x, this.y, 80, 80);
-        
-        
-        this.ctx.rect(this.x, this.y, this.hitBoxWidth, this.hitBoxHeight);
-        this.ctx.strokeStyle = "white";
-        this.ctx.stroke();
-
-        this.ctx.restore();
     }
-
-    move() {
-        const speed = 3;
-        this.x += speed;
-        this.range -= speed;
+    
+    // Dessiner le projectile
+    draw(ctx) {
+        // Couleur différente selon la source
+        ctx.fillStyle = this.source === 'player' ? 'yellow' : 'orangered';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
-
+    
+    // Redimensionner le projectile en fonction du ratio d'échelle
+    resize(scaleRatio) {
+        const scaledSpeed = Utils.scaleValue(500, scaleRatio); // Vitesse de base: 500
+        const scaledSize = Utils.scaleValue(10, scaleRatio);   // Taille de base: 10
+        
+        this.speed = scaledSpeed;
+        this.width = scaledSize;
+        this.height = scaledSize;
+    }
 }
