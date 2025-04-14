@@ -23,25 +23,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Ajout des événements pour les boutons du menu
-    document.getElementById("getBack").addEventListener("click", () => {
-        menuContent.style.display = "none"; // Ferme le menu
-    });
 
     document.getElementById("reset").addEventListener("click", () => {
-        if (confirm("Voulez-vous recommencer la partie ?")) {
-            location.reload(); // Recharge la page pour réinitialiser le jeu
-        }
+        window.location.reload(); 
         console.log("reset");
     });
 
     document.getElementById("exit").addEventListener("click", () => {
-        if (confirm("Voulez-vous quitter le jeu ?")) {
             window.location.href = "/"; // Redirige vers la page d'accueil
-        }
     });
 
-    document.getElementById("sound").addEventListener("click", () => {
-        alert("Fonctionnalité à implémenter pour activer/désactiver les sons !");
-    });
+
 });

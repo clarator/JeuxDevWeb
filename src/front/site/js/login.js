@@ -120,10 +120,9 @@ function handleLogin() {
             })
             .then(response => response.text()) 
             .then(data => {
+                console.log("reponse : ",data);
                 if (data === "Connexion réussie") {
-                    console.log(data);
-                   
-                    window.location.href = "/"; 
+                    window.location.href = "/site"; 
                 } else {
                     alert(data); 
                 }

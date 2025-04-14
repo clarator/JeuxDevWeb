@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
 import db from "./db.js";
-import session from "express-session";
 
 //express
 const app = express();
@@ -89,7 +88,7 @@ app.post('/login', (req, res) => {
             }
 
             if (isMatch) {
-                res.json({ message: "Connexion réussie" });
+                res.send({ message: "Connexion réussie" });
                 return;
             } else {
                 res.status(500).send("Pseudo ou mot de passe incorrect");
