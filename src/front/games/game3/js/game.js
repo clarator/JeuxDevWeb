@@ -1,3 +1,5 @@
+import { Tower } from "./tower.js";
+
 export default class Game {
     constructor(canvasId) {
         // Configuration du canvas
@@ -38,6 +40,15 @@ export default class Game {
         // Variables de jeu
         this.lastTime = 0;
         this.isRunning = false;
+
+        this.tower = null;
+    }
+
+    init() {
+        this.canvas.addEventListener("click", (e) => {
+            console.log(e.x+this.camera.x, e.y+this.camera.y)  
+        });
+        this.tower = new Tower(this, 100, 100); 
     }
 
     resizeCanvas() {
@@ -198,9 +209,11 @@ export default class Game {
         // Effacer le canvas
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Dessin
-        this.drawMap();
+        // // Dessin
+        // this.drawMap();
         this.drawUI();
+
+        this.tower.update(deltaTime);
 
         // Continuer la boucle
         requestAnimationFrame(this.gameLoop.bind(this));

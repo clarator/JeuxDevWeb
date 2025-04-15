@@ -5,6 +5,7 @@ window.addEventListener('load', () => {
     // Créer une instance du jeu
     const game = new Game('gameCanvas');
     
+    game.init();
     // Démarrer le jeu
     game.start();
     

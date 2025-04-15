@@ -16,7 +16,7 @@ body {
 
 #gameCanvas {
     display: block;
-    background-color: #000;
+    background-color: #e6e6e6;
     cursor: crosshair; /* Curseur en croix pour mieux viser */
     position: absolute;
     top: 0;
