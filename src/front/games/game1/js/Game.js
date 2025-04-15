@@ -1,7 +1,7 @@
 import { upgrades, startUpgrade } from "./upgrade.js";
 import { checkNotifications } from "./notification.js";
 import { automations, startAutomation } from "./automation.js";
-import { vibrateGold } from "./animation.js";
+import { vibrateGold,explodeGoldPicture } from "./animation.js";
 import { applyBonus } from "./bonus.js";
 /*
 chose à ajouter :
@@ -43,6 +43,7 @@ export default class Game {
             console.error("Erreur : élément #buttonGold introuvable");
         }
 
+
         this.update();
 
         //magasin
@@ -59,6 +60,13 @@ export default class Game {
         this.clickCount++;
         this.score += this.scorePerClick;
         this.scoreDisplay.textContent = this.score;
+
+        //son
+        let pioche = new Audio("../../assets/sound/game1/bruitPioche.mp3");
+        pioche.volume = 0.3;
+        pioche.play();
+
+      
           
         //vibration
         vibrateGold(this.vibrationIntensity, this.buttonGold);
@@ -68,6 +76,18 @@ export default class Game {
             this.clickCount = 0;
         }
      
+        //explosion
+        const goldPicture = document.getElementById("goldPicture");
+        const explosionContainer = document.querySelector(".explosion");
+
+        if (this.score >= 10) {
+            explodeGoldPicture(goldPicture, explosionContainer);
+            let explo = new Audio("../../assets/sound/game1/explosion-VEED.mp3");
+            explo.volume = 0.3;
+            explo.play();
+        }
+        
+
         this.addGoldWallet();
     }
 
@@ -110,30 +130,11 @@ export default class Game {
     }
 
     addSound(){
-        let sound = new Audio("./assets/sound/game1/piecesPorteFeuille.mp3");
+        let sound = new Audio("../../assets/sound/game1/piecesPorteFeuille.mp3");
+        sound.volume = 0.2;
         sound.play();
     }
 
-    mineClick(){
-        this.clickCount++;
-        this.score += this.scorePerClick;
-        this.scoreDisplay.textContent = this.score;
-    
-        // Vérifie si le score atteint un certain nombre pour l'explosion
-        if (this.score >= 10) {
-            this.triggerExplosion();
-        }
-    
-    
-    
-        if (this.clickCount == 10) {
-            this.vibrationIntensity += 0.25;
-            this.clickCount = 0;
-        }
-     
-        this.addGoldWallet();
-    }
-    
     triggerExplosion() {
         // Crée des mini images qui sortent de l'image principale
         for (let i = 0; i < 20; i++) {
