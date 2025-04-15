@@ -1,12 +1,32 @@
-// Gestionnaire des tours
+/// Mise à jour du fichier src/front/games/game3/js/towers/towerManager.js
+
+// Importer la nouvelle tour de mortier
 import { BasicTower } from './basicTower.js';
+import { MortarTower } from './mortarTower.js';
 
 export class TowerManager {
     constructor(game) {
         this.game = game;
         this.towers = [];
         this.towerTypes = {
-            'basic': BasicTower
+            'basic': BasicTower,
+            'mortar': MortarTower
+        };
+        
+        // Informations sur les tours pour l'interface utilisateur
+        this.towerInfo = {
+            'basic': {
+                name: 'Tour Basique',
+                description: 'Tour à tir rapide avec des dégâts moyens',
+                cost: 25,
+                icon: 'assets/towers/basic/icon.png'
+            },
+            'mortar': {
+                name: 'Mortier',
+                description: 'Tour à tir lent mais avec des dégâts élevés et de zone',
+                cost: 50,
+                icon: 'assets/towers/mortar/icon.png'
+            }
         };
     }
     

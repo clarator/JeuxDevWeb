@@ -13,7 +13,14 @@ export class InputHandler {
         this.setupEventListeners();
         
         // Configuration des boutons de l'interface
-        this.setupUIButtons();
+        // Nous attendons que le DOM soit complètement chargé avant d'initialiser les boutons
+        if (document.readyState === 'complete') {
+            this.setupUIButtons();
+        } else {
+            window.addEventListener('load', () => {
+                this.setupUIButtons();
+            });
+        }
     }
     
     setupEventListeners() {
@@ -35,14 +42,54 @@ export class InputHandler {
     }
     
     setupUIButtons() {
-        // Bouton pour placer une tour basique
+        // Vérification que les éléments existent
         const basicTowerBtn = document.getElementById('basicTower');
-        basicTowerBtn.addEventListener('click', () => {
-            this.game.selectTower({ 
-                type: 'basic', 
-                cost: 25
+        const mortarTowerBtn = document.getElementById('mortarTower');
+        
+        if (basicTowerBtn) {
+            basicTowerBtn.addEventListener('click', () => {
+                this.game.selectTower({ 
+                    type: 'basic', 
+                    cost: 25
+                });
             });
-        });
+        }
+        
+        if (mortarTowerBtn) {
+            mortarTowerBtn.addEventListener('click', () => {
+                this.game.selectTower({ 
+                    type: 'mortar', 
+                    cost: 50
+                });
+            });
+        }
+        
+        // Mise à jour initiale de l'état des boutons
+        this.updateButtonStates();
+    }
+    
+    // Méthode pour mettre à jour l'état des boutons
+    updateButtonStates() {
+        // Vérification que game et player sont définis
+        if (!this.game || !this.game.player) {
+            console.warn("Le jeu ou le joueur n'est pas encore initialisé");
+            return;
+        }
+        
+        const gold = this.game.player.gold;
+        
+        // Récupérer les boutons
+        const basicTowerBtn = document.getElementById('basicTower');
+        const mortarTowerBtn = document.getElementById('mortarTower');
+        
+        // Vérifier que les boutons existent avant de les manipuler
+        if (basicTowerBtn) {
+            basicTowerBtn.disabled = gold < 25;
+        }
+        
+        if (mortarTowerBtn) {
+            mortarTowerBtn.disabled = gold < 50;
+        }
     }
     
     // Convertir les coordonnées du monde en coordonnées de la grille
