@@ -8,6 +8,12 @@ class Game {
         // Gestionnaire d'entrées (passer le canvas pour les événements de souris)
         this.inputHandler = new InputHandler(this.canvas);
         
+        // Gestionnaire d'états du jeu
+        this.stateManager = new GameStateManager(this);
+        
+        // Gestionnaire de vagues
+        this.waveManager = new WaveManager(this);
+        
         // Initialiser les objets du jeu
         this.init();
         
@@ -19,7 +25,6 @@ class Game {
         this.lastTime = 0;
         this.projectiles = [];
         this.enemies = [];
-        this.enemySpawnTimer = 0;
         this.gameOver = false;
     }
     
@@ -42,40 +47,8 @@ class Game {
         this.projectiles = [];
         this.enemies = [];
         
-        // Faire apparaître les premiers ennemis
-        this.spawnEnemies(5, scaleRatio);
-    }
-    
-    // Faire apparaître un certain nombre d'ennemis
-    spawnEnemies(count, scaleRatio) {
-        const wallThickness = Utils.scaleValue(20, scaleRatio);
-        
-        for (let i = 0; i < count; i++) {
-            // Déterminer aléatoirement le type d'ennemi
-            const types = ['chaser', 'shooter', 'wanderer'];
-            const type = types[Math.floor(Math.random() * types.length)];
-            
-            // Calculer une position aléatoire loin du joueur
-            let x, y;
-            let tooClose = true;
-            
-            while (tooClose) {
-                x = wallThickness + Math.random() * (this.canvas.width - 2 * wallThickness - Utils.scaleValue(40, scaleRatio));
-                y = wallThickness + Math.random() * (this.canvas.height - 2 * wallThickness - Utils.scaleValue(40, scaleRatio));
-                
-                // Vérifier si la position est suffisamment éloignée du joueur (au moins 200 pixels)
-                const distX = x - this.player.x;
-                const distY = y - this.player.y;
-                const distance = Math.sqrt(distX * distX + distY * distY);
-                
-                if (distance > Utils.scaleValue(200, scaleRatio)) {
-                    tooClose = false;
-                }
-            }
-            
-            // Créer et ajouter l'ennemi
-            this.enemies.push(Enemy.createEnemy(x, y, type, scaleRatio));
-        }
+        // Initialiser le gestionnaire de vagues
+        this.waveManager.reset();
     }
     
     // Gérer le redimensionnement
@@ -143,6 +116,11 @@ class Game {
             // Mur de gauche
             { x: 0, y: 0, width: wallThickness, height: canvasHeight }
         ];
+        
+        // Redimensionner les éléments d'interface utilisateur
+        if (this.stateManager) {
+            this.stateManager.resizeUI();
+        }
     }
     
     // Vérifier les collisions entre projectiles et entités
@@ -163,9 +141,14 @@ class Game {
                         // Infliger des dégâts à l'ennemi
                         const isDead = enemy.takeDamage(1);
                         
-                        // Si l'ennemi n'a plus de vie, le supprimer
+                        // Si l'ennemi n'a plus de vie, le supprimer et ajouter des points
                         if (isDead) {
                             this.enemies.splice(j, 1);
+                            
+                            // Ajouter des points au score (10 points par ennemi)
+                            if (this.stateManager) {
+                                this.stateManager.addScore(10);
+                            }
                         }
                         
                         // Passer au projectile suivant
@@ -180,9 +163,14 @@ class Game {
                     projectile.active = false;
                     
                     // Infliger des dégâts au joueur
-                    const gameOver = this.player.takeDamage();
-                    if (gameOver) {
+                    const isDead = this.player.takeDamage();
+                    if (isDead) {
                         this.gameOver = true;
+                        
+                        // Mettre à jour l'état du jeu
+                        if (this.stateManager) {
+                            this.stateManager.endGame();
+                        }
                     }
                 }
             }
@@ -193,28 +181,19 @@ class Game {
             for (const enemy of this.enemies) {
                 if (Collision.checkRectCollision(this.player, enemy)) {
                     // Infliger des dégâts au joueur
-                    const gameOver = this.player.takeDamage();
-                    if (gameOver) {
+                    const isDead = this.player.takeDamage();
+                    if (isDead) {
                         this.gameOver = true;
+                        
+                        // Mettre à jour l'état du jeu
+                        if (this.stateManager) {
+                            this.stateManager.endGame();
+                        }
                     }
                     break;
                 }
             }
         }
-    }
-    
-    // Afficher l'écran de game over
-    showGameOver() {
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        this.ctx.fillStyle = 'white';
-        this.ctx.font = '48px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('GAME OVER', this.canvas.width / 2, this.canvas.height / 2 - 50);
-        
-        this.ctx.font = '24px Arial';
-        this.ctx.fillText('Cliquez pour recommencer', this.canvas.width / 2, this.canvas.height / 2 + 20);
     }
     
     // Réinitialiser le jeu
@@ -230,7 +209,8 @@ class Game {
             scaleRatio
         );
         
-        this.spawnEnemies(5, scaleRatio);
+        // Réinitialiser le gestionnaire de vagues
+        this.waveManager.reset();
     }
     
     // Boucle principale du jeu
@@ -246,82 +226,78 @@ class Game {
         this.ctx.fillStyle = '#222';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Calculer le ratio d'échelle actuel
-        const scaleRatio = Utils.getScaleRatio(this.canvas.width, this.canvas.height);
+        // Mettre à jour et dessiner en fonction de l'état du jeu
+        this.stateManager.update(deltaTime);
         
-        // Si game over, afficher l'écran et vérifier si le joueur veut recommencer
-        if (this.gameOver) {
-            this.showGameOver();
+        // Si nous sommes dans l'état de jeu
+        if (this.stateManager.isPlaying()) {
+            // Calculer le ratio d'échelle actuel
+            const scaleRatio = Utils.getScaleRatio(this.canvas.width, this.canvas.height);
             
-            if (this.inputHandler.mousePressed) {
-                this.reset();
+            // Mettre à jour le gestionnaire de vagues
+            this.waveManager.update(deltaTime);
+            
+            // Mettre à jour le joueur
+            this.player.update(deltaTime, this.inputHandler, this.walls, scaleRatio);
+            
+            // Vérifier si le joueur tire avec la souris
+            if (this.inputHandler.isFiring() && this.player.shootCooldown <= 0) {
+                const projectile = this.player.shoot(scaleRatio);
+                if (projectile) {
+                    this.projectiles.push(projectile);
+                }
             }
             
-            requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
-            return;
-        }
-        
-        // Mettre à jour le joueur
-        this.player.update(deltaTime, this.inputHandler, this.walls, scaleRatio);
-        
-        // Vérifier si le joueur tire avec la souris
-        if (this.inputHandler.isFiring() && this.player.shootCooldown <= 0) {
-            const projectile = this.player.shoot(scaleRatio);
-            if (projectile) {
-                this.projectiles.push(projectile);
+            // Mettre à jour les ennemis et leurs tirs
+            for (const enemy of this.enemies) {
+                enemy.update(deltaTime, this.player, this.walls, scaleRatio);
+                
+                // Vérifier si l'ennemi tire
+                const projectile = enemy.shoot(this.player, scaleRatio);
+                if (projectile) {
+                    this.projectiles.push(projectile);
+                }
             }
-        }
-        
-        // Mettre à jour les ennemis et leurs tirs
-        for (const enemy of this.enemies) {
-            enemy.update(deltaTime, this.player, this.walls, scaleRatio);
             
-            // Vérifier si l'ennemi tire
-            const projectile = enemy.shoot(this.player, scaleRatio);
-            if (projectile) {
-                this.projectiles.push(projectile);
-            }
+            // Mettre à jour et filtrer les projectiles
+            this.projectiles = this.projectiles.filter(projectile => {
+                projectile.update(deltaTime, this.walls, scaleRatio);
+                return projectile.active;
+            });
+            
+            // Vérifier les collisions
+            this.checkProjectileCollisions();
+            
+            // Dessiner les murs
+            this.ctx.fillStyle = 'gray';
+            this.walls.forEach(wall => {
+                this.ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+            });
+            
+            // Dessiner les projectiles
+            this.projectiles.forEach(projectile => {
+                projectile.draw(this.ctx);
+            });
+            
+            // Dessiner les ennemis
+            this.enemies.forEach(enemy => {
+                enemy.draw(this.ctx);
+            });
+            
+            // Dessiner le joueur
+            this.player.draw(this.ctx);
+            
+            // Dessiner les informations de vague
+            this.waveManager.draw(this.ctx);
+            
+            // Dessiner une bordure pour montrer clairement les limites du canvas
+            this.ctx.strokeStyle = '#444';
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
         }
         
-        // Mettre à jour et filtrer les projectiles
-        this.projectiles = this.projectiles.filter(projectile => {
-            projectile.update(deltaTime, this.walls, scaleRatio);
-            return projectile.active;
-        });
-        
-        // Vérifier les collisions
-        this.checkProjectileCollisions();
-        
-        // Faire apparaître de nouveaux ennemis périodiquement
-        this.enemySpawnTimer += deltaTime;
-        if (this.enemySpawnTimer > 5 && this.enemies.length < 15) { // Toutes les 5 secondes, max 15 ennemis
-            this.enemySpawnTimer = 0;
-            this.spawnEnemies(1 + Math.floor(Math.random() * 2), scaleRatio); // 1 ou 2 ennemis
-        }
-        
-        // Dessiner les murs
-        this.ctx.fillStyle = 'gray';
-        this.walls.forEach(wall => {
-            this.ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
-        });
-        
-        // Dessiner les projectiles
-        this.projectiles?.forEach(projectile => {
-            projectile.draw(this.ctx);
-        });
-        
-        // Dessiner les ennemis
-        this.enemies.forEach(enemy => {
-            enemy.draw(this.ctx);
-        });
-        
-        // Dessiner le joueur
-        this.player.draw(this.ctx);
-        
-        // Dessiner une bordure pour montrer clairement les limites du canvas
-        this.ctx.strokeStyle = '#444';
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeRect(0, 0, this.canvas.width, this.canvas.height);
+        // Dessiner l'interface utilisateur (menu, game over, etc.)
+        this.stateManager.draw(this.ctx);
         
         // Continuer la boucle
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));

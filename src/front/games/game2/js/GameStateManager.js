@@ -1,0 +1,249 @@
+// Classe pour gérer les différents états du jeu (menu, jeu, game over)
+class GameStateManager {
+    constructor(game) {
+        this.game = game;
+        this.states = {
+            MENU: 'menu',
+            PLAYING: 'playing',
+            GAME_OVER: 'gameOver',
+            PAUSE: 'pause'
+        };
+        
+        // État initial
+        this.currentState = this.states.MENU;
+        
+        // Statistiques de la partie
+        this.stats = {
+            score: 0,
+            wave: 1,
+            enemiesKilled: 0
+        };
+        
+        // Référence au gestionnaire d'entrées
+        this.inputHandler = game.inputHandler;
+        
+        // Éléments UI pour le menu
+        this.playButton = {
+            x: 0, 
+            y: 0, 
+            width: 0, 
+            height: 0,
+            text: 'JOUER'
+        };
+        
+        // Au début, calculer la taille et position des boutons
+        this.resizeUI();
+    }
+    
+    // Mise à jour en fonction de l'état actuel
+    update(deltaTime) {
+        switch (this.currentState) {
+            case this.states.MENU:
+                this.updateMenu();
+                break;
+            case this.states.PLAYING:
+                this.updatePlaying(deltaTime);
+                break;
+            case this.states.GAME_OVER:
+                this.updateGameOver();
+                break;
+            case this.states.PAUSE:
+                this.updatePause();
+                break;
+        }
+    }
+    
+    // Mise à jour du menu
+    updateMenu() {
+        // Vérifier si le bouton jouer est cliqué
+        if (this.inputHandler.justClicked) {
+            const mouseX = this.inputHandler.mouseX;
+            const mouseY = this.inputHandler.mouseY;
+            
+            if (
+                mouseX >= this.playButton.x && 
+                mouseX <= this.playButton.x + this.playButton.width &&
+                mouseY >= this.playButton.y &&
+                mouseY <= this.playButton.y + this.playButton.height
+            ) {
+                // Démarrer une nouvelle partie
+                this.startNewGame();
+            }
+        }
+    }
+    
+    // Mise à jour pendant le jeu
+    updatePlaying(deltaTime) {
+        // La logique principale du jeu est gérée dans Game.js
+    }
+    
+    // Mise à jour de l'écran de game over
+    updateGameOver() {
+        // Vérifier si le bouton de retour au menu est cliqué
+        if (this.inputHandler.justClicked) {
+            const mouseX = this.inputHandler.mouseX;
+            const mouseY = this.inputHandler.mouseY;
+            
+            if (
+                mouseX >= this.playButton.x && 
+                mouseX <= this.playButton.x + this.playButton.width &&
+                mouseY >= this.playButton.y + 100 &&
+                mouseY <= this.playButton.y + 100 + this.playButton.height
+            ) {
+                // Retour au menu
+                this.currentState = this.states.MENU;
+            }
+        }
+    }
+    
+    // Mise à jour pendant la pause
+    updatePause() {
+        // Implémentation à venir...
+    }
+    
+    // Dessiner en fonction de l'état actuel
+    draw(ctx) {
+        switch (this.currentState) {
+            case this.states.MENU:
+                this.drawMenu(ctx);
+                break;
+            case this.states.GAME_OVER:
+                this.drawGameOver(ctx);
+                break;
+            case this.states.PAUSE:
+                this.drawPause(ctx);
+                break;
+        }
+    }
+    
+    // Dessiner le menu principal
+    drawMenu(ctx) {
+        const canvas = ctx.canvas;
+        const scaleRatio = Utils.getScaleRatio(canvas.width, canvas.height);
+        
+        // Fond sombre
+        ctx.fillStyle = '#111';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Titre du jeu
+        ctx.fillStyle = 'white';
+        ctx.font = `${Math.floor(Utils.scaleValue(60, scaleRatio))}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText('SUPER SHOOTER', canvas.width / 2, canvas.height / 3);
+        
+        // Dessiner le bouton jouer
+        ctx.fillStyle = '#333';
+        ctx.fillRect(this.playButton.x, this.playButton.y, this.playButton.width, this.playButton.height);
+        
+        ctx.fillStyle = 'white';
+        ctx.font = `${Math.floor(Utils.scaleValue(30, scaleRatio))}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText(
+            this.playButton.text, 
+            this.playButton.x + this.playButton.width / 2, 
+            this.playButton.y + this.playButton.height / 2 + Utils.scaleValue(10, scaleRatio)
+        );
+        
+        // Instructions
+        ctx.font = `${Math.floor(Utils.scaleValue(20, scaleRatio))}px Arial`;
+        ctx.fillText(
+            'Déplacement: ZQSD - Tirer: Clic Souris', 
+            canvas.width / 2, 
+            canvas.height * 0.7
+        );
+    }
+    
+    // Dessiner l'écran de game over
+    drawGameOver(ctx) {
+        const canvas = ctx.canvas;
+        const scaleRatio = Utils.getScaleRatio(canvas.width, canvas.height);
+        
+        // Fond semi-transparent
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Texte de Game Over
+        ctx.fillStyle = 'white';
+        ctx.font = `${Math.floor(Utils.scaleValue(60, scaleRatio))}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 3);
+        
+        // Score et vague
+        ctx.font = `${Math.floor(Utils.scaleValue(30, scaleRatio))}px Arial`;
+        ctx.fillText(
+            `Score: ${this.stats.score} - Vague: ${this.stats.wave}`, 
+            canvas.width / 2, 
+            canvas.height / 2
+        );
+        
+        // Bouton de retour au menu
+        ctx.fillStyle = '#333';
+        ctx.fillRect(
+            this.playButton.x, 
+            this.playButton.y + 100, 
+            this.playButton.width, 
+            this.playButton.height
+        );
+        
+        ctx.fillStyle = 'white';
+        ctx.font = `${Math.floor(Utils.scaleValue(30, scaleRatio))}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText(
+            'MENU', 
+            this.playButton.x + this.playButton.width / 2, 
+            this.playButton.y + 100 + this.playButton.height / 2 + Utils.scaleValue(10, scaleRatio)
+        );
+    }
+    
+    // Dessiner l'écran de pause
+    drawPause(ctx) {
+        // Implémentation à venir...
+    }
+    
+    // Redimensionner les éléments de l'interface
+    resizeUI() {
+        const canvas = this.game.canvas;
+        const scaleRatio = Utils.getScaleRatio(canvas.width, canvas.height);
+        
+        // Redimensionner le bouton jouer
+        this.playButton.width = Utils.scaleValue(200, scaleRatio);
+        this.playButton.height = Utils.scaleValue(60, scaleRatio);
+        this.playButton.x = canvas.width / 2 - this.playButton.width / 2;
+        this.playButton.y = canvas.height / 2;
+    }
+    
+    // Démarrer une nouvelle partie
+    startNewGame() {
+        // Réinitialiser les statistiques
+        this.stats.score = 0;
+        this.stats.wave = 1;
+        this.stats.enemiesKilled = 0;
+        
+        // Dire au jeu de tout réinitialiser
+        this.game.reset();
+        
+        // Changer l'état
+        this.currentState = this.states.PLAYING;
+    }
+    
+    // Terminer la partie
+    endGame() {
+        this.currentState = this.states.GAME_OVER;
+    }
+    
+    // Ajouter des points au score
+    addScore(points) {
+        this.stats.score += points;
+        this.stats.enemiesKilled++;
+    }
+    
+    // Avancer à la vague suivante
+    nextWave() {
+        this.stats.wave++;
+    }
+    
+    // Vérifier si le jeu est en cours
+    isPlaying() {
+        return this.currentState === this.states.PLAYING;
+    }
+}
