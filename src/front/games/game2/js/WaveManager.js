@@ -8,11 +8,16 @@ class WaveManager {
         this.waveDelay = 5; // Délai entre les vagues en secondes
         this.waveInProgress = false;
         this.betweenWaves = true;
-        this.baseEnemyCount = 5; // Nombre de base d'ennemis pour la vague 1
+        this.baseEnemyCount = 3; // Réduit de 5 à 3 pour faciliter la première vague
     }
     
     // Mise à jour du gestionnaire de vague
     update(deltaTime) {
+        // Ne pas mettre à jour si le jeu est en pause
+        if (this.game.stateManager.currentState === this.game.stateManager.states.PAUSE) {
+            return;
+        }
+        
         // Si nous sommes entre deux vagues, décompter le timer
         if (this.betweenWaves) {
             this.waveTimer -= deltaTime;
@@ -62,11 +67,17 @@ class WaveManager {
     
     // Calculer le nombre d'ennemis pour la vague actuelle
     calculateEnemyCount() {
-        // Formule: baseEnemyCount + (currentWave - 1) * 2
-        // Vague 1: 5 ennemis
-        // Vague 2: 7 ennemis
-        // Vague 3: 9 ennemis, etc.
-        return this.baseEnemyCount + (this.currentWave - 1) * 2;
+        // Progression plus douce pour les premières vagues
+        if (this.currentWave === 1) {
+            return this.baseEnemyCount; // 3 ennemis
+        } else if (this.currentWave === 2) {
+            return this.baseEnemyCount + 1; // 4 ennemis
+        } else if (this.currentWave === 3) {
+            return this.baseEnemyCount + 2; // 5 ennemis
+        } else {
+            // À partir de la vague 4, progression plus rapide
+            return this.baseEnemyCount + 2 + (this.currentWave - 3) * 2;
+        }
     }
     
     // Faire apparaître un nombre donné d'ennemis
@@ -92,7 +103,12 @@ class WaveManager {
                 const distY = y - this.game.player.y;
                 const distance = Math.sqrt(distX * distX + distY * distY);
                 
-                if (distance > Utils.scaleValue(200, scaleRatio)) {
+                // Distance augmentée pour les 3 premières vagues pour donner plus d'espace au joueur
+                const minDistance = this.currentWave <= 3 ? 
+                    Utils.scaleValue(250, scaleRatio) : 
+                    Utils.scaleValue(200, scaleRatio);
+                
+                if (distance > minDistance) {
                     tooClose = false;
                 }
             }
@@ -104,29 +120,43 @@ class WaveManager {
     
     // Obtenir la distribution des types d'ennemis en fonction de la vague
     getEnemyTypeDistribution() {
-        // Distribution de base
-        let distribution = {
-            chaser: 0.4,
-            shooter: 0.3,
-            wanderer: 0.3
-        };
-        
-        // Ajuster en fonction de la vague
-        if (this.currentWave >= 3) {
-            // Plus de shooters dans les vagues supérieures
-            distribution.chaser = 0.3;
-            distribution.shooter = 0.4;
-            distribution.wanderer = 0.3;
+        // Distribution en fonction de la vague
+        if (this.currentWave === 1) {
+            // Vague 1: Uniquement des wanderers (plus faciles à éviter)
+            return {
+                chaser: 0,
+                shooter: 0,
+                wanderer: 1.0
+            };
+        } else if (this.currentWave === 2) {
+            // Vague 2: Principalement des wanderers, quelques chasers
+            return {
+                chaser: 0.2,
+                shooter: 0,
+                wanderer: 0.8
+            };
+        } else if (this.currentWave === 3) {
+            // Vague 3: Introduction des shooters en petit nombre
+            return {
+                chaser: 0.3,
+                shooter: 0.1,
+                wanderer: 0.6
+            };
+        } else if (this.currentWave <= 5) {
+            // Vagues 4-5: Distribution équilibrée
+            return {
+                chaser: 0.3,
+                shooter: 0.3,
+                wanderer: 0.4
+            };
+        } else {
+            // Vagues 6+: Plus difficile avec plus de shooters
+            return {
+                chaser: 0.3,
+                shooter: 0.5,
+                wanderer: 0.2
+            };
         }
-        
-        if (this.currentWave >= 5) {
-            // Encore plus de shooters dans les vagues très avancées
-            distribution.chaser = 0.25;
-            distribution.shooter = 0.5;
-            distribution.wanderer = 0.25;
-        }
-        
-        return distribution;
     }
     
     // Choisir un type d'ennemi en fonction de la distribution
@@ -141,8 +171,8 @@ class WaveManager {
             }
         }
         
-        // Par défaut, retourner chaser
-        return 'chaser';
+        // Par défaut, retourner wanderer
+        return 'wanderer';
     }
     
     // Dessiner les informations de vague
@@ -158,6 +188,11 @@ class WaveManager {
         
         // Afficher les ennemis restants
         ctx.fillText(`Ennemis: ${this.game.enemies.length}`, ctx.canvas.width - 20, 60);
+        
+        // Afficher le score
+        if (this.game.stateManager) {
+            ctx.fillText(`Score: ${this.game.stateManager.stats.score}`, ctx.canvas.width - 20, 90);
+        }
         
         // Si nous sommes entre deux vagues, afficher le compte à rebours
         if (this.betweenWaves) {

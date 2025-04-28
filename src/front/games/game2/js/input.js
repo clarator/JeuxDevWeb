@@ -7,7 +7,9 @@ class InputHandler {
             z: false,
             q: false,
             s: false,
-            d: false
+            d: false,
+            p: false,
+            escape: false
         };
         
         // Position de la souris relative au canvas
@@ -47,6 +49,12 @@ class InputHandler {
             case 'd':
                 this.keys.d = true;
                 break;
+            case 'p':
+                this.keys.p = true;
+                break;
+            case 'escape':
+                this.keys.escape = true;
+                break;
         }
     }
     
@@ -64,6 +72,12 @@ class InputHandler {
                 break;
             case 'd':
                 this.keys.d = false;
+                break;
+            case 'p':
+                this.keys.p = false;
+                break;
+            case 'escape':
+                this.keys.escape = false;
                 break;
         }
     }

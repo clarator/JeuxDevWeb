@@ -14,6 +14,9 @@ class Game {
         // Gestionnaire de vagues
         this.waveManager = new WaveManager(this);
         
+        // Exposer le jeu comme variable globale pour les ennemis
+        window.game = this;
+        
         // Initialiser les objets du jeu
         this.init();
         

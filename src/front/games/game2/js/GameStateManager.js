@@ -22,7 +22,7 @@ class GameStateManager {
         // Référence au gestionnaire d'entrées
         this.inputHandler = game.inputHandler;
         
-        // Éléments UI pour le menu
+        // Éléments UI pour le menu et pause
         this.playButton = {
             x: 0, 
             y: 0, 
@@ -31,8 +31,35 @@ class GameStateManager {
             text: 'JOUER'
         };
         
+        this.resumeButton = {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+            text: 'REPRENDRE'
+        };
+        
+        this.menuButton = {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+            text: 'MENU'
+        };
+        
         // Au début, calculer la taille et position des boutons
         this.resizeUI();
+        
+        // Ajouter un écouteur d'événement pour la touche Échap (mettre en pause)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' || e.key === 'p' || e.key === 'P') {
+                if (this.currentState === this.states.PLAYING) {
+                    this.pauseGame();
+                } else if (this.currentState === this.states.PAUSE) {
+                    this.resumeGame();
+                }
+            }
+        });
     }
     
     // Mise à jour en fonction de l'état actuel
@@ -85,10 +112,10 @@ class GameStateManager {
             const mouseY = this.inputHandler.mouseY;
             
             if (
-                mouseX >= this.playButton.x && 
-                mouseX <= this.playButton.x + this.playButton.width &&
-                mouseY >= this.playButton.y + 100 &&
-                mouseY <= this.playButton.y + 100 + this.playButton.height
+                mouseX >= this.menuButton.x && 
+                mouseX <= this.menuButton.x + this.menuButton.width &&
+                mouseY >= this.menuButton.y &&
+                mouseY <= this.menuButton.y + this.menuButton.height
             ) {
                 // Retour au menu
                 this.currentState = this.states.MENU;
@@ -98,7 +125,30 @@ class GameStateManager {
     
     // Mise à jour pendant la pause
     updatePause() {
-        // Implémentation à venir...
+        if (this.inputHandler.justClicked) {
+            const mouseX = this.inputHandler.mouseX;
+            const mouseY = this.inputHandler.mouseY;
+            
+            // Vérifier si le bouton reprendre est cliqué
+            if (
+                mouseX >= this.resumeButton.x && 
+                mouseX <= this.resumeButton.x + this.resumeButton.width &&
+                mouseY >= this.resumeButton.y &&
+                mouseY <= this.resumeButton.y + this.resumeButton.height
+            ) {
+                this.resumeGame();
+            }
+            
+            // Vérifier si le bouton menu est cliqué
+            if (
+                mouseX >= this.menuButton.x && 
+                mouseX <= this.menuButton.x + this.menuButton.width &&
+                mouseY >= this.menuButton.y &&
+                mouseY <= this.menuButton.y + this.menuButton.height
+            ) {
+                this.currentState = this.states.MENU;
+            }
+        }
     }
     
     // Dessiner en fonction de l'état actuel
@@ -147,7 +197,7 @@ class GameStateManager {
         // Instructions
         ctx.font = `${Math.floor(Utils.scaleValue(20, scaleRatio))}px Arial`;
         ctx.fillText(
-            'Déplacement: ZQSD - Tirer: Clic Souris', 
+            'Déplacement: ZQSD - Tirer: Clic Souris - Pause: Échap/P', 
             canvas.width / 2, 
             canvas.height * 0.7
         );
@@ -179,10 +229,10 @@ class GameStateManager {
         // Bouton de retour au menu
         ctx.fillStyle = '#333';
         ctx.fillRect(
-            this.playButton.x, 
-            this.playButton.y + 100, 
-            this.playButton.width, 
-            this.playButton.height
+            this.menuButton.x, 
+            this.menuButton.y, 
+            this.menuButton.width, 
+            this.menuButton.height
         );
         
         ctx.fillStyle = 'white';
@@ -190,14 +240,74 @@ class GameStateManager {
         ctx.textAlign = 'center';
         ctx.fillText(
             'MENU', 
-            this.playButton.x + this.playButton.width / 2, 
-            this.playButton.y + 100 + this.playButton.height / 2 + Utils.scaleValue(10, scaleRatio)
+            this.menuButton.x + this.menuButton.width / 2, 
+            this.menuButton.y + this.menuButton.height / 2 + Utils.scaleValue(10, scaleRatio)
         );
     }
     
     // Dessiner l'écran de pause
     drawPause(ctx) {
-        // Implémentation à venir...
+        const canvas = ctx.canvas;
+        const scaleRatio = Utils.getScaleRatio(canvas.width, canvas.height);
+        
+        // Fond semi-transparent
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Titre de pause
+        ctx.fillStyle = 'white';
+        ctx.font = `${Math.floor(Utils.scaleValue(60, scaleRatio))}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText('PAUSE', canvas.width / 2, canvas.height / 3);
+        
+        // Vague et score actuels
+        ctx.font = `${Math.floor(Utils.scaleValue(24, scaleRatio))}px Arial`;
+        ctx.fillText(
+            `Vague: ${this.stats.wave} - Score: ${this.stats.score}`, 
+            canvas.width / 2, 
+            canvas.height / 2 - Utils.scaleValue(30, scaleRatio)
+        );
+        
+        // Bouton reprendre
+        ctx.fillStyle = '#333';
+        ctx.fillRect(
+            this.resumeButton.x, 
+            this.resumeButton.y, 
+            this.resumeButton.width, 
+            this.resumeButton.height
+        );
+        
+        ctx.fillStyle = 'white';
+        ctx.font = `${Math.floor(Utils.scaleValue(30, scaleRatio))}px Arial`;
+        ctx.fillText(
+            'REPRENDRE', 
+            this.resumeButton.x + this.resumeButton.width / 2, 
+            this.resumeButton.y + this.resumeButton.height / 2 + Utils.scaleValue(10, scaleRatio)
+        );
+        
+        // Bouton menu
+        ctx.fillStyle = '#333';
+        ctx.fillRect(
+            this.menuButton.x, 
+            this.menuButton.y, 
+            this.menuButton.width, 
+            this.menuButton.height
+        );
+        
+        ctx.fillStyle = 'white';
+        ctx.fillText(
+            'MENU', 
+            this.menuButton.x + this.menuButton.width / 2, 
+            this.menuButton.y + this.menuButton.height / 2 + Utils.scaleValue(10, scaleRatio)
+        );
+        
+        // Instructions
+        ctx.font = `${Math.floor(Utils.scaleValue(18, scaleRatio))}px Arial`;
+        ctx.fillText(
+            'Appuyez sur Échap ou P pour reprendre', 
+            canvas.width / 2, 
+            canvas.height - Utils.scaleValue(50, scaleRatio)
+        );
     }
     
     // Redimensionner les éléments de l'interface
@@ -210,6 +320,18 @@ class GameStateManager {
         this.playButton.height = Utils.scaleValue(60, scaleRatio);
         this.playButton.x = canvas.width / 2 - this.playButton.width / 2;
         this.playButton.y = canvas.height / 2;
+        
+        // Redimensionner le bouton reprendre (pause)
+        this.resumeButton.width = Utils.scaleValue(200, scaleRatio);
+        this.resumeButton.height = Utils.scaleValue(60, scaleRatio);
+        this.resumeButton.x = canvas.width / 2 - this.resumeButton.width / 2;
+        this.resumeButton.y = canvas.height / 2 + Utils.scaleValue(20, scaleRatio);
+        
+        // Redimensionner le bouton menu (pause et game over)
+        this.menuButton.width = Utils.scaleValue(200, scaleRatio);
+        this.menuButton.height = Utils.scaleValue(60, scaleRatio);
+        this.menuButton.x = canvas.width / 2 - this.menuButton.width / 2;
+        this.menuButton.y = this.resumeButton.y + this.resumeButton.height + Utils.scaleValue(20, scaleRatio);
     }
     
     // Démarrer une nouvelle partie
@@ -224,6 +346,20 @@ class GameStateManager {
         
         // Changer l'état
         this.currentState = this.states.PLAYING;
+    }
+    
+    // Mettre le jeu en pause
+    pauseGame() {
+        if (this.currentState === this.states.PLAYING) {
+            this.currentState = this.states.PAUSE;
+        }
+    }
+    
+    // Reprendre le jeu
+    resumeGame() {
+        if (this.currentState === this.states.PAUSE) {
+            this.currentState = this.states.PLAYING;
+        }
     }
     
     // Terminer la partie
