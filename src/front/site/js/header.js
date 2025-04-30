@@ -1,10 +1,6 @@
 // redirige vers le menu
-const home = document.getElementById("home");
 const login = document.getElementById("login");
 
-home.addEventListener("click", function () {
-    window.location.href = "/site";
-});
 
 login.addEventListener("click", function () {
     window.location.href = "/site/html/login.html";
@@ -24,3 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+
+//mettre une fleche ppur revenir en arrierer
+// faire la page contacte

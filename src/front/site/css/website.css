@@ -1,33 +1,89 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Poppins', sans-serif;
+}
+
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-  }
-  
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #333;
-    color: white;
-    padding: 15px 30px;
-  }
-  
-.left {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-.right p {
-    background-color: #555;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    margin-left: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-.right p:hover {
-    background-color: #777;
+  background-color: #1e1e2f;
+  color: #eaeaea;
+  min-height: 100vh;
+}
+
+.gamesContainer {
+  padding: 80px 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  text-align: center;
+  gap: 50px;
+}
+
+.game {
+  width: 300px;
+  background-color: #2c2f48;
+  border: 1px solid #383b5a;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.game:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+  border-color: #20B2AA;
+}
+
+.game p {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #eaeaea;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 2;
+}
+
+.game button {
+  padding: 10px 15px;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background-color: #20B2AA;
+  color: #1e1e2f;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  font-size: medium;
+}
+
+.game button:hover {
+  background-color: #008B8B;
+  transform: scale(1.05);
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 10px;
+  z-index: 2;
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+  .game {
+    width: 90%;
   }
 
+  .game button {
+    width: 100%;
+    margin-top: 8px;
+  }
+}
