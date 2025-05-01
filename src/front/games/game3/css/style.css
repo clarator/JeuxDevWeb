@@ -1,0 +1,39 @@
+/* style.css - Styles de base pour le jeu */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #0d1117;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#gameCanvas {
+    background-color: #1a1a2e;
+    border: 2px solid #e94560;
+    box-shadow: 0 0 15px rgba(233, 69, 96, 0.5);
+    display: block;
+    margin: 0 auto;
+    touch-action: none; /* Désactiver les actions tactiles par défaut */
+}
+
+/* Styles pour les écrans mobiles */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    #gameCanvas {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+    }
+}
