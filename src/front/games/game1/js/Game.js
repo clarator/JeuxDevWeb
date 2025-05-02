@@ -1,23 +1,9 @@
 import { upgrades, startUpgrade } from "./upgrade.js";
 import { checkNotifications } from "./notification.js";
-import { automations, startAutomation } from "./automation.js";
+import { startAutomation } from "./automation.js";
 import { vibrateGold,explodeGoldPicture } from "./animation.js";
 import { applyBonus } from "./bonus.js";
-/*
-chose à ajouter :
-- trouver une musique de fond
-- faire fonctionner automation
-- essayer de rajouter des mini pepites d'or qui apparaissent
-- rajouter des bonus
-- rajouter des animations
-- rajouter des sons genre quand on clique sur une ame ou une auto
-- ajouter des trucs dans le magasin
-Boosts temporaires
-
-    Potion d'endurance (Double les gains pendant 30 secondes)
-    Boost de minage (Accélère la production automatique pendant 1 minute)
-    Tempête de dynamite (Explosion qui génère instantanément X or)
-*/
+import { setupMenu } from "./header.js";
 
 export default class Game {
     constructor(){
@@ -43,8 +29,12 @@ export default class Game {
             console.error("Erreur : élément #buttonGold introuvable");
         }
 
-
         this.update();
+
+        //menu
+        document.addEventListener("DOMContentLoaded", () => {
+            setupMenu();
+        });
 
         //magasin
         startUpgrade(this);
@@ -62,10 +52,11 @@ export default class Game {
         this.scoreDisplay.textContent = this.score;
 
         //son
-        let pioche = new Audio("../../assets/sound/game1/bruitPioche.mp3");
-        pioche.volume = 0.3;
-        pioche.play();
-
+        if (window.soundEnabled) {
+            let pioche = new Audio("../../assets/sound/game1/bruitPioche.mp3");
+            pioche.volume = 0.3;
+            pioche.play();
+        }
       
           
         //vibration
@@ -82,9 +73,12 @@ export default class Game {
 
         if (this.score >= 10) {
             explodeGoldPicture(goldPicture, explosionContainer);
-            let explo = new Audio("../../assets/sound/game1/explosion-VEED.mp3");
-            explo.volume = 0.3;
-            explo.play();
+            
+            if (window.soundEnabled) {
+                let explo = new Audio("../../assets/sound/game1/explosion-VEED.mp3");
+                explo.volume = 0.5;
+                explo.play();
+            }
         }
         
 
@@ -130,9 +124,11 @@ export default class Game {
     }
 
     addSound(){
-        let sound = new Audio("../../assets/sound/game1/piecesPorteFeuille.mp3");
-        sound.volume = 0.2;
-        sound.play();
+        if (window.soundEnabled) {
+            let sound = new Audio("../../assets/sound/game1/piecesPorteFeuille.mp3");
+            sound.volume = 0.2;
+            sound.play();
+        }
     }
 
     triggerExplosion() {
@@ -151,5 +147,24 @@ export default class Game {
             }, 1000);
         }
     }
+
+    saveScoreToDB(pseudo, gameName = "mineClicker") {
+        fetch("http://localhost:4000/save-score", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                pseudo: pseudo,
+                game_name: gameName,
+                score: this.score,
+            }),
+        })
+        .then(res => res.text())
+        .then(data => console.log(data))
+        .catch(err => console.error("Erreur de sauvegarde :", err));
+    }
+  
     
 }
+

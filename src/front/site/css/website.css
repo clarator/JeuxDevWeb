@@ -76,7 +76,6 @@ body {
   z-index: 2;
 }
 
-/* === Responsive === */
 @media (max-width: 600px) {
   .game {
     width: 90%;

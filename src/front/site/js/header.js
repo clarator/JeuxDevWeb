@@ -1,25 +1,30 @@
-// redirige vers le menu
-const login = document.getElementById("login");
-
-
-login.addEventListener("click", function () {
-    window.location.href = "/site/html/login.html";
-});
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    fetch("/getUser", { credentials: "include" }) // Important pour envoyer les cookies
-    .then(response => response.json())
+fetch('/site/html/header.html')
+    .then(res => res.text())
     .then(data => {
-        const pseudoSpan = document.getElementById("pseudo");
-        if (pseudoSpan) {
-            pseudoSpan.textContent = data.pseudo ? data.pseudo : "Invité";
+        document.getElementById("headerContainer").innerHTML = data;
+
+        // Ajouter les écouteurs ici, une fois le HTML injecté
+        const login = document.getElementById("login");
+        const contact = document.getElementById("contact");
+        const home = document.getElementById("home");
+
+        if (login) {
+            login.addEventListener("click", () => {
+                window.location.href = "/site/html/login.html";
+            });
         }
-    })
-    .catch(error => console.error("Erreur de récupération du pseudo :", error));
 
-});
+        if (contact) {
+            contact.addEventListener("click", () => {
+                window.location.href = "/site/html/contact.html";
+            });
+        }
 
+        if (home) {
+            home.addEventListener("click", () => {
+                window.location.href = "/";
+            });
+        }
 
-//mettre une fleche ppur revenir en arrierer
-// faire la page contacte
+      
+    });

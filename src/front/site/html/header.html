@@ -10,12 +10,22 @@
   <header>
     <nav class="navbar">
       <div class="navbar-left">
-        <h1>MonSite</h1>
+        <h1>Games</h1>
       </div>
       <div class="navbar-right">
+        <p id="home">Accueil</p>
         <p id="contact">Contact</p>
         <p id="login">Se connecter</p>
-        <p id="logout" style="display: none;">Se déconnecter</p>
+      
+        <div id="userMenu" class="userMenu" style="display: none; position: relative;">
+          <img src="../../assets/img/login.jpg" id="userIcon" alt="Profil" >
+          <h2 id="playerName"></h2>
+          <div id="menu" style="display: none; position: absolute;">">
+            <p id="logout">Se déconnecter</p>
+          </div>
+        </div>
+
+
       </div>
     </nav>
   </header>

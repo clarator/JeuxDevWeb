@@ -1,37 +1,28 @@
-import Game from './Game.js';
+window.soundEnabled = window.soundEnabled || true;  // Par défaut, le son est activé
 
-let game;
+export function setupMenu() {
+    const exitButton = document.getElementById("exit");;
+    const soundIcon = document.getElementById("iconSound");  // Image du son
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM chargé, lancement du jeu...");
 
-    // Initialisation du jeu
-    game = new Game();
-
-    const menuButton = document.getElementById("menuButton");
-    const menuContent = document.querySelector(".menuContent");
-
-    // Toggle du menu lors du clic sur le bouton "Menu"
-    menuButton.addEventListener("click", () => {
-        menuContent.style.display = menuContent.style.display === "block" ? "none" : "block";
-    });
-
-    // Cacher le menu si on clique ailleurs sur la page
-    document.addEventListener("click", (event) => {
-        if (!menuButton.contains(event.target) && !menuContent.contains(event.target)) {
-            menuContent.style.display = "none";
+    exitButton.addEventListener("click", () => {
+        if (confirm("Quitter le jeu ?")) {
+            window.location.href = "/";
         }
     });
 
+    soundIcon.addEventListener("click", () => {
+        window.soundEnabled = !window.soundEnabled;
+        console.log("Sound enabled:", window.soundEnabled);
 
-    document.getElementById("reset").addEventListener("click", () => {
-        window.location.reload(); 
-        console.log("reset");
+        // Change l'image du son
+        if (window.soundEnabled) {
+            console.log("Changement d'image vers sonON.png");
+            soundIcon.src = "../../assets/img/game1/sonON.png";
+        } else {
+            console.log("Changement d'image vers sonOff.png");
+            soundIcon.src = "../../assets/img/game1/sonOff.png";
+        }
     });
-
-    document.getElementById("exit").addEventListener("click", () => {
-            window.location.href = "/"; // Redirige vers la page d'accueil
-    });
-
-
-});
+    
+}

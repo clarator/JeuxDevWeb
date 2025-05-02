@@ -8,8 +8,6 @@ choice.forEach((choix) => {
     });
 });
 
-
-
 // pour faire afficher le formulaire de connexion ou d'inscription
 function displayChoice() { 
     const loginChoice = document.querySelector(".loginChoice");
@@ -118,13 +116,13 @@ function handleLogin() {
                 },
                 body: JSON.stringify({ pseudo, password })
             })
-            .then(response => response.text()) 
+            .then(response => response.json()) 
             .then(data => {
                 console.log("reponse : ",data);
-                if (data === "Connexion réussie") {
-                    window.location.href = "/site"; 
+                if (data.message === "Connexion réussie") {
+                    window.location.href = "/"; 
                 } else {
-                    alert(data); 
+                    alert(data.message); 
                 }
             })
             .catch(error => {
@@ -137,30 +135,6 @@ function handleLogin() {
     }
     
 }
-
-function login() {
-    const boutonConnexion = document.querySelector(".btConnexion");
-    boutonConnexion.addEventListener("click", function () {
-        window.location.href = "login.html";
-    });
-}
-
-function home() {
-    const boutonConnexion = document.querySelector(".accueil");
-    boutonConnexion.addEventListener("click", function () {
-        window.location.href = "/src/front/index.html";
-    });
-}
-
-fetch('/site/html/header.html')
-        .then(res => res.text())
-        .then(data => {
-            document.getElementById("headerContainer").innerHTML = data;
-            const script = document.createElement("script");
-            script.src = "/site/js/header.js";
-            document.body.appendChild(script);
-});
-
 
 displayChoice();
 handleRegistration();

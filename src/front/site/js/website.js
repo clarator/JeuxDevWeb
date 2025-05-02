@@ -6,7 +6,6 @@ const rules1 = document.getElementById("rules1");
 const rules2 = document.getElementById("rules2");
 const rules3 = document.getElementById("rules3");
 
-
 game1.addEventListener("click", function () {
     window.location.href = "/games/game1/";
 });
@@ -23,14 +22,6 @@ rules1.addEventListener("click", function () {
     window.location.href = "/games/game1/html/rules.html";
 });
 
-fetch('/site/html/header.html')
-        .then(res => res.text())
-        .then(data => {
-            document.getElementById("headerContainer").innerHTML = data;
-            const script = document.createElement("script");
-            script.src = "/site/js/header.js";
-            document.body.appendChild(script);
-});
 
 
 //TODO recup le pseudo du joueur 
