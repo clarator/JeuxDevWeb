@@ -120,6 +120,7 @@ function handleLogin() {
             .then(data => {
                 console.log("reponse : ",data);
                 if (data.message === "Connexion réussie") {
+                    document.cookie = `user=${pseudo}; path=/; max-age=36000`; 
                     window.location.href = "/"; 
                 } else {
                     alert(data.message); 
@@ -130,8 +131,7 @@ function handleLogin() {
                 console.error("Erreur lors de la connexion", error);
                 alert("Une erreur s'est produite.");
             });
-        });
-        
+        }); 
     }
     
 }

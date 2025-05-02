@@ -44,21 +44,21 @@ body {
     width: 50px;
     height: 30px;
     cursor: pointer;
-    transition: all 0.3s ease-in-out;  /* Transition fluide pour tous les changements */
-    border-radius: 8px; /* Coins arrondis */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Ombre discrète */
-    filter: grayscale(100%); /* Image en noir et blanc pour "son off" */
+    transition: all 0.3s ease-in-out;  
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    filter: grayscale(100%); 
 }
 
 #iconSound:hover {
-    transform: scale(1.1);  /* Agrandir légèrement l'image */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);  /* Ombre plus marquée */
-    opacity: 0.9;  /* Légère transparence */
+    transform: scale(1.1); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4); 
+    opacity: 0.9; 
 }
 
 #iconSound:active {
-    transform: scale(1.05);  /* Réduire légèrement la taille quand on clique */
-    opacity: 1;  /* Rétablir l'opacité */
+    transform: scale(1.05);  
+    opacity: 1;  
 }
 
 .right {

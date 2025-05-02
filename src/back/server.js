@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import requestRoutes from "./request.js";
+import requestRoutes from "./request.js";   
 
 //express
 const app = express();
@@ -11,6 +11,7 @@ app.use(express.json());
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use("/", requestRoutes);
 //serveur
 const PORT = 4000;
 
