@@ -1,11 +1,15 @@
 export class InputManager {
-    constructor(scene) {
+    constructor() {
         this.keys = {};
         
-        scene.onKeyboardObservable.add((info) => {
-            this.keys[info.event.code] = info.type === 1 ? true : false;
+        // Écouteurs d'événements pour le clavier
+        window.addEventListener('keydown', (event) => {
+            this.keys[event.code] = true;
         });
         
+        window.addEventListener('keyup', (event) => {
+            this.keys[event.code] = false;
+        });
     }
 
     isKeyPressed(key) {
