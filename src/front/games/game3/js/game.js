@@ -1,30 +1,30 @@
 import Map from './map.js';
 import { InputManager } from './inputManager.js';
 import Player from './player.js';
+import Camera from './camera.js';
+
+export const CELL_SIZE = 40;
 
 export default class Game {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
+                
+        this.map = new Map(canvas);
+        this.player = null;
+        this.inputManager = new InputManager(this);
+        this.camera = new Camera(canvas);
+
+        this.lastTime = 0;
+
+        this.isRunning = false;
         
-        // Ajuster la taille du canvas à la fenêtre
+        this.fps = 0;
+        this.frameCount = 0;
+        this.fpsUpdateTime = 0;
+
         this.resizeCanvas();
         window.addEventListener('resize', () => this.resizeCanvas());
-        
-        // Initialiser la map
-        this.map = new Map(canvas);
-        
-        // Le joueur sera initialisé après le chargement de la carte
-        this.player = null;
-        
-        // Initialiser le gestionnaire d'entrées
-        this.inputManager = new InputManager(this);
-        
-        // Pour calculer le deltaTime
-        this.lastTime = 0;
-        
-        // État du jeu
-        this.isRunning = false;
     }
     
     resizeCanvas() {
@@ -33,8 +33,6 @@ export default class Game {
     }
 
     start() {
-        this.isRunning = true;
-        
         const grid = [
             [2,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0],
             [0,0,0,1,0,0,0,1,0,0,0,1,0,1,1,1],
@@ -43,81 +41,66 @@ export default class Game {
             [0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0],
             [0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0],
         ];
-
         this.map.loadMap(grid);
         
-        // Créer le joueur à la position de spawn
-        this.player = new Player(this.map, this.map.spawnX, this.map.spawnY);
-        
-        // Centrer la caméra sur le joueur au démarrage
-        this.map.updateCameraPosition(
-            this.player.gridX * this.map.cellSize,
-            this.player.gridY * this.map.cellSize
-        );
-        
-        // Démarrer la boucle de jeu
+        this.player = new Player(this.map.spawnX, this.map.spawnY);
+        this.isRunning = true;
+
         this.lastTime = performance.now();
         this.gameLoop();
     }
-    
-    update(deltaTime) {
-        if (!this.player) return;
-        
-        // Mettre à jour le joueur
-        this.player.update(deltaTime);
-        
-        // Si le joueur n'est pas en mouvement, vérifier les entrées pour un nouveau déplacement
-        if (!this.player.isMoving) {
-            let dirX = 0;
-            let dirY = 0;
-            
-            // Touches fléchées pour déplacer le joueur
-            if (this.inputManager.isKeyPressed('ArrowUp') || this.inputManager.isKeyPressed('KeyW') || this.inputManager.isKeyPressed('KeyZ')) {
-                dirY = -1;
-            } else if (this.inputManager.isKeyPressed('ArrowDown') || this.inputManager.isKeyPressed('KeyS')) {
-                dirY = 1;
-            } else if (this.inputManager.isKeyPressed('ArrowLeft') || this.inputManager.isKeyPressed('KeyA') || this.inputManager.isKeyPressed('KeyQ')) {
-                dirX = -1;
-            } else if (this.inputManager.isKeyPressed('ArrowRight') || this.inputManager.isKeyPressed('KeyD')) {
-                dirX = 1;
-            }
-            
-            // Tenter de déplacer le joueur
-            if (dirX !== 0 || dirY !== 0) {
-                // On essaie de déplacer et on stocke si ça a réussi
-                const moved = this.player.move(dirX, dirY);
-                
-                // Feedback visuel si le mouvement est réussi (vous pourriez ajouter un son ici plus tard)
-                if (moved) {
-                    console.log("Mouvement lancé dans la direction: ", dirX, dirY);
-                }
-            }
-        }
-        
-        // Mettre à jour la position de la caméra pour suivre le joueur
-        this.map.updateCameraPosition(this.player.visualX, this.player.visualY);
-    }
 
     gameLoop(timestamp) {
-        if (!this.isRunning) return;
-        
-        // Calculer le deltaTime
+        if (!this.isRunning) return; // Si le jeu n'est pas en cours, ne rien faire
         const now = timestamp || performance.now();
         const deltaTime = now - this.lastTime;
         this.lastTime = now;
         
-        // Mettre à jour l'état du jeu
-        this.update(deltaTime);
-        
-        // Dessiner la carte
-        this.map.render();
-        
-        // Dessiner le joueur
-        if (this.player) {
-            this.player.render(this.ctx, this.map.cameraX, this.map.cameraY);
+        this.frameCount++;
+        if (now - this.fpsUpdateTime >= 1000) { // Mettre à jour le FPS toutes les secondes
+            this.fps = this.frameCount;
+            this.frameCount = 0;
+            this.fpsUpdateTime = now;
         }
-        
-        // Continuer la boucle
+
+        this.update();
+
+        this.render();
+
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
+    }
+
+    update() {
+        this.camera.updateCameraPosition(this.player)
+
+        if (this.inputManager.isKeyPressed('ArrowUp')) {
+            console.log('up');
+        }
+        if (this.inputManager.isKeyPressed('ArrowDown')) {
+            console.log('down');
+        }
+        if (this.inputManager.isKeyPressed('ArrowLeft')) {
+            console.log('left');
+        }
+        if (this.inputManager.isKeyPressed('ArrowRight')) {
+            console.log('right');
+        }
+    }
+
+    render() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.map.render(this.camera);
+        this.player.render(this.ctx, this.camera);
+
+        this.renderFPS();
+    }
+    
+    renderFPS() {
+        this.ctx.save();
+        this.ctx.font = '16px Arial';
+        this.ctx.fillStyle = '#ffff00';
+        this.ctx.fillText(`FPS: ${this.fps}`, 10, 30);
+        this.ctx.restore();
     }
 }

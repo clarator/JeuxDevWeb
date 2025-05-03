@@ -17,17 +17,3 @@ body {
     height: 100vh;
     background-color: #000;
 }
-
-/* Ajouter une petite instruction pour aider l'utilisateur */
-body::after {
-    content: "Utilisez les touches ZQSD/WASD ou les flèches pour déplacer le personnage qui glissera jusqu'au prochain mur";
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 14px;
-    pointer-events: none;
-}
