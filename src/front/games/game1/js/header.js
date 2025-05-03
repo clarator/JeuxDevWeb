@@ -1,13 +1,21 @@
-window.soundEnabled = window.soundEnabled || true;  // Par défaut, le son est activé
+import { getCookie } from "../../js/cookie.js";
+import { getBestScore } from "../../js/score.js"; 
+
+window.soundEnabled = window.soundEnabled || true;
 
 export function setupMenu() {
-    const exitButton = document.getElementById("exit");;
-    const soundIcon = document.getElementById("iconSound");  // Image du son
-
+    const exitButton = document.getElementById("exit");
+    const soundIcon = document.getElementById("iconSound"); 
+    const bestScore = document.getElementById("bestScore");
 
     exitButton.addEventListener("click", () => {
         if (confirm("Quitter le jeu ?")) {
-            window.location.href = "/";
+            // Sauvegarde du score avant de quitter
+            const gameInstance = window.gameInstance; // Doit être rendu accessible globalement
+            if (gameInstance) {
+                gameInstance.saveScoreFinal();
+            }
+            //window.location.href = "/"; // Désactiver si on ne veut pas rediriger
         }
     });
 
@@ -15,7 +23,6 @@ export function setupMenu() {
         window.soundEnabled = !window.soundEnabled;
         console.log("Sound enabled:", window.soundEnabled);
 
-        // Change l'image du son
         if (window.soundEnabled) {
             console.log("Changement d'image vers sonON.png");
             soundIcon.src = "../../assets/img/game1/sonON.png";
@@ -24,5 +31,21 @@ export function setupMenu() {
             soundIcon.src = "../../assets/img/game1/sonOff.png";
         }
     });
-    
+
+    // Mets à jour le meilleur score
+    const pseudo = getCookie("user");
+    const gameName = "game1"; 
+
+    getBestScore(pseudo, gameName)
+        .then(data => {
+            if (data.bestScore !== null) {
+                bestScore.textContent = data.bestScore;
+            } else {
+                bestScore.textContent = "Aucun score";
+            }
+        })
+        .catch(err => {
+            console.error("Erreur de récupération du meilleur score :", err);
+            bestScore.textContent = "Erreur";
+        });
 }

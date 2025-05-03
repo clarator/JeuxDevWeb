@@ -4,6 +4,8 @@ import { startAutomation } from "./automation.js";
 import { vibrateGold,explodeGoldPicture } from "./animation.js";
 import { applyBonus } from "./bonus.js";
 import { setupMenu } from "./header.js";
+import { saveScore } from "../../js/score.js";
+import { getCookie } from "../../js/cookie.js";
 
 export default class Game {
     constructor(){
@@ -16,6 +18,7 @@ export default class Game {
         this.scoreDisplay = document.getElementById('score');
         this.goldDisplay = document.getElementById('gold');
         this.buttonGold = document.getElementById('goldPicture');
+        window.gameInstance = this;
 
         if (!this.goldDisplay || !this.scoreDisplay) {
             console.error("Erreur : élément #score ou #gold introuvable");
@@ -34,6 +37,11 @@ export default class Game {
         //menu
         document.addEventListener("DOMContentLoaded", () => {
             setupMenu();
+        });
+
+        // Enregistre le score quand la page est quittée
+        window.addEventListener("beforeunload", () => {
+            this.saveScoreFinal();
         });
 
         //magasin
@@ -148,21 +156,14 @@ export default class Game {
         }
     }
 
-    saveScoreToDB(pseudo, gameName = "mineClicker") {
-        fetch("http://localhost:4000/save-score", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                pseudo: pseudo,
-                game_name: gameName,
-                score: this.score,
-            }),
-        })
-        .then(res => res.text())
-        .then(data => console.log(data))
-        .catch(err => console.error("Erreur de sauvegarde :", err));
+    saveScoreFinal() {
+        //cookies
+        const user = getCookie("user");
+        if (user) {
+            saveScore(user, "game1", this.score);
+        } else {
+            console.warn("Aucun utilisateur connecté pour sauvegarder le score");
+        }
     }
   
     

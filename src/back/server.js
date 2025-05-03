@@ -1,11 +1,19 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import requestRoutes from "./request.js";   
+import requestRoutes from "./requests.js";   
+import cors from "cors";
+
 
 //express
 const app = express();
 app.use(express.json());
+
+app.use(cors({
+    origin: "http://localhost:4000", 
+    credentials: true
+}));
+
 
 // Pour gérer correctement __dirname avec ES Modules
 const __filename = fileURLToPath(import.meta.url);
