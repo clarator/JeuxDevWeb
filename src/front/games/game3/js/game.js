@@ -14,7 +14,7 @@ export default class Game {
         this.gameStateManager = new GameStateManager(this);
         
         this.map = new Map(canvas);
-        this.player = null;
+        this.player = new Player();
         this.inputManager = new InputManager(this);
         this.camera = new Camera(canvas);
 
@@ -37,7 +37,7 @@ export default class Game {
 
     loadLevel(level) {
         this.map.loadMap(level);
-        this.player = new Player(this.map.spawnX, this.map.spawnY);
+        this.player.startLevel(this.map.spawnX, this.map.spawnY);
     }
 
     start() {
@@ -64,6 +64,7 @@ export default class Game {
 
             this.render();
         }
+        this.renderHUD();
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
     }
 
@@ -138,6 +139,7 @@ export default class Game {
             if (collectible.x >= gridXLeft && collectible.x <= gridXRight && 
                 collectible.y >= gridYUp && collectible.y <= gridYDown) {
                 this.map.collectibles.splice(i, 1);
+                this.player.score += collectible.value;
             }
         }
     }
@@ -181,15 +183,14 @@ export default class Game {
 
         this.map.render(this.camera);
         this.player.render(this.ctx, this.camera);
-
-        this.renderFPS();
     }
-    
-    renderFPS() {
+
+    renderHUD() {
         this.ctx.save();
         this.ctx.font = '16px Arial';
         this.ctx.fillStyle = '#ffff00';
         this.ctx.fillText(`FPS: ${this.fps}`, 10, 30);
+        this.ctx.fillText(`Score: ${this.player.score}`, 10, 50);
         this.ctx.restore();
     }
 }

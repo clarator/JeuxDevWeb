@@ -1,15 +1,17 @@
 import { CELL_SIZE } from "./game.js";
 
 export default class Player {
-    constructor(x, y) {
+    constructor() {
+        this.score = 0;
+
         this.isMoving = false;
         
         // Couleur du joueur
         this.color = '#ff5555';
         
         // Position visuelle actuelle (en pixels)
-        this.canvasX = x * CELL_SIZE;
-        this.canvasY = y * CELL_SIZE;
+        this.canvasX = null;
+        this.canvasY = null;
     
         this.lastDirection = null; // Dernière direction de mouvement
 
@@ -18,6 +20,15 @@ export default class Player {
 
         this.speedValue = 6;
     } 
+
+    startLevel(x, y) {
+        this.canvasX = x * CELL_SIZE;
+        this.canvasY = y * CELL_SIZE;
+        this.speedX = 0;
+        this.speedY = 0;
+        this.isMoving = false;
+        this.lastDirection = null;
+    }
 
     update() {
         this.canvasX += this.speedX;

@@ -30,11 +30,11 @@ export default class GameStateManager {
                     [0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0],
                 ],
                 collectibles : [
-                    { x:1, y:0, value : 10 },
-                    { x:2, y:0, value : 10 },
-                    { x:3, y:0, value : 10 },
-                    { x:3, y:1, value : 10 },
-                    { x:3, y:2, value : 10 },
+                    { x:1, y:0, value : 2 },
+                    { x:2, y:0, value : 2 },
+                    { x:3, y:0, value : 2 },
+                    { x:3, y:1, value : 2 },
+                    { x:3, y:2, value : 2 },
                 ]
             }
         ];
