@@ -20,7 +20,8 @@ export default class GameStateManager {
         const levelsElement = document.getElementById("levels");
         levelsElement.innerHTML = "";
 
-        const levels = [{
+        const levels = [
+            {
                 grid : [
                     [2,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0],
                     [0,0,0,1,0,0,0,1,0,0,0,1,0,1,1,3],
@@ -36,6 +37,30 @@ export default class GameStateManager {
                     { x:3, y:1, value : 2 },
                     { x:3, y:2, value : 2 },
                 ]
+            },
+            {
+                grid : [
+                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                    [0,2,1,1,1,1,1,1,1,1,1,1,1,1,3,0],
+                    [0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0],
+                    [0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0],
+                    [0,0,1,0,1,1,1,1,0,0,1,1,1,1,0,0],
+                    [0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,0],
+                    [0,0,1,0,0,0,0,1,0,0,1,0,0,0,0,0],
+                    [0,0,1,1,1,1,1,1,0,0,1,1,1,1,0,0],
+                    [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+                    [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0],
+                    [0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0],
+                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                ],
+                collectibles : [
+                    { x:3, y:2, value : 2 },
+                    { x:7, y:4, value : 2 },
+                    { x:11, y:7, value : 2 },
+                    { x:3, y:10, value : 2 },
+                    { x:7, y:10, value : 2 },
+                    { x:11, y:10, value : 2 },
+                ]
             }
         ];
 
@@ -48,8 +73,6 @@ export default class GameStateManager {
             });
             levelsElement.appendChild(button);
         });
-
-
     }
 
     switchToGame() {
@@ -57,5 +80,4 @@ export default class GameStateManager {
         this.canvas.style.display = 'block';
         this.menuElement.style.display = 'none';
     }
-    
 }

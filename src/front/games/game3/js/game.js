@@ -3,6 +3,7 @@ import { InputManager } from './inputManager.js';
 import Player from './player.js';
 import Camera from './camera.js';
 import GameStateManager from './gameStateManager.js';
+import Snake from './snake.js';
 
 export const CELL_SIZE = 40;
 
@@ -15,14 +16,18 @@ export default class Game {
         
         this.map = new Map(canvas);
         this.player = new Player();
+        this.snake = new Snake();
         this.inputManager = new InputManager(this);
         this.camera = new Camera(canvas);
 
         this.lastTime = 0;
+        this.deltaTime = 0;
 
         this.fps = 0;
         this.frameCount = 0;
         this.fpsUpdateTime = 0;
+
+        this.gameStatus = 'playing'; // 'playing', 'won', 'lost'
 
         this.resizeCanvas();
         window.addEventListener('resize', () => this.resizeCanvas());
@@ -38,6 +43,8 @@ export default class Game {
     loadLevel(level) {
         this.map.loadMap(level);
         this.player.startLevel(this.map.spawnX, this.map.spawnY);
+        this.snake.startLevel(this.map.spawnX, this.map.spawnY);
+        this.gameStatus = 'playing';
     }
 
     start() {
@@ -50,7 +57,7 @@ export default class Game {
     gameLoop(timestamp) {
         if (this.gameStateManager.currentState === 'game') {
             const now = timestamp || performance.now();
-            const deltaTime = now - this.lastTime;
+            this.deltaTime = now - this.lastTime;
             this.lastTime = now;
             
             this.frameCount++;
@@ -69,16 +76,27 @@ export default class Game {
     }
 
     update() {
-        if (this.map.grid[
-            Math.floor((this.player.canvasY+1)/CELL_SIZE)
-        ][
-            Math.floor((this.player.canvasX+1)/CELL_SIZE)
-        ] === 3) {
-            console.log('Vous avez gagné !');
-            this.gameStateManager.switchToMenu();
+        // Ne pas mettre à jour si le jeu est terminé
+        if (this.gameStatus !== 'playing') {
+            // Permettre de retourner au menu après un court délai
+            if ((this.gameStatus === 'won' || this.gameStatus === 'lost') && 
+                this.inputManager.isKeyJustPressed('Space')) {
+                this.gameStateManager.switchToMenu();
+                return;
+            }
             return;
         }
 
+        // Vérifier si le joueur a atteint la sortie
+        if (this.map.grid[
+            Math.floor((this.player.canvasY + CELL_SIZE/2) / CELL_SIZE)
+        ][
+            Math.floor((this.player.canvasX + CELL_SIZE/2) / CELL_SIZE)
+        ] === 3) {
+            console.log('Vous avez gagné !');
+            this.gameStatus = 'won';
+            return;
+        }
 
         const right = this.inputManager.isKeyJustPressed('ArrowRight') || this.inputManager.isKeyJustPressed('KeyD');
         const left = this.inputManager.isKeyJustPressed('ArrowLeft') || this.inputManager.isKeyJustPressed('KeyQ');
@@ -127,6 +145,29 @@ export default class Game {
 
         this.checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown);
         this.checkCollisionsWithMap(gridXLeft, gridXRight, gridYUp, gridYDown);
+
+        // Mettre à jour le serpent
+        // Trouver la position de fin (exit)
+        let endX = 0;
+        let endY = 0;
+        for (let y = 0; y < this.map.grid.length; y++) {
+            for (let x = 0; x < this.map.grid[y].length; x++) {
+                if (this.map.grid[y][x] === 3) {
+                    endX = x;
+                    endY = y;
+                    break;
+                }
+            }
+        }
+        
+        this.snake.update(this.deltaTime, this.map.grid, this.player, endX, endY);
+        
+        // Vérifier si le serpent a rattrapé le joueur
+        if (this.snake.checkCollision(this.player.canvasX, this.player.canvasY)) {
+            console.log('Le serpent vous a rattrapé ! Game over.');
+            this.gameStatus = 'lost';
+            return;
+        }
 
         // Update camera to follow player
         this.camera.updateCameraPosition(this.player);
@@ -182,7 +223,32 @@ export default class Game {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.map.render(this.camera);
+        this.snake.render(this.ctx, this.camera);
         this.player.render(this.ctx, this.camera);
+        
+        // Afficher un message de victoire ou de défaite
+        if (this.gameStatus === 'won' || this.gameStatus === 'lost') {
+            this.ctx.save();
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            this.ctx.font = '36px Arial';
+            this.ctx.textAlign = 'center';
+            
+            if (this.gameStatus === 'won') {
+                this.ctx.fillStyle = '#00ff00';
+                this.ctx.fillText('Vous avez gagné !', this.canvas.width / 2, this.canvas.height / 2);
+            } else {
+                this.ctx.fillStyle = '#ff0000';
+                this.ctx.fillText('Le serpent vous a rattrapé !', this.canvas.width / 2, this.canvas.height / 2);
+            }
+            
+            this.ctx.font = '20px Arial';
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillText('Appuyez sur ESPACE pour revenir au menu', this.canvas.width / 2, this.canvas.height / 2 + 50);
+            
+            this.ctx.restore();
+        }
     }
 
     renderHUD() {
