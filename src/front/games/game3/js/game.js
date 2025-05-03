@@ -3,7 +3,6 @@ import { InputManager } from './inputManager.js';
 import Player from './player.js';
 import Camera from './camera.js';
 import GameStateManager from './gameStateManager.js';
-import Snake from './snake.js';
 
 export const CELL_SIZE = 40;
 
@@ -15,8 +14,7 @@ export default class Game {
         this.gameStateManager = new GameStateManager(this);
         
         this.map = new Map(canvas);
-        this.player = new Player();
-        this.snake = new Snake();
+        this.player = new Player(); 
         this.inputManager = new InputManager(this);
         this.camera = new Camera(canvas);
 
@@ -43,7 +41,6 @@ export default class Game {
     loadLevel(level) {
         this.map.loadMap(level);
         this.player.startLevel(this.map.spawnX, this.map.spawnY);
-        this.snake.startLevel(this.map.spawnX, this.map.spawnY);
         this.gameStatus = 'playing';
     }
 
@@ -86,7 +83,7 @@ export default class Game {
             }
             return;
         }
-
+    
         // Vérifier si le joueur a atteint la sortie
         if (this.map.grid[
             Math.floor((this.player.canvasY + CELL_SIZE/2) / CELL_SIZE)
@@ -97,12 +94,12 @@ export default class Game {
             this.gameStatus = 'won';
             return;
         }
-
+    
         const right = this.inputManager.isKeyJustPressed('ArrowRight') || this.inputManager.isKeyJustPressed('KeyD');
         const left = this.inputManager.isKeyJustPressed('ArrowLeft') || this.inputManager.isKeyJustPressed('KeyQ');
         const up = this.inputManager.isKeyJustPressed('ArrowUp') || this.inputManager.isKeyJustPressed('KeyZ');
         const down = this.inputManager.isKeyJustPressed('ArrowDown') || this.inputManager.isKeyJustPressed('KeyS');
-
+    
         if (right && this.player.lastDirection !== 'right') {
             if (!this.player.isMoving) {
                 this.player.speedX = this.player.speedValue;
@@ -135,40 +132,17 @@ export default class Game {
                 this.player.isMoving = true;
             }
         }
-
+    
         this.player.update();
-
+    
         const gridXLeft = Math.floor((this.player.canvasX+1)/CELL_SIZE);
         const gridXRight = Math.floor((this.player.canvasX + CELL_SIZE-1)/CELL_SIZE);
         const gridYUp = Math.floor((this.player.canvasY+1)/CELL_SIZE);
         const gridYDown = Math.floor((this.player.canvasY + CELL_SIZE-1)/CELL_SIZE);
-
+    
         this.checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown);
         this.checkCollisionsWithMap(gridXLeft, gridXRight, gridYUp, gridYDown);
-
-        // Mettre à jour le serpent
-        // Trouver la position de fin (exit)
-        let endX = 0;
-        let endY = 0;
-        for (let y = 0; y < this.map.grid.length; y++) {
-            for (let x = 0; x < this.map.grid[y].length; x++) {
-                if (this.map.grid[y][x] === 3) {
-                    endX = x;
-                    endY = y;
-                    break;
-                }
-            }
-        }
-        
-        this.snake.update(this.deltaTime, this.map.grid, this.player, endX, endY);
-        
-        // Vérifier si le serpent a rattrapé le joueur
-        if (this.snake.checkCollision(this.player.canvasX, this.player.canvasY)) {
-            console.log('Le serpent vous a rattrapé ! Game over.');
-            this.gameStatus = 'lost';
-            return;
-        }
-
+    
         // Update camera to follow player
         this.camera.updateCameraPosition(this.player);
     }
@@ -223,7 +197,6 @@ export default class Game {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.map.render(this.camera);
-        this.snake.render(this.ctx, this.camera);
         this.player.render(this.ctx, this.camera);
         
         // Afficher un message de victoire ou de défaite
