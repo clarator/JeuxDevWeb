@@ -60,21 +60,11 @@ export default class Map {
                     continue; // Ne pas dessiner les cellules hors écran
                 }
                 
-                // Dessiner différentes cellules selon leur valeur
-                if (cellValue === 0) {
-                    // Mur
-                    this.ctx.fillStyle = '#333';
-                    this.ctx.fillRect(posX, posY, CELL_SIZE, CELL_SIZE);
-                    
-                    // Bordure pour mieux voir les cellules
-                    this.ctx.strokeStyle = '#444';
-                    this.ctx.strokeRect(posX, posY, CELL_SIZE, CELL_SIZE);
-                } else if (cellValue === 1 || cellValue === 2) {
+                if (cellValue === 1 || cellValue === 2) {
                     // Espace vide ou spawn
                     this.ctx.fillStyle = cellValue === 1 ? '#eee' : '#aaffaa';
                     this.ctx.fillRect(posX, posY, CELL_SIZE, CELL_SIZE);
                     
-                    // Bordure pour mieux voir les cellules
                     this.ctx.strokeStyle = '#ddd';
                     this.ctx.strokeRect(posX, posY, CELL_SIZE, CELL_SIZE);
                 }
