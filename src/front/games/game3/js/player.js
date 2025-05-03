@@ -2,17 +2,14 @@ import { CELL_SIZE } from "./game.js";
 
 export default class Player {
     constructor(x, y) {
-        this.gridX = x; // Position sur la grille (pas en pixels)
-        this.gridY = y;
-
         this.isMoving = false;
         
         // Couleur du joueur
         this.color = '#ff5555';
         
         // Position visuelle actuelle (en pixels)
-        this.canvasX = this.gridX * CELL_SIZE;
-        this.canvasY = this.gridY * CELL_SIZE;
+        this.canvasX = x * CELL_SIZE;
+        this.canvasY = y * CELL_SIZE;
     
         this.lastDirection = null; // Dernière direction de mouvement
 

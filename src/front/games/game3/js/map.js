@@ -60,9 +60,16 @@ export default class Map {
                     continue; // Ne pas dessiner les cellules hors écran
                 }
                 
-                if (cellValue === 1 || cellValue === 2) {
+                if (cellValue === 1 || cellValue === 2 || cellValue === 3) {
                     // Espace vide ou spawn
-                    this.ctx.fillStyle = cellValue === 1 ? '#eee' : '#aaffaa';
+                    if (cellValue === 2) {
+                        this.ctx.fillStyle = '#aaffaa'; // Couleur rouge pour le spawn
+                    }
+                    else if (cellValue === 3) {
+                        this.ctx.fillStyle = '#6f61c2'; // Couleur bleue pour le spawn
+                    } else {
+                        this.ctx.fillStyle = '#eee'; // Couleur blanche pour l'espace vide
+                    }
                     this.ctx.fillRect(posX, posY, CELL_SIZE, CELL_SIZE);
                     
                     this.ctx.strokeStyle = '#ddd';

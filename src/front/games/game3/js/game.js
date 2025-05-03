@@ -35,7 +35,7 @@ export default class Game {
     start() {
         const grid = [
             [2,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0],
-            [0,0,0,1,0,0,0,1,0,0,0,1,0,1,1,1],
+            [0,0,0,1,0,0,0,1,0,0,0,1,0,1,1,3],
             [0,0,1,1,1,1,1,1,1,0,0,1,0,1,0,0],
             [0,0,1,1,0,0,0,1,1,0,0,1,0,1,1,0],
             [0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0],
@@ -71,6 +71,15 @@ export default class Game {
     }
 
     update() {
+        if (this.map.grid[
+            Math.floor((this.player.canvasY+1)/CELL_SIZE)
+        ][
+            Math.floor((this.player.canvasX+1)/CELL_SIZE)
+        ] === 3) {
+            console.log('Vous avez gagné !');
+        }
+
+
         const right = this.inputManager.isKeyJustPressed('ArrowRight') || this.inputManager.isKeyJustPressed('KeyD');
         const left = this.inputManager.isKeyJustPressed('ArrowLeft') || this.inputManager.isKeyJustPressed('KeyQ');
         const up = this.inputManager.isKeyJustPressed('ArrowUp') || this.inputManager.isKeyJustPressed('KeyZ');
