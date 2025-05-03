@@ -35,8 +35,8 @@ export default class Game {
         this.canvas.height = window.innerHeight;
     }
 
-    loadLevel(grid) { 
-        this.map.loadMap(grid);
+    loadLevel(level) {
+        this.map.loadMap(level);
         this.player = new Player(this.map.spawnX, this.map.spawnY);
     }
 
@@ -116,29 +116,38 @@ export default class Game {
                 this.player.isMoving = true;
             }
         }
-        if (this.inputManager.isKeyJustPressed('Space')) {
-            this.player.stopMoving();
-        }
-         
+
         this.player.update();
 
-        this.checkCollisionWithMap();
-
-        // Update camera to follow player
-        this.camera.updateCameraPosition(this.player);
-    }
-
-    checkCollisionWithMap() {
-        const gridMap = this.map.grid;
-        
         const gridXLeft = Math.floor((this.player.canvasX+1)/CELL_SIZE);
         const gridXRight = Math.floor((this.player.canvasX + CELL_SIZE-1)/CELL_SIZE);
         const gridYUp = Math.floor((this.player.canvasY+1)/CELL_SIZE);
         const gridYDown = Math.floor((this.player.canvasY + CELL_SIZE-1)/CELL_SIZE);
 
+        this.checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown);
+        this.checkCollisionsWithMap(gridXLeft, gridXRight, gridYUp, gridYDown);
+
+        // Update camera to follow player
+        this.camera.updateCameraPosition(this.player);
+    }
+
+    checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown) {
+        const collectibles = this.map.collectibles;
+        for (let i = collectibles.length - 1; i >= 0; i--) {
+            const collectible = collectibles[i];    
+            if (collectible.x >= gridXLeft && collectible.x <= gridXRight && 
+                collectible.y >= gridYUp && collectible.y <= gridYDown) {
+                this.map.collectibles.splice(i, 1);
+            }
+        }
+    }
+
+    checkCollisionsWithMap(gridXLeft, gridXRight, gridYUp, gridYDown) {
+        const gridMap = this.map.grid;
+        
         if (gridYDown != gridYUp && gridXLeft != gridXRight) {
             console.log('Erreur, mouvement lancé alors qu il n aurai pas du l etre');
-        }
+        }        
 
         if (gridYDown == gridYUp) {
             if ((gridXLeft < 0 || gridXLeft >= gridMap[0].length)
