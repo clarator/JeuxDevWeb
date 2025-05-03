@@ -5,9 +5,6 @@ export default class Player {
         this.gridX = x; // Position sur la grille (pas en pixels)
         this.gridY = y;
 
-        this.targetX = x; // Position cible sur la grille (pas en pixels)
-        this.targetY = y;
-
         this.isMoving = false;
         
         // Couleur du joueur
@@ -16,29 +13,24 @@ export default class Player {
         // Position visuelle actuelle (en pixels)
         this.canvasX = this.gridX * CELL_SIZE;
         this.canvasY = this.gridY * CELL_SIZE;
+    
+        this.lastDirection = null; // Dernière direction de mouvement
+
+        this.speedX = 0; // Vitesse sur l'axe X
+        this.speedY = 0; // Vitesse sur l'axe Y
+
+        this.speedValue = 6;
+    } 
+
+    update() {
+        this.canvasX += this.speedX;
+        this.canvasY += this.speedY;
     }
 
-    update(map, right, left, up, down) {
-        if (right && this.lastDirection !== 'right') {
-            this.targetX += 1;
-            this.lastDirection = 'right';
-        }
-        if (left && this.lastDirection !== 'left') {
-            this.targetX -= 1;
-            this.lastDirection = 'left';
-        }
-        if (up && this.lastDirection !== 'up') {
-            this.targetY -= 1;
-            this.lastDirection = 'up';
-        }
-        if (down && this.lastDirection !== 'down') {
-            this.targetY += 1;
-            this.lastDirection = 'down';
-        }
-
-        
-        this.gridX = Math.floor(this.canvasX/CELL_SIZE);
-        this.gridY = Math.floor(this.canvasY/CELL_SIZE);
+    stopMoving() {
+        this.speedX = 0;
+        this.speedY = 0;
+        this.isMoving = false;
     }
 
     // Dessiner le joueur
