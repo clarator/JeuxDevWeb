@@ -72,19 +72,12 @@ export default class Game {
 
     update() {
         this.camera.updateCameraPosition(this.player)
-
-        if (this.inputManager.isKeyPressed('ArrowUp')) {
-            console.log('up');
-        }
-        if (this.inputManager.isKeyPressed('ArrowDown')) {
-            console.log('down');
-        }
-        if (this.inputManager.isKeyPressed('ArrowLeft')) {
-            console.log('left');
-        }
-        if (this.inputManager.isKeyPressed('ArrowRight')) {
-            console.log('right');
-        }
+        this.player.update(this.map,
+            this.inputManager.isKeyJustPressed('ArrowRight'), 
+            this.inputManager.isKeyJustPressed('ArrowLeft'), 
+            this.inputManager.isKeyJustPressed('ArrowUp'), 
+            this.inputManager.isKeyJustPressed('ArrowDown')
+        );
     }
 
     render() {
