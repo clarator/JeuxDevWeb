@@ -17,3 +17,34 @@ body {
     height: 100vh;
     background-color: #000;
 }
+
+#menu .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+}
+
+#menu .content h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 36px;
+}
+
+#levels {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#levels button {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}

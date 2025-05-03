@@ -2,6 +2,7 @@ import Map from './map.js';
 import { InputManager } from './inputManager.js';
 import Player from './player.js';
 import Camera from './camera.js';
+import GameStateManager from './gameStateManager.js';
 
 export const CELL_SIZE = 40;
 
@@ -9,7 +10,9 @@ export default class Game {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-                
+        
+        this.gameStateManager = new GameStateManager(this);
+        
         this.map = new Map(canvas);
         this.player = null;
         this.inputManager = new InputManager(this);
@@ -17,14 +20,14 @@ export default class Game {
 
         this.lastTime = 0;
 
-        this.isRunning = false;
-        
         this.fps = 0;
         this.frameCount = 0;
         this.fpsUpdateTime = 0;
 
         this.resizeCanvas();
         window.addEventListener('resize', () => this.resizeCanvas());
+
+        this.loopStarted = false;
     }
     
     resizeCanvas() {
@@ -32,41 +35,35 @@ export default class Game {
         this.canvas.height = window.innerHeight;
     }
 
-    start() {
-        const grid = [
-            [2,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0],
-            [0,0,0,1,0,0,0,1,0,0,0,1,0,1,1,3],
-            [0,0,1,1,1,1,1,1,1,0,0,1,0,1,0,0],
-            [0,0,1,1,0,0,0,1,1,0,0,1,0,1,1,0],
-            [0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,0],
-            [0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0],
-        ];
+    loadLevel(grid) { 
         this.map.loadMap(grid);
-        
         this.player = new Player(this.map.spawnX, this.map.spawnY);
-        this.isRunning = true;
+    }
 
+    start() {
+        this.gameStateManager.switchToMenu();
         this.lastTime = performance.now();
+        this.loopStarted = true;
         this.gameLoop();
     }
 
     gameLoop(timestamp) {
-        if (!this.isRunning) return; // Si le jeu n'est pas en cours, ne rien faire
-        const now = timestamp || performance.now();
-        const deltaTime = now - this.lastTime;
-        this.lastTime = now;
-        
-        this.frameCount++;
-        if (now - this.fpsUpdateTime >= 1000) { // Mettre à jour le FPS toutes les secondes
-            this.fps = this.frameCount;
-            this.frameCount = 0;
-            this.fpsUpdateTime = now;
+        if (this.gameStateManager.currentState === 'game') {
+            const now = timestamp || performance.now();
+            const deltaTime = now - this.lastTime;
+            this.lastTime = now;
+            
+            this.frameCount++;
+            if (now - this.fpsUpdateTime >= 1000) { // Mettre à jour le FPS toutes les secondes
+                this.fps = this.frameCount;
+                this.frameCount = 0;
+                this.fpsUpdateTime = now;
+            }
+
+            this.update();
+
+            this.render();
         }
-
-        this.update();
-
-        this.render();
-
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
     }
 
@@ -77,6 +74,8 @@ export default class Game {
             Math.floor((this.player.canvasX+1)/CELL_SIZE)
         ] === 3) {
             console.log('Vous avez gagné !');
+            this.gameStateManager.switchToMenu();
+            return;
         }
 
 
