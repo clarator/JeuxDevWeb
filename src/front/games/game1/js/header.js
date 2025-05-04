@@ -34,9 +34,8 @@ export function setupMenu() {
 
     // Mets à jour le meilleur score
     const pseudo = getCookie("user");
-    const gameName = "game1"; 
 
-    getBestScore(pseudo, gameName)
+    getBestScore(pseudo)
         .then(data => {
             if (data.bestScore !== null) {
                 bestScore.textContent = data.bestScore;

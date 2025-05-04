@@ -144,9 +144,9 @@ export default class Game {
         for (let i = 0; i < 20; i++) {
             const miniGold = document.createElement("div");
             miniGold.classList.add("miniGold");
-            miniGold.style.backgroundImage = "url('assets/img/game1/or.png')"; // même image que le principal
-            miniGold.style.left = `${this.buttonGold.offsetLeft + Math.random() * 100 - 50}px`; // Position aléatoire
-            miniGold.style.top = `${this.buttonGold.offsetTop + Math.random() * 100 - 50}px`; // Position aléatoire
+            miniGold.style.backgroundImage = "url('assets/img/game1/or.png')"; 
+            miniGold.style.left = `${this.buttonGold.offsetLeft + Math.random() * 100 - 50}px`;
+            miniGold.style.top = `${this.buttonGold.offsetTop + Math.random() * 100 - 50}px`; 
             document.body.appendChild(miniGold);
     
             // Supprimer l'image après l'animation
@@ -160,7 +160,7 @@ export default class Game {
         //cookies
         const user = getCookie("user");
         if (user) {
-            saveScore(user, "game1", this.score);
+            saveScore(user, this.score);
         } else {
             console.warn("Aucun utilisateur connecté pour sauvegarder le score");
         }
@@ -169,3 +169,7 @@ export default class Game {
     
 }
 
+//creer des tables dans bd pour les 3 jeux
+//modif code score
+//creer page profil
+//faire les elges du jeu du 3eme

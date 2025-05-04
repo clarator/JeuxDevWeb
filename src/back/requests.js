@@ -23,7 +23,7 @@ router.post('/register', (req, res) => {
         const hash = bcrypt.hashSync(password, salt);
     
     
-        const query = 'INSERT INTO users (pseudo,password) VALUES (?, ?)';
+        const query = 'INSERT INTO users (pseudo, password) VALUES (?, ?)';
     
         db.query(query, [pseudo, hash], (err, result) => {
             if(err){
@@ -82,8 +82,8 @@ router.post("/save-score", (req, res) => {
     req.body.score = parseInt(req.body.score, 10);
     const score = req.body.score;
 
-    if (!pseudo || !game_name || typeof score !== "number" || isNaN(score)) {
-        console.log("Champs invalides :", { pseudo, game_name, score });
+    if (!pseudo || typeof score !== "number" || isNaN(score)) {
+        console.log("Champs invalides :", { pseudo, score });
         res.status(400).send("Champs manquants ou invalides");
         return;
     }
@@ -101,10 +101,10 @@ router.post("/save-score", (req, res) => {
 
         const bestScoreQuery = `
             SELECT id, score FROM scores
-            WHERE user_id = ? AND game_name = ? AND is_best = true
+            WHERE user_id = ? AND is_best = true
         `;
 
-        db.query(bestScoreQuery, [userId, game_name], (err2, bestResults) => {
+        db.query(bestScoreQuery, [userId], (err2, bestResults) => {
             if (err2) {
                 console.error("Erreur récupération meilleur score :", err2);
                 res.status(500).send("Erreur lors de la récupération du meilleur score");
@@ -115,11 +115,11 @@ router.post("/save-score", (req, res) => {
             console.log("Nouveau score est-il meilleur ?", isBest);
 
             const insertScoreQuery = `
-                INSERT INTO scores (user_id, game_name, score, is_best, created_at)
+                INSERT INTO scores (user_id, score, is_best, created_at)
                 VALUES (?, ?, ?, ?, NOW())
             `;
 
-            db.query(insertScoreQuery, [userId, game_name, score, isBest], (err3) => {
+            db.query(insertScoreQuery, [userId, score, isBest], (err3) => {
                 if (err3) {
                     console.error("Erreur insertion score :", err3);
                     res.status(500).send("Erreur enregistrement score");
@@ -145,7 +145,7 @@ router.post("/save-score", (req, res) => {
 
 //retourne le meilleur score d'un joueur pour un jeu donné
 router.get('/best-score', (req, res) => {
-    const { pseudo, game_name } = req.query;
+    const { pseudo } = req.query;
 
     if (!pseudo || !game_name) {
         return res.status(400).json({ message: "Champs manquants" });

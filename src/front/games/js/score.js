@@ -1,5 +1,5 @@
 // Fonction pour sauvegarder un score
-function saveScore(pseudo, gameName, score) {
+function saveScore(pseudo, score) {
     fetch("http://localhost:4000/save-score", {
         method: "POST",
         headers: {
@@ -7,21 +7,20 @@ function saveScore(pseudo, gameName, score) {
         },
         body: JSON.stringify({
             pseudo: pseudo,
-            game_name: gameName,
             score: score,
         }),
     })
     .then(res => res.text())
     .then(data => {
         console.log("Réponse serveur :", data);
-        getBestScore(pseudo, gameName); 
+        getBestScore(pseudo); 
     })
     .catch(err => console.error("Erreur de sauvegarde :", err));
 }
 
 // Fonction pour récupérer le meilleur score
-function getBestScore(pseudo, gameName) {
-    return fetch(`http://localhost:4000/best-score?pseudo=${pseudo}&game_name=${gameName}`)
+function getBestScore(pseudo) {
+    return fetch(`http://localhost:4000/best-score?pseudo=${pseudo}`)
     .then(res => {
         if (!res.ok) {
             throw new Error("Erreur réseau ou serveur");

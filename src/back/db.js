@@ -1,23 +1,25 @@
-//gère la connexion à la base de données
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
+import { URL } from 'url';
 
-import mysql2 from "mysql2";
+dotenv.config();
 
-//sql
-const db = mysql2.createConnection({
-    host: "localhost",
-    user:"root",
-    password:"",
-    database: "jeuxweb"
+const dbUrl = new URL(process.env.MYSQL_URL); 
+
+const connection = mysql.createConnection({
+  host: dbUrl.hostname,
+  user: dbUrl.username,
+  password: dbUrl.password,
+  database: dbUrl.pathname.slice(1),
+  port: parseInt(dbUrl.port, 10),
 });
 
-
-//verifie la connexion
-db.connect(err => {
-    if(err){
-        console.error("Erreur connexion à MySQL", err);
-        return;
-    }
-    console.log("Connexion à MySQL");
+connection.connect((err) => {
+  if (err) {
+    console.error('Erreur de connexion à MySQL:', err);
+  } else {
+    console.log('✅ Connecté à MySQL avec succès (réseau privé) !');
+  }
 });
 
-export default db;
+export default connection;
