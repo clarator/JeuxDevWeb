@@ -12,26 +12,37 @@ fetch('/site/html/header.html')
     const userIcon = document.getElementById("userIcon");
     const menu = document.getElementById("menu");
     const logout = document.getElementById("logout");
+    const profile = document.getElementById("profile");
 
+    //redirige vers la page de connexion
     if (login) {
       login.addEventListener("click", () => {
         window.location.href = "/site/html/login.html";
       });
     }
 
+    //redirige vers la page de contact
     if (contact) {
       contact.addEventListener("click", () => {
         window.location.href = "/site/html/contact.html";
       });
     }
 
+    //redirige vers la page d'accueil
     if (home) {
       home.addEventListener("click", () => {
         window.location.href = "/";
       });
     }
 
-    // Fonction utilitaire pour lire un cookie
+    //redirige vers la page de profil
+    if (profile) {
+      profile.addEventListener("click", () => {
+        window.location.href = "/site/html/profile.html";
+      });
+    }
+
+      // Fonction utilitaire pour lire un cookie
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
@@ -46,7 +57,6 @@ fetch('/site/html/header.html')
       if (login) login.style.display = "none";
 
       userMenu.style.display = "flex";
-      playerName.textContent = user; 
 
       document.querySelector('.loginContenair').style.display = "none";
 
@@ -61,3 +71,14 @@ fetch('/site/html/header.html')
       });
     }
   });
+
+// Ferme le menu si on clique en dehor
+document.addEventListener("click", function(event) {
+    const userMenu = document.getElementById("userMenu");
+    const menu = document.getElementById("menu");
+    const userIcon = document.getElementById("userIcon");
+
+    if (!userMenu.contains(event.target)) {
+        menu.style.display = "none";
+    }
+});

@@ -1,24 +1,25 @@
 import { CELL_SIZE } from "./game.js";
 
 export default class Player {
-    constructor() {
+    constructor(imageSource) {
         this.score = 0;
 
         this.isMoving = false;
         
-        // Couleur du joueur
-        this.color = '#ff5555';
-        
+
         // Position visuelle actuelle (en pixels)
         this.canvasX = null;
         this.canvasY = null;
     
-        this.lastDirection = null; // Dernière direction de mouvement
+        this.lastDirection = null;
 
-        this.speedX = 0; // Vitesse sur l'axe X
-        this.speedY = 0; // Vitesse sur l'axe Y
+        this.speedX = 0;
+        this.speedY = 0;
 
         this.speedValue = 6;
+
+        this.image = new Image();
+        this.image.src = imageSource;
     } 
 
     startLevel(x, y) {
@@ -41,22 +42,24 @@ export default class Player {
         this.isMoving = false;
     }
 
-    // Dessiner le joueur
+    //dessine l'iamge du joueur
     render(ctx, camera) {
         ctx.save();
 
         const screenX = this.canvasX - camera.cameraX;
         const screenY = this.canvasY - camera.cameraY;
-        
-        // Dessiner le joueur comme un carré rouge
-        ctx.fillStyle = this.color;
-        ctx.fillRect(
-            screenX + 2, 
-            screenY + 2, 
-            CELL_SIZE - 4, 
-            CELL_SIZE - 4
+
+        ctx.drawImage(
+            this.image,                   
+            0, 0,                         
+            this.image.width,             
+            this.image.height,         
+            screenX + 2,                 
+            screenY + 2,               
+            CELL_SIZE - 4,            
+            CELL_SIZE - 4            
         );
+
         ctx.restore();
     }
-    
 }

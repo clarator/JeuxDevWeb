@@ -48,23 +48,7 @@ ol {
     list-style-position: inside;
 }
 
-footer {
-    text-align: left;
-    background: #1e1e2f;
-    color: #ffd700;
-    padding: 15px;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
-}
 
-footer p {
-    font-size: 1em;
-    margin: 0;
-}
-
-/* Style des liens */
 a {
     color: #ffd700;
     text-decoration: none;

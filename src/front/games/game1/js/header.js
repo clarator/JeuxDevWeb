@@ -1,7 +1,7 @@
 import { getCookie } from "../../js/cookie.js";
 import { getBestScore } from "../../js/score.js"; 
 
-window.soundEnabled = window.soundEnabled || true;
+window.soundEnabled = window.soundEnabled ?? true;
 
 export function setupMenu() {
     const exitButton = document.getElementById("exit");
@@ -10,29 +10,28 @@ export function setupMenu() {
 
     exitButton.addEventListener("click", () => {
         if (confirm("Quitter le jeu ?")) {
-            // Sauvegarde du score avant de quitter
-            const gameInstance = window.gameInstance; // Doit être rendu accessible globalement
+            const gameInstance = window.gameInstance;
             if (gameInstance) {
                 gameInstance.saveScoreFinal();
             }
-            //window.location.href = "/"; // Désactiver si on ne veut pas rediriger
+            window.location.href = "/"; 
         }
     });
 
     soundIcon.addEventListener("click", () => {
         window.soundEnabled = !window.soundEnabled;
-        console.log("Sound enabled:", window.soundEnabled);
+        console.log("Son activé :", window.soundEnabled);
 
         if (window.soundEnabled) {
-            console.log("Changement d'image vers sonON.png");
+            console.log("Changement d’image vers sonON.png");
             soundIcon.src = "../../assets/img/game1/sonON.png";
         } else {
-            console.log("Changement d'image vers sonOff.png");
+            console.log("Changement d’image vers sonOff.png");
             soundIcon.src = "../../assets/img/game1/sonOff.png";
         }
     });
 
-    // Mets à jour le meilleur score
+    // Met à jour le meilleur score
     const pseudo = getCookie("user");
 
     getBestScore(pseudo)
@@ -40,11 +39,11 @@ export function setupMenu() {
             if (data.bestScore !== null) {
                 bestScore.textContent = data.bestScore;
             } else {
-                bestScore.textContent = "Aucun score";
+                bestScore.textContent = "0";
             }
         })
         .catch(err => {
-            console.error("Erreur de récupération du meilleur score :", err);
+            console.error("Erreur lors de la récupération du meilleur score :", err);
             bestScore.textContent = "Erreur";
         });
 }

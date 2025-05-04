@@ -1,42 +1,42 @@
 //initialisation des améliorations
 const upgrades = [
     { 
-        id: 'hammer', 
+        id: 'Marteau', 
         costId: 'hammerCost', 
         price: 50, 
         gain: 2,
         active: false
     },
     { 
-        id: 'ironPickaxe', 
+        id: 'Pioche en fer', 
         costId: 'ironPickaxeCost', 
         price: 100, 
         gain: 5 ,
         active: false
     },
     { 
-        id: 'diamondPickaxe', 
+        id: 'Pioche en diamant', 
         costId: 'diamondPickaxeCost', 
         price: 150, 
         gain: 10 ,
         active: false
     },
     { 
-        id: 'dynamite', 
+        id: 'Dynamite', 
         costId: 'dynamiteCost', 
         price: 200, 
         gain: 20 ,
         active: false
     },
     { 
-        id: 'tnt', 
+        id: 'TNT', 
         costId: 'tntCost', 
         price: 500, 
         gain: 50 ,
         active: false
     },
     { 
-        id: 'drill', 
+        id: 'Foreuse', 
         costId: 'drillCost', 
         price: 1000, 
         gain: 50 ,

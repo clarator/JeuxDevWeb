@@ -23,12 +23,37 @@ export default class GameStateManager {
         levels.forEach((level, index) => {
             const button = document.createElement('button');
             button.textContent = `Level ${index + 1}`;
+            button.style.padding = '15px 30px';
+            button.style.fontSize = '18px';
+            button.style.margin = '10px';
+            button.style.borderRadius = '8px';
+
             button.addEventListener('click', () => {
                 this.game.loadLevel(level);
                 this.switchToGame();
             });
             levelsElement.appendChild(button);
         });
+
+        //bouton quitter
+        const exitButton = document.createElement('button');
+        exitButton.textContent = 'Quitter';
+        exitButton.style.marginTop = '20px';
+        exitButton.style.padding = '15px 30px';
+        exitButton.style.fontSize = '18px';
+        exitButton.style.backgroundColor = '#d9534f';
+        exitButton.style.color = 'white';
+        exitButton.style.border = 'none';
+        exitButton.style.borderRadius = '5px';
+        exitButton.style.cursor = 'pointer';
+
+        exitButton.addEventListener('click', () => {
+            window.location.href = '/'; //redirige vers la page d'accueil
+           
+        });
+
+        levelsElement.appendChild(document.createElement('br')); 
+        levelsElement.appendChild(exitButton); 
     }
 
     switchToGame() {

@@ -1,20 +1,20 @@
 const automations = [
     { 
-        id: 'miner', 
+        id: 'mineur', 
         costId: 'minerCost', 
         price: 200, 
         gainPerClick: 10,
         number: 0
     },
     { 
-        id: 'excavator', 
+        id: 'excavateur', 
         costId: 'excavatorCost', 
         price: 300, 
         gainPerClick: 50,
         number: 0
     },
     { 
-        id: 'drill2', 
+        id: 'foreuse', 
         costId: 'drill2Cost', 
         price: 500, 
         gainPerClick: 100,

@@ -15,7 +15,7 @@ export default class Game {
         this.gameStateManager = new GameStateManager(this);
         
         this.map = new Map(canvas);
-        this.player = new Player(); 
+        this.player = new Player("../../assets/img/game3/chevalier.png");
         this.inputManager = new InputManager(this);
         this.camera = new Camera(canvas);
         this.snake = new Snake();
@@ -237,7 +237,7 @@ export default class Game {
 
     renderHUD() {
         this.ctx.save();
-        this.ctx.font = '16px Arial';
+        this.ctx.font = '20px Arial';
         this.ctx.fillStyle = '#ffff00';
         this.ctx.fillText(`FPS: ${this.fps}`, 10, 30);
         this.ctx.fillText(`Score: ${this.player.score}`, 10, 50);

@@ -5,6 +5,7 @@ const game3 = document.getElementById("game3");
 const rules1 = document.getElementById("rules1");
 const rules2 = document.getElementById("rules2");
 const rules3 = document.getElementById("rules3");
+const score1 = document.getElementById("score1");
 
 game1.addEventListener("click", function () {
     window.location.href = "/games/game1/";
@@ -22,6 +23,9 @@ rules1.addEventListener("click", function () {
     window.location.href = "/games/game1/html/rules.html";
 });
 
+score1.addEventListener("click", function () {
+    window.location.href = "/games/game1/html/score.html";
+});
 
 
 //TODO recup le pseudo du joueur 

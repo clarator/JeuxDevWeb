@@ -5,7 +5,10 @@ export default class Map {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.grid = null;
-        this.collectibles = null;
+
+        //charger l'image des pieces
+        this.collectibleImage = new Image();
+        this.collectibleImage.src = '../../assets/img/game3/pieceOr.png';
         
         // Position du point de spawn (sera déterminée lors du chargement de la carte)
         this.spawnX = 0;
@@ -91,17 +94,17 @@ export default class Map {
             ) {
                 continue; // Ne pas dessiner les cellules hors écran
             }
-            this.ctx.fillStyle = '#ffcc00'; // Couleur jaune pour les collectibles
-            this.ctx.beginPath();
-            this.ctx.arc(
-                posX + CELL_SIZE / 2, // Position X du centre de la boule
-                posY + CELL_SIZE / 2, // Position Y du centre de la boule
-                CELL_SIZE / 4,        // Rayon de la boule
-                0,                    // Angle de départ
-                Math.PI * 2           // Angle de fin (cercle complet)
+           
+            // Dessiner l'image du collectible
+            this.ctx.drawImage(
+                this.collectibleImage,          
+                posX + CELL_SIZE / 4,                
+                posY + CELL_SIZE / 4,              
+                CELL_SIZE / 2,                       
+                CELL_SIZE / 2          
             );
-            this.ctx.fill();
-            this.ctx.strokeStyle = '#ddd';
+
+
             this.ctx.stroke();
         }
         this.ctx.restore();

@@ -71,14 +71,17 @@ router.post('/login', (req, res) => {
     });
 });
 
+//deconnexion
 router.post('/logout', (req, res) => {
+    res.clearCookie("sessionId", { path: "/" });
     res.send({ message: "Déconnexion réussie" });
 });
 
+//sauvegarde du score du joueur
 router.post("/save-score", (req, res) => {
     console.log("Requête reçue :", req.body);
 
-    const { pseudo, game_name } = req.body;
+    const { pseudo } = req.body;
     req.body.score = parseInt(req.body.score, 10);
     const score = req.body.score;
 
@@ -100,7 +103,7 @@ router.post("/save-score", (req, res) => {
         console.log("Utilisateur trouvé :", userId);
 
         const bestScoreQuery = `
-            SELECT id, score FROM scores
+            SELECT id, score FROM minorClicker
             WHERE user_id = ? AND is_best = true
         `;
 
@@ -115,8 +118,8 @@ router.post("/save-score", (req, res) => {
             console.log("Nouveau score est-il meilleur ?", isBest);
 
             const insertScoreQuery = `
-                INSERT INTO scores (user_id, score, is_best, created_at)
-                VALUES (?, ?, ?, ?, NOW())
+                INSERT INTO minorClicker (user_id, score, is_best, created_at)
+                VALUES (?, ?, ?, NOW())
             `;
 
             db.query(insertScoreQuery, [userId, score, isBest], (err3) => {
@@ -128,7 +131,7 @@ router.post("/save-score", (req, res) => {
 
                 if (isBest && bestResults.length > 0) {
                     const oldBestId = bestResults[0].id;
-                    const updateOldBestQuery = `UPDATE scores SET is_best = false WHERE id = ?`;
+                    const updateOldBestQuery = `UPDATE minorClicker SET is_best = false WHERE id = ?`;
                     db.query(updateOldBestQuery, [oldBestId], (err4) => {
                         if (err4) {
                             console.warn("Erreur mise à jour ancien meilleur score :", err4);
@@ -143,42 +146,89 @@ router.post("/save-score", (req, res) => {
     });
 });
 
-//retourne le meilleur score d'un joueur pour un jeu donné
+//retourne le meilleur score d'un joueur pour minorClicker
 router.get('/best-score', (req, res) => {
     const { pseudo } = req.query;
 
-    if (!pseudo || !game_name) {
-        return res.status(400).json({ message: "Champs manquants" });
+    if (!pseudo) {
+        return res.status(400).json({ message: "Pseudo requis" });
+    }
+
+    const userQuery = "SELECT id FROM users WHERE pseudo = ?";
+    db.query(userQuery, [pseudo], (err, userResults) => {
+        if (err || userResults.length === 0) {
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+
+        const userId = userResults[0].id;
+
+        const bestScoreQuery = `
+            SELECT score FROM minorClicker
+            WHERE user_id = ? ORDER BY score DESC LIMIT 1
+        `;
+
+        db.query(bestScoreQuery, [userId], (err2, scoreResults) => {
+            if (err2) {
+                return res.status(500).json({ message: "Erreur lors de la récupération du score" });
+            }
+
+            const bestScore = scoreResults.length > 0 ? scoreResults[0].score : null;
+            console.log("Best score pour", pseudo, ":", bestScore);
+            return res.json({ bestScore });
+        });
+    });
+});
+
+//modifie le profil du joueur
+app.post('/update-profile', (req, res) => {
+    const { username, password } = req.body;
+    const pseudo = req.cookies.user; // Récupérer le pseudo du cookie
+    
+    res.redirect('/profile');
+});
+
+
+app.delete('/delete-account', (req, res) => {
+    const pseudo = req.query.pseudo;
+    
+    res.status(200).send("Compte supprimé");
+});
+
+
+
+
+router.post("/save-score-game3", (req, res) => {
+    const { pseudo, score, level } = req.body;
+
+    if (!pseudo || typeof score !== "number" || isNaN(score) || typeof level !== "number") {
+        res.status(400).send("Champs invalides");
+        return;
     }
 
     const userQuery = "SELECT id FROM users WHERE pseudo = ?";
     db.query(userQuery, [pseudo], (err, results) => {
         if (err || results.length === 0) {
-            console.error("Erreur récupération user :", err, "Résultats :", results);
-            return res.status(500).json({ message: "Utilisateur non trouvé" });
+            res.status(500).send("Utilisateur non trouvé");
+            return;
         }
 
         const userId = results[0].id;
 
-        const bestScoreQuery = `
-            SELECT score FROM scores
-            WHERE user_id = ? AND game_name = ? AND is_best = true
+        const insertQuery = `
+            INSERT INTO game3_scores (user_id, score, level, created_at)
+            VALUES (?, ?, ?, NOW())
         `;
-        db.query(bestScoreQuery, [userId, game_name], (err2, bestResults) => {
+
+        db.query(insertQuery, [userId, score, level], (err2) => {
             if (err2) {
-                console.error("Erreur récupération meilleur score :", err2);
-                return res.status(500).json({ message: "Erreur lors de la récupération du meilleur score" });
+                console.error("Erreur enregistrement score game3 :", err2);
+                res.status(500).send("Erreur enregistrement score");
+                return;
             }
 
-            if (bestResults.length > 0) {
-                return res.json({ bestScore: bestResults[0].score });
-            } else {
-                return res.json({ bestScore: null });
-            }
+            res.status(200).send("Score game3 enregistré");
         });
     });
 });
-
-
 
 export default router;

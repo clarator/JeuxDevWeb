@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/site/css/profile.css">
+        <title>Mon profil</title>
+    </head>
+    <body>
+        <header>
+            <div id="headerContainer"></div>
+        </header>
+
+        <div class="container">
+            
+            <h1>Mon profil</h1>
+
+            <form id="updateForm" action="/update-profile" method="POST">
+                <label for="username">Changer de pseudo :</label>
+                <input type="text" id="username" name="username" placeholder="Laissez vide pour ne pas changer">
+
+                <label for="password">Changer de mot de passe :</label>
+                <input type="password" id="password" name="password" placeholder="Laissez vide pour ne pas changer">
+
+                <button type="submit">Mettre à jour</button>
+            </form>
+
+            <hr>
+
+            <button id="deleteAccount" class="danger">Supprimer mon compte</button>
+        </div>
+
+        <script src="/site/js/header.js"></script>
+        <script src="/site/js/profile.js"></script>
+    </body>
+</html>
