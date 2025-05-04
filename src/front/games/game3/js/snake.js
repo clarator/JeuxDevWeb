@@ -17,6 +17,11 @@ export default class Snake {
         
         this.path = [];
         this.targetNode = null;
+        
+        // Variables pour les segments du serpent
+        this.segments = [];
+        this.segmentCount = 5; // Nombre de segments
+        this.direction = 'right'; // Direction actuelle du serpent
     }
 
     startLevel(x, y) {
@@ -30,6 +35,16 @@ export default class Snake {
         this.speedY = 0;
         this.path = [];
         this.targetNode = null;
+        
+        // Initialiser les segments
+        this.segments = [];
+        for (let i = 0; i < this.segmentCount; i++) {
+            this.segments.push({
+                x: this.canvasX,
+                y: this.canvasY
+            });
+        }
+        this.direction = 'right';
     }
 
     update(deltaTime, player, map) {
@@ -62,8 +77,34 @@ export default class Snake {
         // Mettre à jour la position du serpent
         this.canvasX += this.speedX;
         this.canvasY += this.speedY;
+        
+        // Mettre à jour les segments
+        this.updateSegments();
+        
+        // Mettre à jour la direction
+        this.updateDirection();
 
         this.checkTargetNodeCollision();
+    }
+
+    updateSegments() {
+        // Déplacer chaque segment vers la position du segment précédent
+        for (let i = this.segments.length - 1; i > 0; i--) {
+            this.segments[i].x += (this.segments[i-1].x - this.segments[i].x) * 0.1;
+            this.segments[i].y += (this.segments[i-1].y - this.segments[i].y) * 0.1;
+        }
+        
+        // La tête suit la position actuelle
+        this.segments[0].x = this.canvasX;
+        this.segments[0].y = this.canvasY;
+    }
+
+    updateDirection() {
+        // Déterminer la direction en fonction de la vitesse
+        if (this.speedX > 0) this.direction = 'right';
+        else if (this.speedX < 0) this.direction = 'left';
+        else if (this.speedY > 0) this.direction = 'down';
+        else if (this.speedY < 0) this.direction = 'up';
     }
 
     moveToTargetNode() {
@@ -240,48 +281,147 @@ export default class Snake {
         
         ctx.save();
         
-        // Dessiner la tête du serpent à sa position canvas
-        const screenX = this.canvasX - camera.cameraX;
-        const screenY = this.canvasY - camera.cameraY;
+        // Dessiner les segments du serpent (du corps à la tête)
+        for (let i = this.segments.length - 1; i >= 0; i--) {
+            const segment = this.segments[i];
+            const screenX = segment.x - camera.cameraX;
+            const screenY = segment.y - camera.cameraY;
+            
+            // Dessiner un segment
+            ctx.beginPath();
+            ctx.fillStyle = i === 0 ? '#ff0000' : '#ff8888'; // Tête rouge vif, corps plus clair
+            ctx.arc(
+                screenX + CELL_SIZE / 2,
+                screenY + CELL_SIZE / 2,
+                (CELL_SIZE / 2) - 2,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+            
+            // Contour pour le segment
+            ctx.strokeStyle = '#cc0000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
         
-        // Dessiner le serpent
-        ctx.fillStyle = this.color;
-        ctx.fillRect(
-            screenX + 5, 
-            screenY + 5, 
-            CELL_SIZE - 10, 
-            CELL_SIZE - 10
-        );
+        // Dessiner la tête avec les yeux orientés
+        const headX = this.segments[0].x - camera.cameraX;
+        const headY = this.segments[0].y - camera.cameraY;
         
-        // Ajouter des "yeux" à la tête
+        // Dessiner les yeux en fonction de la direction
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(
-            screenX + CELL_SIZE / 4, 
-            screenY + CELL_SIZE / 4, 
-            CELL_SIZE / 10, 
-            CELL_SIZE / 10
-        );
-        ctx.fillRect(
-            screenX + CELL_SIZE * 3/4 - CELL_SIZE / 10, 
-            screenY + CELL_SIZE / 4, 
-            CELL_SIZE / 10, 
-            CELL_SIZE / 10
-        );
+        const eyeSize = CELL_SIZE / 10;
         
-        // // Débogage : Dessiner le chemin planifié
-        // if (this.path.length > 0) {
-        //     ctx.fillStyle = 'rgba(255, 255, 0, 0.3)';
-        //     for (const node of this.path) {
-        //         const nodeScreenX = node.x * CELL_SIZE - camera.cameraX;
-        //         const nodeScreenY = node.y * CELL_SIZE - camera.cameraY;
-        //         ctx.fillRect(
-        //             nodeScreenX + 10, 
-        //             nodeScreenY + 10, 
-        //             CELL_SIZE - 20, 
-        //             CELL_SIZE - 20
-        //         );
-        //     }
-        // }
+        switch (this.direction) {
+            case 'right':
+                // Yeux regardant à droite
+                ctx.fillRect(
+                    headX + CELL_SIZE * 3/4 - eyeSize,
+                    headY + CELL_SIZE / 4,
+                    eyeSize, eyeSize
+                );
+                ctx.fillRect(
+                    headX + CELL_SIZE * 3/4 - eyeSize,
+                    headY + CELL_SIZE * 3/4 - eyeSize,
+                    eyeSize, eyeSize
+                );
+                break;
+            case 'left':
+                // Yeux regardant à gauche
+                ctx.fillRect(
+                    headX + CELL_SIZE / 4,
+                    headY + CELL_SIZE / 4,
+                    eyeSize, eyeSize
+                );
+                ctx.fillRect(
+                    headX + CELL_SIZE / 4,
+                    headY + CELL_SIZE * 3/4 - eyeSize,
+                    eyeSize, eyeSize
+                );
+                break;
+            case 'up':
+                // Yeux regardant en haut
+                ctx.fillRect(
+                    headX + CELL_SIZE / 4,
+                    headY + CELL_SIZE / 4,
+                    eyeSize, eyeSize
+                );
+                ctx.fillRect(
+                    headX + CELL_SIZE * 3/4 - eyeSize,
+                    headY + CELL_SIZE / 4,
+                    eyeSize, eyeSize
+                );
+                break;
+            case 'down':
+                // Yeux regardant en bas
+                ctx.fillRect(
+                    headX + CELL_SIZE / 4,
+                    headY + CELL_SIZE * 3/4 - eyeSize,
+                    eyeSize, eyeSize
+                );
+                ctx.fillRect(
+                    headX + CELL_SIZE * 3/4 - eyeSize,
+                    headY + CELL_SIZE * 3/4 - eyeSize,
+                    eyeSize, eyeSize
+                );
+                break;
+        }
+        
+        // Ajouter les pupilles noires
+        ctx.fillStyle = '#000000';
+        const pupilSize = eyeSize / 2;
+        
+        switch (this.direction) {
+            case 'right':
+                ctx.fillRect(
+                    headX + CELL_SIZE * 3/4 - eyeSize/2,
+                    headY + CELL_SIZE / 4 + eyeSize/4,
+                    pupilSize, pupilSize
+                );
+                ctx.fillRect(
+                    headX + CELL_SIZE * 3/4 - eyeSize/2,
+                    headY + CELL_SIZE * 3/4 - eyeSize + eyeSize/4,
+                    pupilSize, pupilSize
+                );
+                break;
+            case 'left':
+                ctx.fillRect(
+                    headX + CELL_SIZE / 4 + eyeSize/4,
+                    headY + CELL_SIZE / 4 + eyeSize/4,
+                    pupilSize, pupilSize
+                );
+                ctx.fillRect(
+                    headX + CELL_SIZE / 4 + eyeSize/4,
+                    headY + CELL_SIZE * 3/4 - eyeSize + eyeSize/4,
+                    pupilSize, pupilSize
+                );
+                break;
+            case 'up':
+                ctx.fillRect(
+                    headX + CELL_SIZE / 4 + eyeSize/4,
+                    headY + CELL_SIZE / 4 + eyeSize/4,
+                    pupilSize, pupilSize
+                );
+                ctx.fillRect(
+                    headX + CELL_SIZE * 3/4 - eyeSize + eyeSize/4,
+                    headY + CELL_SIZE / 4 + eyeSize/4,
+                    pupilSize, pupilSize
+                );
+                break;
+            case 'down':
+                ctx.fillRect(
+                    headX + CELL_SIZE / 4 + eyeSize/4,
+                    headY + CELL_SIZE * 3/4 - eyeSize + eyeSize/4,
+                    pupilSize, pupilSize
+                );
+                ctx.fillRect(
+                    headX + CELL_SIZE * 3/4 - eyeSize + eyeSize/4,
+                    headY + CELL_SIZE * 3/4 - eyeSize + eyeSize/4,
+                    pupilSize, pupilSize
+                );
+                break;
+        }
         
         ctx.restore();
     }

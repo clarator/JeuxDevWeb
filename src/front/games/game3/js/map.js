@@ -13,8 +13,8 @@ export default class Map {
     }
 
     loadMap(level) {
-        this.grid = level.grid;
-        this.collectibles = level.collectibles;
+        this.grid = level.grid.map(row => [...row]);
+        this.collectibles = level.collectibles.map(collectible => ({ ...collectible }));
         // Chercher le point de spawn (valeur 2) dans la grille
         for (let y = 0; y < this.grid.length; y++) {
             for (let x = 0; x < this.grid[y].length; x++) {
@@ -27,9 +27,9 @@ export default class Map {
         }
         
         // Si aucun point de spawn n'est trouvé, on utilise la première cellule vide
-        for (let y = 0; y < grid.length; y++) {
-            for (let x = 0; x < grid[y].length; x++) {
-                if (grid[y][x] === 1) {
+        for (let y = 0; y < this.grid.length; y++) {
+            for (let x = 0; x < this.grid[y].length; x++) {
+                if (this.grid[y][x] === 1) {
                     this.spawnX = x;
                     this.spawnY = y;
                     return;
