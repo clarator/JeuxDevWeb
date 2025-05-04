@@ -1,5 +1,9 @@
-// Classe de base pour les ennemis
-class Enemy extends Character {
+import Character from "./Character.js";
+import Projectile from "./Projectile.js";
+import Utils from "./utils.js";
+
+
+export default class Enemy extends Character {
     constructor(x, y, width, height, speed, health, color, shootChance, scaleRatio) {
         super(x, y, width, height, speed, health, scaleRatio);
         
@@ -73,19 +77,5 @@ class Enemy extends Character {
         setTimeout(() => { this.isHit = false; }, 200);
         
         return isDead;
-    }
-    
-    // Méthode statique pour créer un ennemi du type spécifié
-    static createEnemy(x, y, type, scaleRatio) {
-        switch(type) {
-            case 'chaser':
-                return new ChaserEnemy(x, y, scaleRatio);
-            case 'shooter':
-                return new ShooterEnemy(x, y, scaleRatio);
-            case 'wanderer':
-                return new WandererEnemy(x, y, scaleRatio);
-            default:
-                throw new Error(`Type d'ennemi inconnu: ${type}`);
-        }
     }
 }

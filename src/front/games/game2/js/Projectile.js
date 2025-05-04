@@ -1,5 +1,7 @@
-// Classe pour gérer les projectiles
-class Projectile {
+import Utils from "./utils.js";
+import Collision from "./collision.js";
+
+export default class Projectile {
     constructor(x, y, direction, speed, size, scaleRatio, source = 'player') {
         this.x = x;
         this.y = y;

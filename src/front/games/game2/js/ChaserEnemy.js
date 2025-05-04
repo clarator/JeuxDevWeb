@@ -1,5 +1,8 @@
-// Classe pour l'ennemi de type "chaser" qui poursuit le joueur
-class ChaserEnemy extends Enemy {
+import Enemy from "./Enemy.js";
+import Utils from "./utils.js";
+import Collision from "./collision.js";
+
+export default class ChaserEnemy extends Enemy {
     constructor(x, y, scaleRatio) {
         // Paramètres spécifiques: width, height, speed, health, color, shootChance
         super(x, y, 40, 40, 150, 3, 'crimson', 0, scaleRatio);

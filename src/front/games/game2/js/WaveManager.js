@@ -1,5 +1,9 @@
-// Classe pour gérer les vagues d'ennemis
-class WaveManager {
+import Utils from "./utils.js";
+import ChaserEnemy from "./ChaserEnemy.js";
+import ShooterEnemy from "./ShooterEnemy.js";
+import WandererEnemy from "./WandererEnemy.js";
+
+export default class WaveManager {
     constructor(game) {
         this.game = game;
         this.currentWave = 1;
@@ -114,7 +118,7 @@ class WaveManager {
             }
             
             // Créer et ajouter l'ennemi
-            this.game.enemies.push(Enemy.createEnemy(x, y, type, scaleRatio));
+            this.game.enemies.push(this.createEnemy(x, y, type, scaleRatio));
         }
     }
     
@@ -214,5 +218,18 @@ class WaveManager {
         this.waveInProgress = false;
         this.betweenWaves = true;
         this.waveTimer = 3; // Délai court avant la première vague
+    }
+    
+    createEnemy(x, y, type, scaleRatio) {
+        switch(type) {
+            case 'chaser':
+                return new ChaserEnemy(x, y, scaleRatio);
+            case 'shooter':
+                return new ShooterEnemy(x, y, scaleRatio);
+            case 'wanderer':
+                return new WandererEnemy(x, y, scaleRatio);
+            default:
+                throw new Error(`Type d'ennemi inconnu: ${type}`);
+        }
     }
 }

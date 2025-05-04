@@ -1,5 +1,5 @@
 import Map from './map.js';
-import { InputManager } from './inputManager.js';
+import InputManager from '../../common/inputManager.js';
 import Player from './player.js';
 import Camera from './camera.js';
 import GameStateManager from './gameStateManager.js';

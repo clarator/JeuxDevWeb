@@ -1,21 +1,19 @@
-// Classe principale du jeu
-class Game {
+import GameStateManager from "./GameStateManager.js";
+import InputHandler from "./input.js";
+import Player from "./Player.js";
+import WaveManager from "./WaveManager.js";
+import Utils from "./utils.js";
+import Collision from "./collision.js";
+
+
+export default class Game {
     constructor(canvasId) {
-        // Configurer le canvas
         this.canvas = document.getElementById(canvasId);
         this.ctx = this.canvas.getContext('2d');
         
-        // Gestionnaire d'entrées (passer le canvas pour les événements de souris)
         this.inputHandler = new InputHandler(this.canvas);
-        
-        // Gestionnaire d'états du jeu
         this.stateManager = new GameStateManager(this);
-        
-        // Gestionnaire de vagues
         this.waveManager = new WaveManager(this);
-        
-        // Exposer le jeu comme variable globale pour les ennemis
-        window.game = this;
         
         // Initialiser les objets du jeu
         this.init();

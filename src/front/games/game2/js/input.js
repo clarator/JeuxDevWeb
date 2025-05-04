@@ -1,5 +1,4 @@
-// Classe pour gérer les entrées clavier et souris
-class InputHandler {
+export default class InputHandler {
     constructor(canvas) {
         this.canvas = canvas;
         

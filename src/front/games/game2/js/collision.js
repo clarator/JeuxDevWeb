@@ -1,5 +1,4 @@
-// Classe pour gérer les collisions
-class Collision {
+export default class Collision {
     // Détecte la collision entre deux rectangles
     static checkRectCollision(rect1, rect2) {
         return (

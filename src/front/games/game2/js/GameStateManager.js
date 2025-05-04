@@ -1,5 +1,6 @@
-// Classe pour gérer les différents états du jeu (menu, jeu, game over)
-class GameStateManager {
+import Utils from "./utils.js";
+
+export default class GameStateManager {
     constructor(game) {
         this.game = game;
         this.states = {

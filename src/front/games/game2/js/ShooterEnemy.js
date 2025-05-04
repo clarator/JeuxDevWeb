@@ -1,5 +1,8 @@
-// Classe pour l'ennemi de type "shooter" qui tire sur le joueur
-class ShooterEnemy extends Enemy {
+import Enemy from "./Enemy.js";
+import Utils from "./utils.js";
+import Collision from "./collision.js";
+
+export default class ShooterEnemy extends Enemy {
     constructor(x, y, scaleRatio) {
         // Paramètres spécifiques: width, height, speed, health, color, shootChance
         super(x, y, 40, 40, 80, 2, 'orangered', 0.015, scaleRatio);

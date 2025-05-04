@@ -1,5 +1,4 @@
-// Classe utilitaire pour la gestion du redimensionnement et autres fonctions
-class Utils {
+export default class Utils {
     // Dimensions de référence (1920x1080)
     static REFERENCE_WIDTH = 1920;
     static REFERENCE_HEIGHT = 1080;

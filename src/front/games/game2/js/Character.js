@@ -1,5 +1,6 @@
-// Classe de base pour tous les personnages (joueur et ennemis)
-class Character {
+import Utils from "./utils.js";
+
+export default class Character {
     constructor(x, y, width, height, speed, health, scaleRatio) {
         // Position
         this.x = x;

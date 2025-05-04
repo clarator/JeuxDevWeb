@@ -1,5 +1,10 @@
-// Classe pour gérer le joueur
-class Player extends Character {
+import Character from "./Character.js";
+import Collision from "./collision.js";
+import Projectile from "./Projectile.js";
+import Utils from "./utils.js";
+
+
+export default class Player extends Character {
     constructor(x, y, scaleRatio) {
         // Appel du constructeur parent avec les paramètres spécifiques au joueur
         super(x, y, 50, 50, 300, 6, scaleRatio);
