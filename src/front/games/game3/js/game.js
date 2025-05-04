@@ -137,8 +137,6 @@ export default class Game {
         }
     
         this.player.update();
-
-        this.snake.update(this.deltaTime, this.player, this.map);
     
         const gridXLeft = Math.floor((this.player.canvasX+1)/CELL_SIZE);
         const gridXRight = Math.floor((this.player.canvasX + CELL_SIZE-1)/CELL_SIZE);
@@ -147,7 +145,9 @@ export default class Game {
     
         this.checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown);
         this.checkCollisionsWithMap(gridXLeft, gridXRight, gridYUp, gridYDown);
-    
+
+        this.snake.update(this.deltaTime, this.player, this.map);
+        
         if (this.snake.checkCollision(this.player.canvasX, this.player.canvasY)) {
             console.log('Le serpent vous a rattrapé !');
             this.gameStatus = 'lost';
