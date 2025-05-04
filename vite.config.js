@@ -5,5 +5,8 @@ export default defineConfig({
   build: {
     outDir: '../../dist',  // Indiquer où mettre les fichiers de build (relative à 'root')
     emptyOutDir: true,
+    rollupOptions: {
+        input: 'src/front/site/index.html',  // Indique explicitement l'entrée
+      },
 }
 });
