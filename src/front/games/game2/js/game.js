@@ -312,17 +312,22 @@ export default class Game {
                     const enemy = this.enemies[j];
                     
                     if (this.checkRectCollision(projectile, enemy)) {
+                        // Vérifier si cet ennemi a déjà été touché par ce projectile
+                        if (projectile.touchedEnemies.includes(enemy)) {
+                            continue; // Passer au prochain ennemi si déjà touché
+                        }
+                        
                         // Les dégâts sont constants, c'est la pénétration qui change
                         const damage = this.player.projectileDamage || 1;
                         
                         // Déterminer si on doit appliquer des dégâts réduits
-                        const isFinalTarget = projectile.enemiesHit >= this.player.piercingLevel;
+                        const isFinalTarget = projectile.touchedEnemies.length >= this.player.piercingLevel;
                         const finalDamage = isFinalTarget ? damage * 0.5 : damage;
                         
                         const isDead = enemy.takeDamage(finalDamage);
                         
-                        // Incrémenter le compteur d'ennemis touchés
-                        projectile.enemiesHit++;
+                        // Ajouter l'ennemi à la liste des ennemis touchés
+                        projectile.touchedEnemies.push(enemy);
                         
                         // Détruire le projectile si :
                         // - Il n'a pas de pénétration (niveau 0) OU
@@ -345,12 +350,17 @@ export default class Game {
                 }
             }
             // Collision projectile ennemi - joueur
-            else if (projectile.source === 'enemy' && !this.player.invulnerable) {
+            else if (projectile.source === 'enemy') {
                 if (this.checkRectCollision(projectile, this.player)) {
+                    // Détruire le projectile dans tous les cas
                     this.projectiles.splice(i, 1);
-                    const isDead = this.player.takeDamage();
-                    if (isDead) {
-                        this.gameStateManager.endGame();
+                    
+                    // Ne infliger des dégâts que si le joueur n'est pas invulnérable
+                    if (!this.player.invulnerable) {
+                        const isDead = this.player.takeDamage();
+                        if (isDead) {
+                            this.gameStateManager.endGame();
+                        }
                     }
                 }
             }

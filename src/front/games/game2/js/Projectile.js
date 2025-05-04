@@ -11,8 +11,8 @@ export default class Projectile {
         this.color = source === 'player' ? '#ffff00' : 'orangered';
         this.scaleRatio = scaleRatio;
         
-        // Pour la pénétration - nombre d'ennemis touchés
-        this.enemiesHit = 0;
+        // Pour la pénétration - ennemis touchés
+        this.touchedEnemies = []; // Tableau des instances des ennemis déjà touchés
     }
     
     resize(scaleRatio) {
