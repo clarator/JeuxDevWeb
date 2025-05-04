@@ -1,3 +1,4 @@
+// src/front/games/game2/js/WaveManager.js
 import ChaserEnemy from './chaserEnemy.js';
 import ShooterEnemy from './shooterEnemy.js';
 import WandererEnemy from './wandererEnemy.js';
@@ -132,11 +133,11 @@ export default class WaveManager {
     createEnemy(x, y, type, scaleRatio) {
         switch(type) {
             case 'chaser':
-                return new ChaserEnemy(x, y, scaleRatio);
+                return new ChaserEnemy(x, y, scaleRatio, this.game);
             case 'shooter':
-                return new ShooterEnemy(x, y, scaleRatio);
+                return new ShooterEnemy(x, y, scaleRatio, this.game);
             case 'wanderer':
-                return new WandererEnemy(x, y, scaleRatio);
+                return new WandererEnemy(x, y, scaleRatio, this.game);
             default:
                 throw new Error(`Type d'ennemi inconnu: ${type}`);
         }

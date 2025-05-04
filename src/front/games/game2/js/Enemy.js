@@ -1,5 +1,6 @@
+// src/front/games/game2/js/Enemy.js
 export default class Enemy {
-    constructor(x, y, width, height, speed, health, color, shootChance, scaleRatio) {
+    constructor(x, y, width, height, speed, health, color, shootChance, scaleRatio, game) {
         this.canvasX = x;
         this.canvasY = y;
         this.width = width * scaleRatio;
@@ -15,6 +16,7 @@ export default class Enemy {
         this.isHit = false;
         this.scaleRatio = scaleRatio;
         this.baseSpeed = speed;
+        this.game = game; // Référence au jeu
     }
     
     resize(scaleRatio) {
@@ -44,7 +46,24 @@ export default class Enemy {
         this.health -= damage;
         this.isHit = true;
         setTimeout(() => { this.isHit = false; }, 200);
-        return this.health <= 0;
+        
+        if (this.health <= 0) {
+            // Ajouter de l'expérience en fonction du type d'ennemi
+            let baseExp = 10; // Par défaut
+            
+            if (this.constructor.name === 'ShooterEnemy') baseExp = 15;
+            else if (this.constructor.name === 'ChaserEnemy') baseExp = 12;
+            
+            const waveBonus = this.game ? Math.floor(this.game.waveManager.currentWave * 2) : 0;
+            const expAmount = baseExp + waveBonus;
+            
+            if (this.game && this.game.experienceManager) {
+                this.game.experienceManager.addExperience(expAmount);
+            }
+            return true;
+        }
+        
+        return false;
     }
     
     canShoot() {

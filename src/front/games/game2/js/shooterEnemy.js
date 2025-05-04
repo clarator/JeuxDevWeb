@@ -1,8 +1,8 @@
 import Enemy from './enemy.js';
 
 export default class ShooterEnemy extends Enemy {
-    constructor(x, y, scaleRatio) {
-        super(x, y, 40, 40, 80, 2, 'orangered', 0.015, scaleRatio);
+    constructor(x, y, scaleRatio, game) {
+        super(x, y, 40, 40, 80, 2, 'orangered', 0.015, scaleRatio, game);
         this.baseSpeed = 80;
         
         // Définir un mouvement initial léger

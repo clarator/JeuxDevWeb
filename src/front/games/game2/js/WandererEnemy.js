@@ -1,8 +1,8 @@
 import Enemy from './enemy.js';
 
 export default class WandererEnemy extends Enemy {
-    constructor(x, y, scaleRatio) {
-        super(x, y, 40, 40, 100, 3, 'darkred', 0.005, scaleRatio);
+    constructor(x, y, scaleRatio, game) {
+        super(x, y, 40, 40, 100, 3, 'darkred', 0.005, scaleRatio, game);
         this.baseSpeed = 100;
         this.directionChangeTimer = 0;
         

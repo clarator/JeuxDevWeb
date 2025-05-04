@@ -1,3 +1,4 @@
+// src/front/games/game2/js/Player.js
 export default class Player {
     constructor(scaleRatio) {
         this.canvasX = 0;
@@ -15,12 +16,65 @@ export default class Player {
         this.invulnerable = false;
         this.invulnerableTime = 0;
         this.scaleRatio = scaleRatio;
+        
+        // Valeurs de base pour le reset
+        this.baseSpeedValue = 300 * scaleRatio;
+        this.baseShootCooldownTime = 0.2;
+        
+        // Améliorations
+        this.projectileDamage = 1;
+        this.multiShot = 1;
+        this.piercingLevel = 0;
+    
+        // Système de bouclier
+        this.hasShield = false;
+        this.shieldActive = false;
+        this.shieldActiveTime = 0; // Durée actuelle du shield
+        this.shieldDuration = 1.0; // Durée totale du shield
+        this.shieldTimer = 0; // Timer entre les shields
+        this.shieldMinCooldown = 4.0;
+        this.shieldMaxCooldown = 6.0;
+        
+        // État d'invulnérabilité due aux dégâts
+        this.damagedInvulnerable = false;
+        this.damagedInvulnerableTime = 0;
+    }
+
+    reset() {
+        // Réinitialiser toutes les améliorations
+        this.speedValue = this.baseSpeedValue;
+        this.shootCooldownTime = this.baseShootCooldownTime;
+        this.projectileDamage = 1;
+        this.multiShot = 1;
+        this.piercingLevel = 0;
+        
+        // Réinitialiser le bouclier
+        this.hasShield = false;
+        this.shieldActive = false;
+        this.shieldActiveTime = 0;
+        this.shieldTimer = 0;
+        
+        // Réinitialiser la santé
+        this.health = 6;
+        this.maxHealth = 6;
+        this.invulnerable = false;
+        this.invulnerableTime = 0;
+        this.damagedInvulnerable = false;
+        this.damagedInvulnerableTime = 0;
+        
+        // Réinitialiser le position et mouvement
+        this.speedX = 0;
+        this.speedY = 0;
+        this.shootCooldown = 0;
     }
     
     resize(scaleRatio) {
         this.width = 50 * scaleRatio;
         this.height = 50 * scaleRatio;
-        this.speedValue = 300 * scaleRatio;
+        // Garder le ratio de vitesse
+        const speedRatio = this.speedValue / this.scaleRatio;
+        this.speedValue = speedRatio * scaleRatio;
+        this.baseSpeedValue = 300 * scaleRatio;
         this.scaleRatio = scaleRatio;
     }
     
@@ -32,19 +86,63 @@ export default class Player {
             this.shootCooldown -= deltaTime;
         }
         
-        if (this.invulnerable) {
-            this.invulnerableTime -= deltaTime;
-            if (this.invulnerableTime <= 0) {
-                this.invulnerable = false;
+        // Gestion de l'invulnérabilité due aux dégâts
+        if (this.damagedInvulnerable) {
+            this.damagedInvulnerableTime -= deltaTime;
+            if (this.damagedInvulnerableTime <= 0) {
+                this.damagedInvulnerable = false;
+                // Si le shield n'est pas actif non plus, on est plus invulnérable
+                if (!this.shieldActive) {
+                    this.invulnerable = false;
+                }
             }
         }
+        
+        // Gestion du bouclier
+        if (this.hasShield) {
+            if (this.shieldActive) {
+                // Le shield est actif, on compte le temps
+                this.shieldActiveTime += deltaTime;
+                
+                // Le shield dure 1 seconde
+                if (this.shieldActiveTime >= this.shieldDuration) {
+                    this.shieldActive = false;
+                    this.shieldActiveTime = 0;
+                    
+                    // Désactive le bouclier et programme le prochain
+                    this.shieldTimer = this.shieldMinCooldown + 
+                        Math.random() * (this.shieldMaxCooldown - this.shieldMinCooldown);
+                    
+                    // Si on n'est pas invulnérable à cause des dégâts, on redevient vulnérable
+                    if (!this.damagedInvulnerable) {
+                        this.invulnerable = false;
+                    }
+                }
+            } else {
+                // Le shield n'est pas actif, on attend le prochain
+                this.shieldTimer -= deltaTime;
+                if (this.shieldTimer <= 0) {
+                    this.shieldActive = true;
+                    this.shieldActiveTime = 0;
+                    this.invulnerable = true;
+                }
+            }
+        }
+    }
+    
+    startShieldSystem() {
+        // Initialise le système de bouclier
+        this.shieldTimer = this.shieldMinCooldown;
+        this.shieldActive = false;
     }
     
     takeDamage() {
         if (!this.invulnerable) {
             this.health--;
             this.invulnerable = true;
-            this.invulnerableTime = 1.0; // 1 seconde d'invulnérabilité
+            this.damagedInvulnerable = true;
+            this.invulnerableTime = 1.0;
+            this.damagedInvulnerableTime = 1.0;
             return this.health <= 0;
         }
         return false;
@@ -56,10 +154,27 @@ export default class Player {
             y: this.canvasY + this.height / 2
         };
     }
+    
     render(ctx) {
         ctx.save();
-        // Clignoter si invulnérable
-        if (this.invulnerable && Math.floor(Date.now() / 100) % 2 === 0) {
+        
+        // Dessiner le bouclier si actif (toujours visible, jamais clignotant)
+        if (this.shieldActive) {
+            ctx.strokeStyle = 'cyan';
+            ctx.lineWidth = 5 * this.scaleRatio;
+            ctx.beginPath();
+            ctx.arc(
+                this.canvasX + this.width / 2,
+                this.canvasY + this.height / 2,
+                (this.width / 2) + 10 * this.scaleRatio,
+                0,
+                Math.PI * 2
+            );
+            ctx.stroke();
+        }
+        
+        // Clignoter uniquement si invulnérable à cause des dégâts (pas du shield)
+        if (this.damagedInvulnerable && Math.floor(Date.now() / 100) % 2 === 0) {
             ctx.fillStyle = 'rgba(255, 85, 85, 0.5)';
         } else {
             ctx.fillStyle = this.color;

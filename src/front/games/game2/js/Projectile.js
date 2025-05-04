@@ -1,3 +1,4 @@
+// src/front/games/game2/js/Projectile.js
 export default class Projectile {
     constructor(x, y, direction, source = 'player', scaleRatio) {
         this.canvasX = x;
@@ -9,6 +10,9 @@ export default class Projectile {
         this.source = source;
         this.color = source === 'player' ? '#ffff00' : 'orangered';
         this.scaleRatio = scaleRatio;
+        
+        // Pour la pénétration - nombre d'ennemis touchés
+        this.enemiesHit = 0;
     }
     
     resize(scaleRatio) {

@@ -1,8 +1,8 @@
 import Enemy from './enemy.js';
 
 export default class ChaserEnemy extends Enemy {
-    constructor(x, y, scaleRatio) {
-        super(x, y, 40, 40, 150, 3, 'crimson', 0, scaleRatio);
+    constructor(x, y, scaleRatio, game) {
+        super(x, y, 40, 40, 150, 3, 'crimson', 0, scaleRatio, game);
         this.baseSpeed = 150;
     }
     
