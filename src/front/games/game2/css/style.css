@@ -17,5 +17,28 @@ body {
 #gameCanvas {
     display: block;
     background-color: #000;
-    cursor: crosshair; /* Curseur en croix pour mieux viser */
+    cursor: crosshair;
+}
+
+#menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+#menu button {
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#menu button:hover {
+    background-color: #555;
 }
