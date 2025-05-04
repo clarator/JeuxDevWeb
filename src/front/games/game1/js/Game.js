@@ -1,35 +1,24 @@
-import { startUpgrade } from "./upgrade.js";
+import { upgrades, startUpgrade } from "./upgrade.js";
 import { checkNotifications } from "./notification.js";
 import { startAutomation } from "./automation.js";
-import { vibrateGold } from "./animation.js";
+import { vibrateGold,explodeGoldPicture } from "./animation.js";
 import { applyBonus } from "./bonus.js";
-/*
-chose à ajouter :
-- trouver une musique de fond
-- faire fonctionner automation
-- essayer de rajouter des mini pepites d'or qui apparaissent
-- rajouter des bonus
-- rajouter des animations
-- rajouter des sons genre quand on clique sur une ame ou une auto
-- ajouter des trucs dans le magasin
-Boosts temporaires
-
-    Potion d’endurance (Double les gains pendant 30 secondes)
-    Boost de minage (Accélère la production automatique pendant 1 minute)
-    Tempête de dynamite (Explosion qui génère instantanément X or)
-*/
+import { setupMenu } from "./header.js";
+import { saveScore } from "../../js/score.js";
+import { getCookie } from "../../js/cookie.js";
 
 export default class Game {
     constructor(){
         this.score = 0;
         this.scorePerClick = 1;
         this.clickCount = 0;
-        this.gold = 500;
+        this.gold = 0;
         this.vibrationIntensity = 0.25;
 
         this.scoreDisplay = document.getElementById('score');
         this.goldDisplay = document.getElementById('gold');
         this.buttonGold = document.getElementById('goldPicture');
+        window.gameInstance = this;
 
         if (!this.goldDisplay || !this.scoreDisplay) {
             console.error("Erreur : élément #score ou #gold introuvable");
@@ -45,6 +34,16 @@ export default class Game {
 
         this.update();
 
+        //menu
+        document.addEventListener("DOMContentLoaded", () => {
+            setupMenu();
+        });
+
+        // Enregistre le score quand la page est quittée
+        window.addEventListener("beforeunload", () => {
+            this.saveScoreFinal();
+        });
+
         //magasin
         startUpgrade(this);
         startAutomation(this);
@@ -53,52 +52,123 @@ export default class Game {
         setInterval(() => checkNotifications(this), 1000);
     }
 
+    
+
     mineClick(){
         this.clickCount++;
         this.score += this.scorePerClick;
         this.scoreDisplay.textContent = this.score;
+
+        //son
+        if (window.soundEnabled) {
+            let pioche = new Audio("../../assets/sound/game1/bruitPioche.mp3");
+            pioche.volume = 0.3;
+            pioche.play();
+        }
+      
           
         //vibration
         vibrateGold(this.vibrationIntensity, this.buttonGold);
 
-        //effet sonore
         if (this.clickCount == 10) {
             this.vibrationIntensity += 0.25;
             this.clickCount = 0;
         }
-         
-        //porte monnaie
-        if (this.score % 10 === 0) { 
-            let sound = new Audio("../../../assets/sound/game1/piecesPorteFeuille.mp3");
-            sound.play();
-            this.gold += 5;
-            this.goldDisplay.textContent = this.gold;
+     
+        //explosion
+        const goldPicture = document.getElementById("goldPicture");
+        const explosionContainer = document.querySelector(".explosion");
+
+        if (this.score >= 10) {
+            explodeGoldPicture(goldPicture, explosionContainer);
+            
+            if (window.soundEnabled) {
+                let explo = new Audio("../../assets/sound/game1/explosion-VEED.mp3");
+                explo.volume = 0.5;
+                explo.play();
+            }
         }
-    
-          
-        //bonus
-        let bonus = applyBonus(this.score);
-        if(bonus > 0){
-            this.gold += bonus;
-            this.goldDisplay.textContent = this.gold;
-        }
+        
+
+        this.addGoldWallet();
     }
 
     update() {
         if (this.goldDisplay) {
             this.goldDisplay.textContent = this.gold;
+        
         }
-    }
-
-    getGold(){
-        return this.gold;
     }
 
     //gere le porte feuille
     addGoldWallet(){
-        this.gold += 5;
-        this.goldDisplay.textContent = this.gold;
+        let result = 0;
+    
+        //on ajoute 5 tout les 5 clics
+        if(this.score % 5 === 0){
+            result += 5;
+            this.addSound();
+        }
+        
+        //si une amelioration achetée 
+        //ajoute le gain au porte feuille
+        upgrades.forEach(upgrade => {
+            if (upgrade.active) {
+                result += upgrade.gain / 2;   
+                this.addSound();            
+            }
+        });
 
-        //recup le gain dans upgrapes et suivant le gain ajoute l'argent
+        this.gold += result; 
+        this.goldDisplay.textContent = this.gold;
+        
+        //bonus
+        let bonus = applyBonus(this.score);
+        if(bonus > 0){
+            this.gold += bonus;
+        }
+ 
+        this.update();
     }
+
+    addSound(){
+        if (window.soundEnabled) {
+            let sound = new Audio("../../assets/sound/game1/piecesPorteFeuille.mp3");
+            sound.volume = 0.2;
+            sound.play();
+        }
+    }
+
+    triggerExplosion() {
+        // Crée des mini images qui sortent de l'image principale
+        for (let i = 0; i < 20; i++) {
+            const miniGold = document.createElement("div");
+            miniGold.classList.add("miniGold");
+            miniGold.style.backgroundImage = "url('assets/img/game1/or.png')"; 
+            miniGold.style.left = `${this.buttonGold.offsetLeft + Math.random() * 100 - 50}px`;
+            miniGold.style.top = `${this.buttonGold.offsetTop + Math.random() * 100 - 50}px`; 
+            document.body.appendChild(miniGold);
+    
+            // Supprimer l'image après l'animation
+            setTimeout(() => {
+                miniGold.remove();
+            }, 1000);
+        }
+    }
+
+    saveScoreFinal() {
+        //cookies
+        const user = getCookie("user");
+        if (user) {
+            saveScore(user, this.score);
+        } else {
+            console.warn("Aucun utilisateur connecté pour sauvegarder le score");
+        }
+    }
+  
+    
 }
+
+//modif code score
+//creer page profil
+//faire les relges du jeu du 3eme

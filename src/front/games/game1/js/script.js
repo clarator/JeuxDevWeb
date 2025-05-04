@@ -8,3 +8,9 @@ function init() {
     game = new Game();
 }
 init()
+
+
+
+//npm run server:dev
+//sudo /opt/lampp/lampp start
+//sudo /opt/lampp/lampp stop

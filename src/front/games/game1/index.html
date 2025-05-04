@@ -5,23 +5,18 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="haut">
-        <h2>Nom du joueur</h2>
-        <h1>Mineur Clicker</h1>
-
-        <!--A faire -->
-        <div class="menu">
-            <button id="menuButton">Menu</button>
-            <div class="menuContent">
-                <button id="reprendre">Reprendre</button>
-                <button id="reset">Recommencer</button>
-                <button id="quitter">Quitter</button>
-                <button id="sons">Sons</button>                
-            </div>
+    <div class="header">
+        <div class="left">
+          <h2>Meilleur score : <span id="bestScore">0</span></h2>
         </div>
-
-        <p>Meilleur score : <span id="bestScore">0</span></p>
-    </div>       
+      
+        <h1>Minor Clicker</h1>
+      
+        <div class="right">
+          <img src="../../assets/img/game1/sonOn.png" alt="iconSoundOn" id="iconSound">
+          <button id="exit">Quitter</button>
+        </div>
+    </div>     
     
     <div class="game">
         <div class="notifications">
@@ -33,20 +28,19 @@
         
         <div class="container">
             <div class="points">
-                <p>Score : <span id="score">0</span></p>
+                <h3>Score : <span id="score">0</span></h3>
                 <p>💰<span id="gold">0</span></p>
             </div>
             <img src="../../assets/img/game1/or.png" alt="goldPicture" id="goldPicture">
+            <div class="explosion"></div>
             
-
-            <div class="miniGold"></div>
         </div>
 
         
         <div class="store">
             <h3>Magasin</h3>
             
-            <p>Améliorations</p>
+            <h4>Améliorations</h4>
             <div class="ameContainer">
                 <div class="imageContainer">
                     <img src="../../assets/img/game1/marteau.jpg" alt="hammer" id="hammer">
@@ -56,7 +50,7 @@
                     </div>
                 </div>
                 <div class="imageContainer">
-                    <img src="../../assets/img/game1/piocheFer.jpg" alt="ironPickaxe" id="ironPickaxe">
+                    <img src="/../../assets/img/game1/piocheFer.jpg" alt="ironPickaxe" id="ironPickaxe">
                     <div class="tooltip">
                         <p>Prix : <span id="ironPickaxeCost">100</span> 💰</p>
                         <p>Pioche en fer : +5 score/clic</p>
@@ -92,7 +86,7 @@
                 </div>
             </div>
             
-            <p>Automatisation</p>
+            <h4>Automatisation</h4>
             <div class="ameContainer">
                 <div class="imageContainer">
                     <img src="../../assets/img/game1/mineur.png" alt="miner" id="miner">

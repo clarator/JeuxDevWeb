@@ -5,7 +5,7 @@ export function checkNotifications(game) {
     const notificationList = document.getElementById("list");
     let notifications = [];
 
-    if (!game) return; // Vérifier si game est bien défini
+    if (!game) return; 
 
     upgrades.forEach(upgrade => {
         if (game.gold >= upgrade.price) {
@@ -22,7 +22,6 @@ export function checkNotifications(game) {
     notificationList.innerHTML = '';
 
     if (notifications.length > 0) {
-        // Afficher les 4 premières notifications
         notifications.forEach(notif => {
             const li = document.createElement('li');
             li.textContent = notif;
