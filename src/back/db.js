@@ -1,25 +1,18 @@
-import mysql from 'mysql2';
-import dotenv from 'dotenv';
-import { URL } from 'url';
-
+import dotenv from "dotenv";
 dotenv.config();
+import mysql2 from "mysql2";
 
-const dbUrl = new URL(process.env.MYSQL_URL); 
+// Utilisation de l'URL complète
+const db = mysql2.createConnection(process.env.MYSQL_URL);
 
-const connection = mysql.createConnection({
-  host: dbUrl.hostname,
-  user: dbUrl.username,
-  password: dbUrl.password,
-  database: dbUrl.pathname.slice(1),
-  port: parseInt(dbUrl.port, 10),
+// Vérifie la connexion
+db.connect(err => {
+    if (err) {
+        console.error("Erreur connexion à MySQL : ", err);
+        return;
+    }
+    console.log("Connexion à MySQL réussie");
+    
 });
 
-connection.connect((err) => {
-  if (err) {
-    console.error('Erreur de connexion à MySQL:', err);
-  } else {
-    console.log('✅ Connecté à MySQL avec succès (réseau privé) !');
-  }
-});
-
-export default connection;
+export default db;

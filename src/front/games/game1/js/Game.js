@@ -169,7 +169,6 @@ export default class Game {
     
 }
 
-//creer des tables dans bd pour les 3 jeux
 //modif code score
 //creer page profil
-//faire les elges du jeu du 3eme
+//faire les relges du jeu du 3eme
