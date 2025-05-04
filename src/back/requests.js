@@ -180,23 +180,85 @@ router.get('/best-score', (req, res) => {
 });
 
 //modifie le profil du joueur
-app.post('/update-profile', (req, res) => {
+router.post('/update-profile', (req, res) => {
     const { username, password } = req.body;
-    const pseudo = req.cookies.user; // Récupérer le pseudo du cookie
-    
-    res.redirect('/profile');
+    const pseudo = req.cookies.user; //récupère l'ancien pseudo 
+
+    //verif que le joueur soit connecté
+    if (!pseudo) {
+        res.status(400).send("Utilisateur non identifié");
+        return;
+    }
+
+    const updates = [];
+    const values = [];
+
+    //si pseudo modif, on vérifie que le pseudo n'existe pas déjà
+    if (username) {
+        updates.push("pseudo = ?");
+        values.push(username);
+    }
+
+    //si mot de passe modif, ça crypte le nouveau
+    if (password) {
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
+        updates.push("password = ?");
+        values.push(hash);
+    }
+
+    //si rien à modifier, on renvoie une erreur
+    if (updates.length === 0) {
+        res.status(400).send("Aucune modification demandée");
+        return;
+    }
+
+    //met à jour le profil dans la BDD
+    const updateQuery = `UPDATE users SET ${updates.join(', ')} WHERE pseudo = ?`;
+    values.push(pseudo);
+
+    db.query(updateQuery, values, (err, result) => {
+        if (err) {
+            console.error("Erreur lors de la mise à jour du profil :", err);
+            res.status(500).send("Erreur lors de la mise à jour du profil");
+            return;
+        }
+
+        if (username) {
+            res.cookie("user", username, { path: "/" }); //met à jour le cookie
+        }
+
+        res.status(200).send("Profil mis à jour avec succès");
+    });
 });
 
 
-app.delete('/delete-account', (req, res) => {
-    const pseudo = req.query.pseudo;
-    
-    res.status(200).send("Compte supprimé");
+
+//supprime le compte du joueur
+router.delete('/delete-account', (req, res) => {
+    const pseudo = req.cookies.user; 
+
+    //si joueur pas connect"
+    if (!pseudo) {
+        res.status(400).send("Utilisateur non identifié");
+        return;
+    }
+
+    //supprime le compte dans la BDD
+    const deleteQuery = "DELETE FROM users WHERE pseudo = ?";
+    db.query(deleteQuery, [pseudo], (err, result) => {
+        if (err) {
+            console.error("Erreur suppression compte :", err);
+            res.status(500).send("Erreur lors de la suppression du compte");
+            return;
+        }
+
+        res.clearCookie("user", { path: "/" });
+        res.status(200).send("Compte supprimé avec succès");
+    });
 });
 
-
-
-
+//sauvegarde le score de game3
 router.post("/save-score-game3", (req, res) => {
     const { pseudo, score, level } = req.body;
 
