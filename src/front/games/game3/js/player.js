@@ -1,7 +1,7 @@
-import { CELL_SIZE } from "./game.js";
+import { CELL_SIZE } from "./Game.js";
 
 export default class Player {
-    constructor(imageSource) {
+    constructor() {
         this.score = 0;
 
         this.isMoving = false;
@@ -19,7 +19,7 @@ export default class Player {
         this.speedValue = 6;
 
         this.image = new Image();
-        this.image.src = imageSource;
+        this.image.src = "../../../assets/img/game3/chevalier.png";
     } 
 
     startLevel(x, y) {

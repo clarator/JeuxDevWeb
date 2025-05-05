@@ -1,5 +1,5 @@
 import Map from './map.js';
-import InputManager from '../..common/inputManager.js';
+import InputManager from '../../common/inputManager.js';
 import Player from './player.js';
 import Camera from './camera.js';
 import GameStateManager from './gameStateManager.js';
@@ -15,7 +15,7 @@ export default class Game {
         this.gameStateManager = new GameStateManager(this);
         
         this.map = new Map(canvas);
-        this.player = new Player("../../assets/img/game3/chevalier.png");
+        this.player = new Player(); 
         this.inputManager = new InputManager(this);
         this.camera = new Camera(canvas);
         this.snake = new Snake();
@@ -99,8 +99,8 @@ export default class Game {
         }
     
         const right = this.inputManager.isKeyJustPressed('ArrowRight') || this.inputManager.isKeyJustPressed('KeyD');
-        const left = this.inputManager.isKeyJustPressed('ArrowLeft') || this.inputManager.isKeyJustPressed('KeyQ');
-        const up = this.inputManager.isKeyJustPressed('ArrowUp') || this.inputManager.isKeyJustPressed('KeyZ');
+        const left = this.inputManager.isKeyJustPressed('ArrowLeft') || this.inputManager.isKeyJustPressed('KeyA');
+        const up = this.inputManager.isKeyJustPressed('ArrowUp') || this.inputManager.isKeyJustPressed('KeyW');
         const down = this.inputManager.isKeyJustPressed('ArrowDown') || this.inputManager.isKeyJustPressed('KeyS');
 
         if (right && this.player.lastDirection !== 'right') {
@@ -237,7 +237,7 @@ export default class Game {
 
     renderHUD() {
         this.ctx.save();
-        this.ctx.font = '20px Arial';
+        this.ctx.font = '16px Arial';
         this.ctx.fillStyle = '#ffff00';
         this.ctx.fillText(`FPS: ${this.fps}`, 10, 30);
         this.ctx.fillText(`Score: ${this.player.score}`, 10, 50);

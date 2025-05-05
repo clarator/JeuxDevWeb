@@ -1,4 +1,4 @@
-import { CELL_SIZE } from "./game.js";
+import { CELL_SIZE } from "./Game.js";
 
 export default class Map {
     constructor(canvas) {

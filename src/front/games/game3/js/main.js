@@ -1,4 +1,4 @@
-import Game from './game.js';
+import Game from './Game.js';;
 
 document.addEventListener('DOMContentLoaded', function() {
     const canvas = document.getElementById('gameCanvas');
