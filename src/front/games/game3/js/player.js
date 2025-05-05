@@ -6,7 +6,6 @@ export default class Player {
 
         this.isMoving = false;
         
-
         // Position visuelle actuelle (en pixels)
         this.canvasX = null;
         this.canvasY = null;
