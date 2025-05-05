@@ -222,28 +222,68 @@ export default class Player {
         // Dessiner la barre de vie
         this.renderHealth(ctx);
     }
-    
     renderHealth(ctx) {
         ctx.save();
-        const heartSize = 20 * this.scaleRatio;
-        const startX = 10 * this.scaleRatio;
-        const startY = 10 * this.scaleRatio;
+        const heartSize = 40 * this.scaleRatio; // Taille des coeurs encore plus grande
+        const startX = 20 * this.scaleRatio; // Position un peu plus éloignée du bord
+        const startY = 20 * this.scaleRatio; // Position un peu plus éloignée du bord
+        const spacing = 10 * this.scaleRatio; // Espace entre les coeurs
         
-        // Dessiner les cœurs pleins
-        ctx.fillStyle = 'red';
-        for (let i = 0; i < this.health; i++) {
-            const x = startX + (i % 6) * (heartSize + 5 * this.scaleRatio);
-            const y = startY + Math.floor(i / 6) * (heartSize + 5 * this.scaleRatio);
-            ctx.fillRect(x, y, heartSize, heartSize);
+        // Dessiner les coeurs plus visibles avec une meilleure forme
+        for (let i = 0; i < this.maxHealth; i++) {
+            const x = startX + (i % 6) * (heartSize + spacing);
+            const y = startY + Math.floor(i / 6) * (heartSize + spacing);
+            
+            // Dessiner un contour pour tous les coeurs
+            ctx.lineWidth = 2 * this.scaleRatio;
+            ctx.strokeStyle = 'white';
+            
+            // Dessiner une forme de coeur au lieu d'un rectangle
+            ctx.beginPath();
+            const centerX = x + heartSize / 2;
+            const centerY = y + heartSize / 2;
+            const radiusX = heartSize / 2;
+            const radiusY = heartSize / 2;
+            
+            // Dessiner un coeur stylisé
+            this.drawHeart(ctx, centerX, centerY, radiusX, radiusY);
+            
+            // Remplir avec la couleur appropriée
+            if (i < this.health) {
+                // Coeur plein
+                ctx.fillStyle = '#ff3333'; // Rouge vif
+            } else {
+                // Coeur vide
+                ctx.fillStyle = 'rgba(150, 0, 0, 0.5)'; // Rouge foncé semi-transparent
+            }
+            
+            ctx.fill();
+            ctx.stroke();
         }
         
-        // Dessiner les cœurs vides
-        ctx.fillStyle = 'darkred';
-        for (let i = this.health; i < this.maxHealth; i++) {
-            const x = startX + (i % 6) * (heartSize + 5 * this.scaleRatio);
-            const y = startY + Math.floor(i / 6) * (heartSize + 5 * this.scaleRatio);
-            ctx.fillRect(x, y, heartSize, heartSize);
-        }
         ctx.restore();
+    }
+    
+    // Ajouter cette nouvelle méthode à la classe Player
+    drawHeart(ctx, x, y, width, height) {
+        const topCurveHeight = height * 0.3;
+        
+        ctx.beginPath();
+        // Dessiner le côté gauche du coeur
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(
+            x - width * 0.5, y - topCurveHeight, 
+            x - width, y + height * 0.3, 
+            x, y + height
+        );
+        
+        // Dessiner le côté droit du coeur
+        ctx.bezierCurveTo(
+            x + width, y + height * 0.3, 
+            x + width * 0.5, y - topCurveHeight, 
+            x, y
+        );
+        
+        ctx.closePath();
     }
 }

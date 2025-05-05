@@ -234,61 +234,63 @@ export default class ExperienceManager {
     render(ctx) {
         const scaleRatio = this.game.getScaleRatio();
         
-        // Afficher la barre d'expérience
+        // Afficher la barre d'expérience au centre en bas, plus discrète et semi-transparente
         ctx.save();
-        const barWidth = 200 * scaleRatio;
-        const barHeight = 20 * scaleRatio;
-        const barX = 10 * scaleRatio;
-        const barY = ctx.canvas.height - 40 * scaleRatio;
+        const barWidth = 350 * scaleRatio; // Largeur modérée
+        const barHeight = 25 * scaleRatio; // Hauteur modérée
+        const barX = (ctx.canvas.width - barWidth) / 2; // Centrer horizontalement
+        const barY = ctx.canvas.height - 50 * scaleRatio; // Position en bas
         
-        // Fond de la barre
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        // Fond de la barre semi-transparent
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'; // Fond semi-transparent
         ctx.fillRect(barX, barY, barWidth, barHeight);
         
-        // Barre d'expérience
+        // Barre d'expérience avec un vert semi-transparent
         const expProgress = this.experience / this.experienceForNextLevel;
-        ctx.fillStyle = '#4CAF50';
+        ctx.fillStyle = 'rgba(76, 175, 80, 0.6)'; // Vert semi-transparent
         ctx.fillRect(barX, barY, barWidth * expProgress, barHeight);
         
-        // Bordure
-        ctx.strokeStyle = 'white';
+        // Bordure fine et discrète
+        ctx.lineWidth = 1 * scaleRatio;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)'; // Blanc semi-transparent
         ctx.strokeRect(barX, barY, barWidth, barHeight);
         
-        // Texte niveau
-        ctx.fillStyle = 'white';
-        ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`;
-        ctx.fillText(`Niveau ${this.level}`, barX, barY - 5 * scaleRatio);
+        // Texte niveau discret
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'; // Blanc semi-transparent
+        ctx.font = `${Math.floor(18 * scaleRatio)}px Arial`; // Police modérée
+        ctx.textAlign = 'center'; // Centrer le texte
+        ctx.fillText(`Niveau ${this.level}`, ctx.canvas.width / 2, barY - 8 * scaleRatio);
         
-        // Texte expérience
-        ctx.font = `${Math.floor(12 * scaleRatio)}px Arial`;
-        ctx.fillText(`${this.experience}/${this.experienceForNextLevel}`, barX + 5 * scaleRatio, barY + 15 * scaleRatio);
+        // Texte expérience centré dans la barre et semi-transparent
+        ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`; // Police modérée
+        ctx.fillText(`${this.experience}/${this.experienceForNextLevel}`, barX + barWidth / 2, barY + 17 * scaleRatio);
         ctx.restore();
         
         // Afficher le menu de niveau si une amélioration est en attente
         if (this.levelUpPending && this.upgradeOptions) {
             this.renderUpgradeMenu(ctx);
         }
-    }
-    
+    }    
+
     renderUpgradeMenu(ctx) {
         const scaleRatio = this.game.getScaleRatio();
         
         ctx.save();
-        // Fond semi-transparent
+        // Fond semi-transparent (conserver le style original)
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         
-        // Titre
-        ctx.fillStyle = 'white';
+        // Titre - garder le style original mais légèrement plus grand
+        ctx.fillStyle = '#4CAF50';
         ctx.font = `${Math.floor(40 * scaleRatio)}px Arial`;
         ctx.textAlign = 'center';
         ctx.fillText('NIVEAU SUPÉRIEUR !', ctx.canvas.width / 2, ctx.canvas.height / 5);
         
-        // Options d'amélioration
-        const optionWidth = 200 * scaleRatio;
-        const optionHeight = 120 * scaleRatio;
+        // Options d'amélioration - garder le style original mais légèrement agrandir pour accommoder le texte plus grand
+        const optionWidth = 230 * scaleRatio; // Légèrement plus large pour accommoder les textes plus grands
+        const optionHeight = 150 * scaleRatio; // Légèrement plus haut pour accommoder les textes plus grands
         const optionSpacing = 50 * scaleRatio;
-        const totalWidth = optionWidth * 3 + optionSpacing * 2;
+        const totalWidth = optionWidth * this.upgradeOptions.length + optionSpacing * (this.upgradeOptions.length - 1);
         const startX = (ctx.canvas.width - totalWidth) / 2;
         const startY = ctx.canvas.height / 2 - optionHeight / 2;
         
@@ -306,38 +308,67 @@ export default class ExperienceManager {
                 height: optionHeight
             });
             
-            // Changer la couleur si la souris survole
+            // Vérifier si la souris survole (style original)
             const isHovered = this.game.mouseX >= x && this.game.mouseX <= x + optionWidth &&
                              this.game.mouseY >= y && this.game.mouseY <= y + optionHeight;
             
-            // Fond de l'option
+            // Fond de l'option (style original)
             ctx.fillStyle = isHovered ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)';
             ctx.fillRect(x, y, optionWidth, optionHeight);
             
-            // Bordure
+            // Bordure (style original)
             ctx.strokeStyle = isHovered ? 'yellow' : 'white';
             ctx.lineWidth = 2 * scaleRatio;
             ctx.strokeRect(x, y, optionWidth, optionHeight);
             
-            // Nom
-            ctx.font = `${Math.floor(18 * scaleRatio)}px Arial`;
+            // Nom - plus grand mais ajusté pour tenir dans le bloc
+            ctx.font = `${Math.floor(22 * scaleRatio)}px Arial`; // Légèrement réduit pour tenir dans le bloc
             ctx.fillStyle = 'white';
-            ctx.fillText(option.name, x + optionWidth / 2, y + 30 * scaleRatio);
+            ctx.fillText(option.name, x + optionWidth / 2, y + 35 * scaleRatio);
             
-            // Niveau pour les améliorations à niveaux
+            // Niveau pour les améliorations à niveaux - plus grand mais ajusté
             if (option.level) {
-                ctx.font = `${Math.floor(14 * scaleRatio)}px Arial`;
+                ctx.font = `${Math.floor(18 * scaleRatio)}px Arial`; // Légèrement réduit
                 const levelText = `Niveau ${option.currentLevel + 1}/${option.maxLevel}`;
-                ctx.fillText(levelText, x + optionWidth / 2, y + 50 * scaleRatio);
+                ctx.fillText(levelText, x + optionWidth / 2, y + 65 * scaleRatio);
             }
             
-            // Description
-            ctx.font = `${Math.floor(12 * scaleRatio)}px Arial`;
-            ctx.fillText(option.description, x + optionWidth / 2, y + optionHeight - 20 * scaleRatio);
+            // Description - beaucoup plus grande mais avec ligne-height ajusté
+            ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`; // Légèrement réduit
             
-            // Instruction (cliquez)
-            ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`;
-            ctx.fillText('Cliquez pour sélectionner', x + optionWidth / 2, y + optionHeight + 30 * scaleRatio);
+            // Pour les descriptions longues, gérer le multi-lignes
+            const desc = option.description;
+            const maxWidth = optionWidth - 20 * scaleRatio;
+            
+            // Si la description est trop longue, la couper en deux lignes
+            if (ctx.measureText(desc).width > maxWidth) {
+                const words = desc.split(' ');
+                let line1 = '';
+                let line2 = '';
+                let i = 0;
+                
+                // Construire la première ligne
+                while (i < words.length && ctx.measureText(line1 + ' ' + words[i]).width <= maxWidth) {
+                    line1 += (line1 ? ' ' : '') + words[i];
+                    i++;
+                }
+                
+                // Construire la deuxième ligne avec les mots restants
+                while (i < words.length) {
+                    line2 += (line2 ? ' ' : '') + words[i];
+                    i++;
+                }
+                
+                ctx.fillText(line1, x + optionWidth / 2, y + optionHeight - 45 * scaleRatio);
+                ctx.fillText(line2, x + optionWidth / 2, y + optionHeight - 25 * scaleRatio);
+            } else {
+                // Si elle tient sur une ligne
+                ctx.fillText(desc, x + optionWidth / 2, y + optionHeight - 35 * scaleRatio);
+            }
+            
+            // Instruction (cliquez) - plus grande mais ajustée
+            ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`; // Légèrement réduit
+            ctx.fillText('Cliquez pour sélectionner', x + optionWidth / 2, y + optionHeight + 25 * scaleRatio);
         });
         ctx.restore();
     }

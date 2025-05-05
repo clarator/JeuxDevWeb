@@ -1,0 +1,63 @@
+<html lang="fr">
+<head>
+    <title>Serpent Rush</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/games/game3/css/rules.css">
+</head>
+<body>
+    <header>
+        <div id="headerContainer"></div>
+    </header>
+    <h1>Règles de Serpent Rush</h1>
+    <section class="rules">
+        <h2>Objectif du jeu</h2>
+        <p>Le but du jeu est de parcourir le labyrinthe jusqu'à atteindre la sortie sans se faire rattraper par le serpent, tout en collectant des pièces d'or pour augmenter votre score.</p>
+
+        <h2>Comment jouer</h2>
+        <ul>
+            <li>Déplacez-vous avec les <strong>flèches directionnelles</strong> ou les touches <strong>ZQSD</strong>.</li>
+            <li>Lorsque vous choisissez une direction, votre personnage se déplace en ligne droite jusqu'à rencontrer un mur.</li>
+            <li>Vous ne pouvez pas changer de direction pendant un déplacement.</li>
+            <li>Collectez les pièces d'or pour augmenter votre score.</li>
+            <li>Atteignez la sortie pour compléter le niveau.</li>
+            <li>Appuyez sur <strong>Échap</strong> ou <strong>P</strong> pour mettre le jeu en pause.</li>
+        </ul>
+
+        <h2>Éléments du jeu</h2>
+        <ul>
+            <li><div class="color-block white-cell"></div> <strong>Chemin</strong> : Les espaces où vous pouvez vous déplacer.</li>
+            <li><div class="color-block green-cell"></div> <strong>Point de départ</strong> : Votre position initiale dans le niveau.</li>
+            <li><div class="color-block purple-cell"></div> <strong>Sortie</strong> : L'objectif à atteindre pour compléter le niveau.</li>
+            <li><div class="color-block gold-coin"></div> <strong>Pièces d'or</strong> : Collectionnez-les pour augmenter votre score.</li>
+            <li><div class="color-block red-snake"></div> <strong>Serpent</strong> : Votre adversaire qui vous poursuit. Évitez-le à tout prix !</li>
+        </ul>
+
+        <h2>Le Serpent</h2>
+        <ul>
+            <li>Le serpent commence à vous poursuivre après un court délai (1 seconde).</li>
+            <li>Il est plus lent que vous, mais n'a pas la contrainte de devoir aller en ligne droite.</li>
+            <li>Le serpent utilise l'algorithme A* pour trouver le chemin le plus court vers vous.</li>
+            <li>Il peut emprunter des chemins qui vous sont inaccessibles à cause de votre contrainte de déplacement.</li>
+            <li>Si le serpent vous touche, vous perdez la partie.</li>
+        </ul>
+
+        <h2>Astuces</h2>
+        <ul>
+            <li>Planifiez vos déplacements à l'avance - une fois lancé, vous ne pourrez pas changer de direction.</li>
+            <li>Parfois, il vaut mieux ignorer certaines pièces d'or situées dans des zones dangereuses.</li>
+            <li>Attirez le serpent dans une direction puis changez rapidement de trajectoire pour le distancer.</li>
+            <li>Observez le comportement du serpent pour anticiper ses mouvements.</li>
+        </ul>
+        
+        <h2>Score</h2>
+        <p>Votre score est calculé en fonction du nombre de pièces d'or collectées. Chaque pièce vaut 2 points.</p>
+
+        <h2>Fin du jeu</h2>
+        <p>Le jeu se termine lorsque vous atteignez la sortie ou que le serpent vous rattrape. Vous pouvez ensuite revenir au menu pour essayer un autre niveau ou améliorer votre score.</p>
+
+        <p class="final-message">Bonne chance !</p>
+    </section>
+    <script  type="module" src="/site/js/header.js"></script>
+</body>
+</html>

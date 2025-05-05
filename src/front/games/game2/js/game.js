@@ -1,5 +1,5 @@
 // src/front/games/game2/js/game.js
-import GameStateManager from './gameStateManager.js';
+import GameStateManager from './GameStateManager.js';
 import InputManager from '../../common/inputManager.js';
 import Player from './player.js';
 import Projectile from './projectile.js';
@@ -142,12 +142,18 @@ export default class Game {
     }
     
     gameLoop(timestamp) {
+        const now = timestamp || performance.now();
+        this.deltaTime = (now - this.lastTime) / 1000;
+        this.lastTime = now;
+        
         if (this.gameStateManager.currentState === 'game') {
-            const now = timestamp || performance.now();
-            this.deltaTime = (now - this.lastTime) / 1000;
-            this.lastTime = now;
-            
+            if (this.inputManager.isKeyPressed('Escape')) {
+                this.gameStateManager.switchToPause();
+            }
             this.update();
+            this.render();
+        } else if (this.gameStateManager.currentState === 'pause') {
+            // Rendre à nouveau l'écran de pause à chaque frame
             this.render();
         }
         

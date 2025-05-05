@@ -3,22 +3,28 @@ export default class GameStateManager {
         this.game = game;
         this.currentState = null; // 'game', 'menu' ou 'pause'
         this.menuElement = document.getElementById('menu');
+        this.pauseMenuElement = document.getElementById('pauseMenu');
         
-        // Configuration des boutons du menu
-        this.setupMenuButtons();
+        // Configuration des boutons
+        this.setupButtons();
     }
     
-    setupMenuButtons() {
-        const startButton = document.getElementById('startButton');
-        const quitButton = document.getElementById('quitButton');
+    setupButtons() {
+        const playButton = document.getElementById('playButton');
+        const resumeButton = document.getElementById('resumeButton');
+        const returnToMenuButton = document.getElementById('returnToMenuButton');
         
-        startButton.addEventListener('click', () => {
+        playButton.addEventListener('click', () => {
             this.game.reset();
             this.switchToGame();
         });
         
-        quitButton.addEventListener('click', () => {
-            window.location.href = '../../index.html';
+        resumeButton.addEventListener('click', () => {
+            this.switchToGame();
+        });
+        
+        returnToMenuButton.addEventListener('click', () => {
+            this.switchToMenu();
         });
     }
     
@@ -27,52 +33,21 @@ export default class GameStateManager {
         this.game.ctx.clearRect(0, 0, this.game.canvas.width, this.game.canvas.height);
         this.game.canvas.style.display = 'none';
         this.menuElement.style.display = 'flex';
+        this.pauseMenuElement.style.display = 'none';
     }
     
     switchToGame() {
         this.currentState = 'game';
         this.game.canvas.style.display = 'block';
         this.menuElement.style.display = 'none';
-        // Assurer que le jeu n'est pas en pause
+        this.pauseMenuElement.style.display = 'none';
         this.game.isPaused = false;
     }
     
-    pauseGame() {
-        if (this.currentState === 'game') {
-            this.currentState = 'pause';
-            this.game.isPaused = true;
-            
-            // Afficher l'écran de pause
-            this.renderPauseScreen();
-        }
-    }
-    
-    resumeGame() {
-        if (this.currentState === 'pause') {
-            this.currentState = 'game';
-            this.game.isPaused = false;
-        }
-    }
-    
-    renderPauseScreen() {
-        const ctx = this.game.ctx;
-        const scaleRatio = this.game.getScaleRatio();
-        
-        // Fond semi-transparent
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        
-        // Titre
-        ctx.fillStyle = '#4CAF50';
-        ctx.font = `${Math.floor(48 * scaleRatio)}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.fillText('PAUSE', ctx.canvas.width / 2, ctx.canvas.height / 3);
-        
-        // Instructions
-        ctx.fillStyle = 'white';
-        ctx.font = `${Math.floor(24 * scaleRatio)}px Arial`;
-        ctx.fillText('Appuyez sur ECHAP pour reprendre', ctx.canvas.width / 2, ctx.canvas.height / 2);
-        ctx.fillText('Appuyez sur M pour retourner au menu', ctx.canvas.width / 2, ctx.canvas.height / 2 + 40 * scaleRatio);
+    switchToPause() {
+        this.currentState = 'pause';
+        this.pauseMenuElement.style.display = 'flex';
+        this.game.isPaused = true;
     }
     
     endGame() {
@@ -98,17 +73,5 @@ export default class GameStateManager {
         );
         
         setTimeout(() => this.switchToMenu(), 3000);
-    }
-    
-    handleKeyPress(key) {
-        if (key === 'Escape') {
-            if (this.currentState === 'game') {
-                this.pauseGame();
-            } else if (this.currentState === 'pause') {
-                this.resumeGame();
-            }
-        } else if (key === 'KeyM' && this.currentState === 'pause') {
-            this.switchToMenu();
-        }
     }
 }
