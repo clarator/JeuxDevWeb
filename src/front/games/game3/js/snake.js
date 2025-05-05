@@ -13,7 +13,7 @@ export default class Snake {
         this.isMoving = false;
         this.speedX = 0;
         this.speedY = 0;
-        this.speedValue = 1;
+        this.speedValue = 150; // En pixels par seconde au lieu de pixels par frame
         
         this.path = [];
         this.targetNode = null;
@@ -22,7 +22,9 @@ export default class Snake {
         this.segments = [];
         this.segmentCount = 5; // Nombre de segments
         this.direction = 'right'; // Direction actuelle du serpent
+        this.followSpeed = 10.0; // Vitesse de suivi des segments (indépendante des FPS)
     }
+    
 
     startLevel(x, y) {
         this.canvasX = x * CELL_SIZE;
@@ -52,17 +54,17 @@ export default class Snake {
         if (!this.playerHasMoved && player.isMoving) {
             this.playerHasMoved = true;
         }
-
+    
         // Ne pas mettre à jour si le serpent n'est pas encore activé
         if (this.playerHasMoved && !this.isActive) {
-            this.activationTimer += deltaTime;
+            this.activationTimer += deltaTime * 1000; // Convertir en ms
             if (this.activationTimer >= this.activationDelay) {
                 this.isActive = true;
             }
             return;
         }
         if (!this.isActive) return;
-
+    
         const snakeGridX = Math.floor(this.canvasX / CELL_SIZE);
         const snakeGridY = Math.floor(this.canvasY / CELL_SIZE);
         const playerGridX = Math.floor(player.canvasX / CELL_SIZE);
@@ -71,27 +73,30 @@ export default class Snake {
         if (!this.isMoving) {
             this.findPath(snakeGridX, snakeGridY, playerGridX, playerGridY, map.grid);
         }
-
+    
         this.moveToTargetNode();
-
-        // Mettre à jour la position du serpent
-        this.canvasX += this.speedX;
-        this.canvasY += this.speedY;
+    
+        // Mettre à jour la position du serpent avec delta time
+        this.canvasX += this.speedX * deltaTime;
+        this.canvasY += this.speedY * deltaTime;
         
-        // Mettre à jour les segments
-        this.updateSegments();
+        // Mettre à jour les segments avec delta time
+        this.updateSegments(deltaTime);
         
         // Mettre à jour la direction
         this.updateDirection();
-
+    
         this.checkTargetNodeCollision();
     }
 
-    updateSegments() {
+    updateSegments(deltaTime) {
+        // Facteur de suivi adapté au delta time
+        const followFactor = 1.0 - Math.pow(0.5, deltaTime * this.followSpeed);
+        
         // Déplacer chaque segment vers la position du segment précédent
         for (let i = this.segments.length - 1; i > 0; i--) {
-            this.segments[i].x += (this.segments[i-1].x - this.segments[i].x) * 0.1;
-            this.segments[i].y += (this.segments[i-1].y - this.segments[i].y) * 0.1;
+            this.segments[i].x += (this.segments[i-1].x - this.segments[i].x) * followFactor;
+            this.segments[i].y += (this.segments[i-1].y - this.segments[i].y) * followFactor;
         }
         
         // La tête suit la position actuelle

@@ -3,7 +3,6 @@ import { CELL_SIZE } from "./Game.js";
 export default class Player {
     constructor() {
         this.score = 0;
-
         this.isMoving = false;
         
         // Position visuelle actuelle (en pixels)
@@ -11,15 +10,15 @@ export default class Player {
         this.canvasY = null;
     
         this.lastDirection = null;
-
+    
         this.speedX = 0;
         this.speedY = 0;
-
-        this.speedValue = 6;
-
+    
+        this.speedValue = 750;
+    
         this.image = new Image();
         this.image.src = "../../../assets/img/game3/chevalier.png";
-    } 
+    }
 
     startLevel(x, y) {
         this.canvasX = x * CELL_SIZE;
@@ -30,9 +29,9 @@ export default class Player {
         this.lastDirection = null;
     }
 
-    update() {
-        this.canvasX += this.speedX;
-        this.canvasY += this.speedY;
+    update(deltaTime) {
+        this.canvasX += this.speedX * deltaTime;
+        this.canvasY += this.speedY * deltaTime;
     }
 
     stopMoving() {

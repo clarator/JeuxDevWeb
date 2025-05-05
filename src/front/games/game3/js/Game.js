@@ -57,18 +57,17 @@ export default class Game {
     gameLoop(timestamp) {
         if (this.gameStateManager.currentState === 'game') {
             const now = timestamp || performance.now();
-            this.deltaTime = now - this.lastTime;
+            this.deltaTime = (now - this.lastTime) / 1000; // Convertir en secondes
             this.lastTime = now;
             
             this.frameCount++;
-            if (now - this.fpsUpdateTime >= 1000) { // Mettre à jour le FPS toutes les secondes
+            if (now - this.fpsUpdateTime >= 1000) {
                 this.fps = this.frameCount;
                 this.frameCount = 0;
                 this.fpsUpdateTime = now;
             }
-
+    
             this.update();
-
             this.render();
         }
         this.renderHUD();
@@ -102,7 +101,7 @@ export default class Game {
         const left = this.inputManager.isKeyJustPressed('ArrowLeft') || this.inputManager.isKeyJustPressed('KeyQ');
         const up = this.inputManager.isKeyJustPressed('ArrowUp') || this.inputManager.isKeyJustPressed('KeyZ');
         const down = this.inputManager.isKeyJustPressed('ArrowDown') || this.inputManager.isKeyJustPressed('KeyS');
-
+    
         if (right && this.player.lastDirection !== 'right') {
             if (!this.player.isMoving) {
                 this.player.speedX = this.player.speedValue;
@@ -136,7 +135,7 @@ export default class Game {
             }
         }
     
-        this.player.update();
+        this.player.update(this.deltaTime);
     
         const gridXLeft = Math.floor((this.player.canvasX+1)/CELL_SIZE);
         const gridXRight = Math.floor((this.player.canvasX + CELL_SIZE-1)/CELL_SIZE);
@@ -145,7 +144,7 @@ export default class Game {
     
         this.checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown);
         this.checkCollisionsWithMap(gridXLeft, gridXRight, gridYUp, gridYDown);
-
+    
         this.snake.update(this.deltaTime, this.player, this.map);
         
         if (this.snake.checkCollision(this.player.canvasX, this.player.canvasY)) {
@@ -153,11 +152,11 @@ export default class Game {
             this.gameStatus = 'lost';
             return;
         }
-
+    
         // Update camera to follow player
-        this.camera.updateCameraPosition(this.player);
+        this.camera.updateCameraPosition(this.player, this.deltaTime);
     }
-
+    
     checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown) {
         const collectibles = this.map.collectibles;
         for (let i = collectibles.length - 1; i >= 0; i--) {
