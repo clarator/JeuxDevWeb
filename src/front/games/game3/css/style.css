@@ -24,6 +24,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 40px;
+    margin-top: 20%;
 }
 
 #menu .content h1 {

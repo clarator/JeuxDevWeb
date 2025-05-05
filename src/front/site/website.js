@@ -23,6 +23,14 @@ rules1.addEventListener("click", function () {
     window.location.href = "/games/game1/html/rules.html";
 });
 
+rules2.addEventListener("click", function () {
+    window.location.href = "/games/game2/html/rules.html";
+});
+
+rules3.addEventListener("click", function () {
+    window.location.href = "/games/game3/html/rules.html";
+});
+
 score1.addEventListener("click", function () {
     window.location.href = "/games/game1/html/score.html";
 });
