@@ -22,6 +22,9 @@ export default class Game {
 
         this.lastTime = 0;
         this.deltaTime = 0;
+        this.targetFPS = 60;
+        this.frameInterval = 1000 / this.targetFPS;
+        this.lastFrameTime = 0;
 
         this.fps = 0;
         this.frameCount = 0;
@@ -55,6 +58,18 @@ export default class Game {
     }
 
     gameLoop(timestamp) {
+        const now = timestamp || performance.now();
+        const elapsed = now - this.lastFrameTime;
+        
+        // Si pas assez de temps écoulé, attendre la prochaine frame
+        if (elapsed < this.frameInterval) {
+            requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
+            return;
+        }
+        
+        // Ajuster le timing pour éviter les dérives
+        this.lastFrameTime = now - (elapsed % this.frameInterval);
+        
         if (this.gameStateManager.currentState === 'game') {
             const now = timestamp || performance.now();
             this.deltaTime = now - this.lastTime;

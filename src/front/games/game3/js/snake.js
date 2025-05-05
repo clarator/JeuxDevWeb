@@ -278,7 +278,7 @@ export default class Snake {
 
     render(ctx, camera) {
         if (!this.isActive) return;
-        
+
         ctx.save();
         
         // Dessiner les segments du serpent (du corps à la tête)
