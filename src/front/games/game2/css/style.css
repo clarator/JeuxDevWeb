@@ -21,31 +21,41 @@ body {
     cursor: crosshair;
 }
 
-#menu {
+#menu, #pauseMenu {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    width: 100vw;
-    background-color: #111;
-    color: white;
-    background-image: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+    text-align: center;
 }
 
-#menu h1 {
-    margin-bottom: 40px;
-    letter-spacing: 3px;
+h1 {
     font-size: 48px;
+    margin-bottom: 40px;
     color: #4CAF50;
     text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
     animation: pulse 2s infinite;
 }
 
-.menu-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
 }
 
 @keyframes pulse {
@@ -54,21 +64,20 @@ body {
     100% { text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); }
 }
 
-#menu button {
+button {
     background-color: #333;
     color: white;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
     border: 2px solid #4CAF50;
-    margin: 10px 0;
-    min-width: 200px;
     padding: 15px 30px;
-    font-size: 24px;
+    font-size: 22px;
+    margin: 10px 0;
+    cursor: pointer;
     border-radius: 5px;
+    min-width: 220px;
+    transition: all 0.3s ease;
 }
 
-#menu button:hover {
+button:hover {
     background-color: #4CAF50;
     transform: scale(1.05);
 }
