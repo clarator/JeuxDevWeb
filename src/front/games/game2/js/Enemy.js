@@ -17,6 +17,13 @@ export default class Enemy {
         this.scaleRatio = scaleRatio;
         this.baseSpeed = speed;
         this.game = game; // Référence au jeu
+        
+        // Pour la rotation
+        this.angle = 0; // Angle en radians
+        
+        // Image de l'ennemi (sera définie par les sous-classes)
+        this.image = null;
+        this.imageLoaded = false;
     }
     
     resize(scaleRatio) {
@@ -32,6 +39,11 @@ export default class Enemy {
         
         if (this.shootCooldown > 0) {
             this.shootCooldown -= deltaTime;
+        }
+        
+        // Calculer l'angle basé sur la direction du mouvement
+        if (this.speedX !== 0 || this.speedY !== 0) {
+            this.angle = Math.atan2(this.speedY, this.speedX);
         }
     }
     
@@ -76,11 +88,32 @@ export default class Enemy {
     
     render(ctx) {
         ctx.save();
-        // Changer la couleur si touché
-        ctx.fillStyle = this.isHit ? 'white' : this.color;
-        ctx.fillRect(this.canvasX, this.canvasY, this.width, this.height);
         
-        // Barre de vie
+        const center = this.getCenter();
+        
+        // Appliquer la rotation et dessiner l'image si chargée
+        ctx.translate(center.x, center.y);
+        ctx.rotate(this.angle);
+        
+        if (this.imageLoaded) {
+            // Si l'image est chargée, la dessiner
+            ctx.drawImage(
+                this.image,
+                -this.width / 2,
+                -this.height / 2,
+                this.width,
+                this.height
+            );
+        } else {
+            // Sinon, dessiner un rectangle pour le fallback
+            // Changer la couleur si touché
+            ctx.fillStyle = this.isHit ? 'white' : this.color;
+            ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+        }
+        
+        ctx.restore();
+        
+        // Barre de vie (sans rotation)
         const healthBarWidth = this.width;
         const healthBarHeight = 5 * this.scaleRatio;
         

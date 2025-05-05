@@ -38,6 +38,17 @@ export default class Player {
         // État d'invulnérabilité due aux dégâts
         this.damagedInvulnerable = false;
         this.damagedInvulnerableTime = 0;
+        
+        // Pour la rotation
+        this.angle = 0; // Angle en radians
+        
+        // Image du joueur
+        this.image = new Image();
+        this.image.src = '../../assets/img/game2/player.png'; // Assurez-vous que le chemin est correct
+        this.imageLoaded = false;
+        this.image.onload = () => {
+            this.imageLoaded = true;
+        };
     }
 
     reset() {
@@ -66,6 +77,7 @@ export default class Player {
         this.speedX = 0;
         this.speedY = 0;
         this.shootCooldown = 0;
+        this.angle = 0;
     }
     
     resize(scaleRatio) {
@@ -78,12 +90,18 @@ export default class Player {
         this.scaleRatio = scaleRatio;
     }
     
-    update(deltaTime) {
+    update(deltaTime, mouseX, mouseY) {
         this.canvasX += this.speedX * deltaTime;
         this.canvasY += this.speedY * deltaTime;
         
         if (this.shootCooldown > 0) {
             this.shootCooldown -= deltaTime;
+        }
+        
+        // Calculer l'angle basé sur la position de la souris
+        if (mouseX !== undefined && mouseY !== undefined) {
+            const center = this.getCenter();
+            this.angle = Math.atan2(mouseY - center.y, mouseX - center.x);
         }
         
         // Gestion de l'invulnérabilité due aux dégâts
@@ -158,14 +176,16 @@ export default class Player {
     render(ctx) {
         ctx.save();
         
+        const center = this.getCenter();
+        
         // Dessiner le bouclier si actif (toujours visible, jamais clignotant)
         if (this.shieldActive) {
             ctx.strokeStyle = 'cyan';
             ctx.lineWidth = 5 * this.scaleRatio;
             ctx.beginPath();
             ctx.arc(
-                this.canvasX + this.width / 2,
-                this.canvasY + this.height / 2,
+                center.x,
+                center.y,
                 (this.width / 2) + 10 * this.scaleRatio,
                 0,
                 Math.PI * 2
@@ -173,13 +193,30 @@ export default class Player {
             ctx.stroke();
         }
         
-        // Clignoter uniquement si invulnérable à cause des dégâts (pas du shield)
-        if (this.damagedInvulnerable && Math.floor(Date.now() / 100) % 2 === 0) {
-            ctx.fillStyle = 'rgba(255, 85, 85, 0.5)';
+        // Appliquer la rotation et dessiner l'image si chargée
+        ctx.translate(center.x, center.y);
+        ctx.rotate(this.angle);
+        
+        if (this.imageLoaded) {
+            // Si l'image est chargée, la dessiner
+            ctx.drawImage(
+                this.image,
+                -this.width / 2,
+                -this.height / 2,
+                this.width,
+                this.height
+            );
         } else {
-            ctx.fillStyle = this.color;
+            // Sinon, dessiner un rectangle pour le fallback
+            // Clignoter uniquement si invulnérable à cause des dégâts (pas du shield)
+            if (this.damagedInvulnerable && Math.floor(Date.now() / 100) % 2 === 0) {
+                ctx.fillStyle = 'rgba(255, 85, 85, 0.5)';
+            } else {
+                ctx.fillStyle = this.color;
+            }
+            ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
         }
-        ctx.fillRect(this.canvasX, this.canvasY, this.width, this.height);
+        
         ctx.restore();
         
         // Dessiner la barre de vie

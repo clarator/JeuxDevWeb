@@ -4,6 +4,14 @@ export default class ChaserEnemy extends Enemy {
     constructor(x, y, scaleRatio, game) {
         super(x, y, 40, 40, 150, 3, 'crimson', 0, scaleRatio, game);
         this.baseSpeed = 150;
+        
+        // Image du chaser
+        this.image = new Image();
+        this.image.src = '../../assets/img/game2/ChaserEnemy.png';
+        this.imageLoaded = false;
+        this.image.onload = () => {
+            this.imageLoaded = true;
+        };
     }
     
     update(deltaTime, player) {

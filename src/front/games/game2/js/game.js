@@ -160,14 +160,10 @@ export default class Game {
             this.handleInput(); // Pour gérer la sélection d'amélioration
             return;
         }
-        
-        if (this.inputManager.isKeyPressed('Space')) {
-            this.experienceManager.addExperience(200);
-        }
 
         this.handleInput();
-        
-        this.player.update(this.deltaTime);
+
+        this.player.update(this.deltaTime, this.mouseX, this.mouseY);
         
         // Mise à jour des ennemis
         for (const enemy of this.enemies) {
@@ -448,7 +444,8 @@ export default class Game {
         
         // Fond
         this.ctx.save();
-        this.ctx.fillStyle = '#222';
+        // this.ctx.fillStyle = '#222';
+        this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.restore();
         
