@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Shooter - Jeu de Survie</title>
+    <title>Deep Space Survivor - Jeu de Survie</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div id="menu" style="display: none;">
-        <!-- Le contenu du menu sera ajouté par JavaScript -->
+    <div id="menu">
+        <h1>DEEP SPACE SURVIVOR</h1>
+        <div class="menu-buttons">
+            <button id="startButton">JOUER</button>
+            <button id="quitButton">QUITTER</button>
+        </div>
     </div>
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" style="display: none;"></canvas>
     <script src="js/main.js" type="module"></script>
 </body>
 </html>

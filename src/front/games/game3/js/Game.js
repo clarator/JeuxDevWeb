@@ -33,6 +33,7 @@ export default class Game {
         window.addEventListener('resize', () => this.resizeCanvas());
 
         this.loopStarted = false;
+        this.levelNumber = null;
     }
     
     resizeCanvas() {
@@ -40,11 +41,12 @@ export default class Game {
         this.canvas.height = window.innerHeight;
     }
 
-    loadLevel(level) {
+    loadLevel(level, levelNumber) {
         this.map.loadMap(level);
         this.player.startLevel(this.map.spawnX, this.map.spawnY);
         this.snake.startLevel(this.map.spawnX, this.map.spawnY);
         this.gameStatus = 'playing';
+        this.levelNumber = levelNumber;
     }
 
     start() {
@@ -101,6 +103,11 @@ export default class Game {
             return;
         }
     
+        if (this.inputManager.isKeyPressed('Escape') || this.inputManager.isKeyPressed('KeyP')) {
+            this.gameStateManager.switchToPause();
+            return;
+        }
+
         // Vérifier si le joueur a atteint la sortie
         if (this.map.grid[
             Math.floor((this.player.canvasY + CELL_SIZE/2) / CELL_SIZE)
