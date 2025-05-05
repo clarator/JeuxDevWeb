@@ -1,8 +1,9 @@
+//fichier d'entrée pour le jeu
 import Game from './Game.js';
 
 let game;
 
-// Fonction d'initialisation du jeu et des améliorations
+//fonction d'initialisation du jeu
 function init() {
     console.log("DOM chargé, lancement du jeu...");
     game = new Game();
@@ -10,5 +11,5 @@ function init() {
 init()
 
 
-
+//pour lancer le serveur de dev
 //npm run server:dev

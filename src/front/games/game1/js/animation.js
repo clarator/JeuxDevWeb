@@ -1,4 +1,4 @@
-
+//pour l'animation de la pépite d'or
 //vibration
 function vibrateGold(vibrationIntensity, buttonGold) {
     if (buttonGold) {
@@ -18,20 +18,20 @@ function vibrateGold(vibrationIntensity, buttonGold) {
     }
 }
 
-
+//explosion de la pépite d'or
 function explodeGoldPicture(goldPicture, explosionContainer) {
     for (let i = 0; i < 15; i++) {
         const pepite = document.createElement("div");
         pepite.classList.add("explosion-pepite");
 
-        // Position de départ : centre de la pépite
+        //position de départ au centre de la pépite
         const rect = goldPicture.getBoundingClientRect();
         const containerRect = explosionContainer.getBoundingClientRect();
 
         pepite.style.left = (rect.left + rect.width / 2 - containerRect.left) + "px";
         pepite.style.top = (rect.top + rect.height / 2 - containerRect.top) + "px";
 
-        // Déplacement aléatoire
+        //déplacement aléatoire
         const distance = 600; //
         const dx = (Math.random() - 0.5) * distance  + "px";
         const dy = (Math.random() - 0.5) * distance + "px";
@@ -47,7 +47,7 @@ function explodeGoldPicture(goldPicture, explosionContainer) {
 
         explosionContainer.appendChild(pepite);
 
-        // Supprime la pépite après l'animation
+        //supprime la pépite après l'animation
         setTimeout(() => {
             pepite.remove();
         }, 600);

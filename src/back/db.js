@@ -1,11 +1,12 @@
+//connexion à la base de données MySQL
 import dotenv from "dotenv";
 dotenv.config();
 import mysql2 from "mysql2";
 
-// Utilisation de l'URL complète
+//utilisation de l'url pour se connecter à la base de données sur railway
 const db = mysql2.createConnection(process.env.MYSQL_URL);
 
-// Vérifie la connexion
+//vérifie la connexion
 db.connect(err => {
     if (err) {
         console.error("Erreur connexion à MySQL : ", err);

@@ -75,6 +75,7 @@ function applyUpgrade(upgrade, game) {
 
 //lancer les améliorations
 function startUpgrade(game) {
+    console.log("startUpgrade appelée avec", game);
     upgrades.forEach(upgrade => buyUpgrade(upgrade, game));
 }
 

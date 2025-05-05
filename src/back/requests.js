@@ -1,3 +1,4 @@
+//requête pour la gestion des joueurs et des jeux
 import express from "express";
 import bcrypt from "bcrypt";
 import db from "./db.js"; 

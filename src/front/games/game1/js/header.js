@@ -3,7 +3,7 @@ import { getBestScore } from "../../js/score.js";
 
 window.soundEnabled = window.soundEnabled ?? true;
 
-export function setupMenu() {
+export function setupHeader() {
     const exitButton = document.getElementById("exit");
     const soundIcon = document.getElementById("iconSound"); 
     const bestScore = document.getElementById("bestScore");

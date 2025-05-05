@@ -2,8 +2,7 @@ import { upgrades, startUpgrade } from "./upgrade.js";
 import { checkNotifications } from "./notification.js";
 import { startAutomation } from "./automation.js";
 import { vibrateGold,explodeGoldPicture } from "./animation.js";
-import { applyBonus } from "./bonus.js";
-import { setupMenu } from "./header.js";
+import { setupHeader } from "./header.js";
 import { saveScore } from "../../js/score.js";
 import { getCookie } from "../../js/cookie.js";
 
@@ -36,7 +35,7 @@ export default class Game {
 
         //menu
         document.addEventListener("DOMContentLoaded", () => {
-            setupMenu();
+            setupHeader();
         });
 
         // Enregistre le score quand la page est quittée
@@ -96,7 +95,6 @@ export default class Game {
     update() {
         if (this.goldDisplay) {
             this.goldDisplay.textContent = this.gold;
-        
         }
     }
 
@@ -121,13 +119,7 @@ export default class Game {
 
         this.gold += result; 
         this.goldDisplay.textContent = this.gold;
-        
-        //bonus
-        let bonus = applyBonus(this.score);
-        if(bonus > 0){
-            this.gold += bonus;
-        }
- 
+     
         this.update();
     }
 
