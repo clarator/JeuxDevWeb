@@ -55,23 +55,38 @@ export default class Game {
     }
 
     gameLoop(timestamp) {
+        // Calculer le deltaTime
+        const now = timestamp || performance.now();
+        this.deltaTime = (now - this.lastTime) / 1000; // Convertir en secondes
+        this.lastTime = now;
+        
+        // Calculer les FPS
+        this.frameCount++;
+        if (now - this.fpsUpdateTime >= 1000) {
+            this.fps = this.frameCount;
+            this.frameCount = 0;
+            this.fpsUpdateTime = now;
+        }
+        
+        // Adapter le comportement selon l'état du jeu
         if (this.gameStateManager.currentState === 'game') {
-            const now = timestamp || performance.now();
-            this.deltaTime = (now - this.lastTime) / 1000; // Convertir en secondes
-            this.lastTime = now;
-            
-            this.frameCount++;
-            if (now - this.fpsUpdateTime >= 1000) {
-                this.fps = this.frameCount;
-                this.frameCount = 0;
-                this.fpsUpdateTime = now;
-            }
-    
+            // Mode jeu normal - update et render
             this.update();
             this.render();
+        } else if (this.gameStateManager.currentState === 'pause') {
+            // Mode pause - seulement render (pas de update)
+            this.render();
+            this.renderPauseOverlay();
         }
-        this.renderHUD();
+        
+        // Continuer la boucle de jeu
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
+    }
+
+    // Afficher un overlay pour la pause
+    renderPauseOverlay() {
+        // Pas besoin de code ici car le menu pause est géré par HTML/CSS
+        // Mais on pourrait ajouter des effets spéciaux si souhaité
     }
 
     update() {
@@ -232,6 +247,8 @@ export default class Game {
             
             this.ctx.restore();
         }
+        
+        this.renderHUD();
     }
 
     renderHUD() {
@@ -240,6 +257,11 @@ export default class Game {
         this.ctx.fillStyle = '#ffff00';
         this.ctx.fillText(`FPS: ${this.fps}`, 10, 30);
         this.ctx.fillText(`Score: ${this.player.score}`, 10, 50);
+        
+        // Ajouter instruction pour pause
+        this.ctx.fillStyle = '#aaaaaa';
+        this.ctx.fillText('ESC/P: Pause', 10, 70);
+        
         this.ctx.restore();
     }
 }

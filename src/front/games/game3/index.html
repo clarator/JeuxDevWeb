@@ -3,18 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game 3</title>
+    <title>Serpent Rush</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="menu" style="display: none;">
         <div class="content">
-            <h1>Adventure quelque chose</h1>
+            <h1>Serpent Rush</h1>
 
             <div id="levels">
             </div>
+            
+            <button id="quitButton" onclick="window.location.href='/site'">Retour au site</button>
         </div>
     </div>
+    
+    <div id="pauseMenu" style="display: none;">
+        <div class="content">
+            <h2>Pause</h2>
+            <button id="resumeButton">Reprendre</button>
+            <button id="returnToMenuButton">Retour au menu</button>
+        </div>
+    </div>
+    
     <canvas id="gameCanvas" style="display: none;"></canvas>
     <script src="js/main.js" type="module"></script>
 </body>

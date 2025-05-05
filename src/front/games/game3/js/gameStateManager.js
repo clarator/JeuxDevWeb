@@ -4,18 +4,46 @@ export default class GameStateManager {
     constructor(game) {
         this.canvas = game.canvas;
         this.game = game;
-        this.currentState = null; // 'game' ou 'menu'
+        this.currentState = null; // 'game' ou 'menu' ou 'pause'
         this.menuElement = null;
+        this.pauseMenuElement = null;
+        
+        // Ajouter les événements pour la pause
+        document.addEventListener('keydown', (e) => {
+            if (this.currentState === 'game' && (e.code === 'Escape' || e.code === 'KeyP')) {
+                this.switchToPause();
+            }
+        });
+        
+        const resumeButton = document.getElementById('resumeButton');
+        const returnToMenuButton = document.getElementById('returnToMenuButton');
+        if (resumeButton) {
+            resumeButton.addEventListener('click', () => {
+                this.switchToGame();
+            });
+        }
+        
+        if (returnToMenuButton) {
+            returnToMenuButton.addEventListener('click', () => {
+                this.switchToMenu();
+            });
+        }
     }
 
     switchToMenu() {
         this.currentState = 'menu';
         this.game.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvas.style.display = 'none';
+        
         if (!this.menuElement) {
             this.menuElement = document.getElementById('menu');
         }
+        if (!this.pauseMenuElement) {
+            this.pauseMenuElement = document.getElementById('pauseMenu');
+        }
+        
         this.menuElement.style.display = 'block';
+        this.pauseMenuElement.style.display = 'none';
 
         const levelsElement = document.getElementById("levels");
         levelsElement.innerHTML = "";
@@ -34,7 +62,26 @@ export default class GameStateManager {
     switchToGame() {
         this.currentState = 'game';
         this.canvas.style.display = 'block';
+        
+        if (!this.menuElement) {
+            this.menuElement = document.getElementById('menu');
+        }
+        if (!this.pauseMenuElement) {
+            this.pauseMenuElement = document.getElementById('pauseMenu');
+        }
+        
         this.menuElement.style.display = 'none';
+        this.pauseMenuElement.style.display = 'none';
+    }
+    
+    switchToPause() {
+        this.currentState = 'pause';
+        
+        if (!this.pauseMenuElement) {
+            this.pauseMenuElement = document.getElementById('pauseMenu');
+        }
+        
+        this.pauseMenuElement.style.display = 'flex';
     }
 }
 

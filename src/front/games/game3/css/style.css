@@ -48,3 +48,64 @@ body {
     cursor: pointer;
     font-size: 16px;
 }
+
+/* Styles pour le menu pause */
+#pauseMenu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+#pauseMenu .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background-color: #333;
+    padding: 30px;
+    border-radius: 5px;
+}
+
+#pauseMenu h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+#resumeButton, #returnToMenuButton {
+    padding: 10px 20px;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    width: 160px;
+}
+
+#resumeButton:hover, #returnToMenuButton:hover {
+    background-color: #555;
+}
+
+/* Style pour le bouton quitter */
+#quitButton {
+    padding: 10px 30px;
+    background-color: #553333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+
+#quitButton:hover {
+    background-color: #884444;
+}
