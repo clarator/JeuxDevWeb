@@ -150,14 +150,18 @@ export default class Game {
         }
     }
 
-    //gere la sauvegarde du score
+    //gère la sauvegarde du score
     saveScoreFinal() {
-        //cookies
         const user = getCookie("user");
-        if (user) {
-            saveScore(user, this.score);
+    
+        if (this.score > 0) {
+            if (user) {
+                saveScore(user, this.score);
+            } else {
+                console.warn("Aucun utilisateur connecté pour sauvegarder le score");
+            }
         } else {
-            console.warn("Aucun utilisateur connecté pour sauvegarder le score");
+            console.log("Score nul, aucune sauvegarde effectuée.");
         }
     }
 }
