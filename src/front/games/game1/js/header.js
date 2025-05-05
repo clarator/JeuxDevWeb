@@ -22,13 +22,10 @@ export function setupHeader() {
 
     soundIcon.addEventListener("click", () => {
         window.soundEnabled = !window.soundEnabled;
-        console.log("Son activé :", window.soundEnabled);
 
         if (window.soundEnabled) {
-            console.log("Changement d’image vers sonON.png");
             soundIcon.src = "../../assets/img/game1/sonON.png";
         } else {
-            console.log("Changement d’image vers sonOff.png");
             soundIcon.src = "../../assets/img/game1/sonOff.png";
         }
     });

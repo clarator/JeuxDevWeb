@@ -51,8 +51,7 @@ export default class Game {
         setInterval(() => checkNotifications(this), 1000);
     }
 
-    
-
+    //gere le clic sur la pépite d'or
     mineClick(){
         this.clickCount++;
         this.score += this.scorePerClick;
@@ -65,10 +64,10 @@ export default class Game {
             pioche.play();
         }
       
-          
         //vibration
         vibrateGold(this.vibrationIntensity, this.buttonGold);
 
+    
         if (this.clickCount == 10) {
             this.vibrationIntensity += 0.25;
             this.clickCount = 0;
@@ -78,6 +77,7 @@ export default class Game {
         const goldPicture = document.getElementById("goldPicture");
         const explosionContainer = document.querySelector(".explosion");
 
+        //crée une explosion de pépite d'or
         if (this.score >= 10) {
             explodeGoldPicture(goldPicture, explosionContainer);
             
@@ -88,10 +88,10 @@ export default class Game {
             }
         }
         
-
         this.addGoldWallet();
     }
 
+    //gere l'affichage du porte feuille
     update() {
         if (this.goldDisplay) {
             this.goldDisplay.textContent = this.gold;
@@ -123,6 +123,7 @@ export default class Game {
         this.update();
     }
 
+    //gere le bruit de l'ajout de piece dans le porte feuille
     addSound(){
         if (window.soundEnabled) {
             let sound = new Audio("../../assets/sound/game1/piecesPorteFeuille.mp3");
@@ -131,8 +132,9 @@ export default class Game {
         }
     }
 
+    //gere l'explosion de la pépite d'or
     triggerExplosion() {
-        // Crée des mini images qui sortent de l'image principale
+        //crée des mini images qui sortent de l'image principale
         for (let i = 0; i < 20; i++) {
             const miniGold = document.createElement("div");
             miniGold.classList.add("miniGold");
@@ -141,13 +143,14 @@ export default class Game {
             miniGold.style.top = `${this.buttonGold.offsetTop + Math.random() * 100 - 50}px`; 
             document.body.appendChild(miniGold);
     
-            // Supprimer l'image après l'animation
+            //supprimer l'image après l'animation
             setTimeout(() => {
                 miniGold.remove();
             }, 1000);
         }
     }
 
+    //gere la sauvegarde du score
     saveScoreFinal() {
         //cookies
         const user = getCookie("user");
@@ -157,10 +160,4 @@ export default class Game {
             console.warn("Aucun utilisateur connecté pour sauvegarder le score");
         }
     }
-  
-    
 }
-
-//modif code score
-//creer page profil
-//faire les relges du jeu du 3eme

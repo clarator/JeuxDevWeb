@@ -35,7 +35,7 @@ function buyAutomation(automation, game) {
             game.gold -= automation.price;
             automation.number += 1;       
 
-            // Augmenter le prix après chaque achat
+            //augmente le prix après chaque achat
             automation.price = Math.floor(automation.price * 1.5); 
             costChoice.textContent = automation.price; 
             game.update();
@@ -52,7 +52,7 @@ function startAutomation(game) {
         buyAutomation(automation, game); 
     });
     
-    // Exécute l'automatisation toutes les secondes
+    //exécute l'automatisation toutes les secondes
     setInterval(() => {
         let totalGain = 0;
         let totalGold = 0;

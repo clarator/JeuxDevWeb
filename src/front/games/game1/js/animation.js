@@ -21,35 +21,35 @@ function vibrateGold(vibrationIntensity, buttonGold) {
 //explosion de la pépite d'or
 function explodeGoldPicture(goldPicture, explosionContainer) {
     for (let i = 0; i < 15; i++) {
-        const pepite = document.createElement("div");
-        pepite.classList.add("explosion-pepite");
+        const nugget = document.createElement("div");
+        nugget.classList.add("explosion-pepite");
 
         //position de départ au centre de la pépite
         const rect = goldPicture.getBoundingClientRect();
         const containerRect = explosionContainer.getBoundingClientRect();
 
-        pepite.style.left = (rect.left + rect.width / 2 - containerRect.left) + "px";
-        pepite.style.top = (rect.top + rect.height / 2 - containerRect.top) + "px";
+        nugget.style.left = (rect.left + rect.width / 2 - containerRect.left) + "px";
+        nugget.style.top = (rect.top + rect.height / 2 - containerRect.top) + "px";
 
         //déplacement aléatoire
         const distance = 600; //
         const dx = (Math.random() - 0.5) * distance  + "px";
         const dy = (Math.random() - 0.5) * distance + "px";
-        pepite.style.setProperty("--dx", dx);
-        pepite.style.setProperty("--dy", dy);
+        nugget.style.setProperty("--dx", dx);
+        nugget.style.setProperty("--dy", dy);
 
         const size = Math.random() * 10 + 8; 
         const duration = Math.random() * 300 + 800; 
-        pepite.style.width = `${size}px`;
-        pepite.style.height = `${size}px`;
-        pepite.style.animationDuration = `${duration}ms`;
+        nugget.style.width = `${size}px`;
+        nugget.style.height = `${size}px`;
+        nugget.style.animationDuration = `${duration}ms`;
 
 
-        explosionContainer.appendChild(pepite);
+        explosionContainer.appendChild(nugget);
 
         //supprime la pépite après l'animation
         setTimeout(() => {
-            pepite.remove();
+            nugget.remove();
         }, 600);
     }
 }
