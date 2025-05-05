@@ -7,6 +7,7 @@ export function setupMenu() {
     const exitButton = document.getElementById("exit");
     const soundIcon = document.getElementById("iconSound"); 
     const bestScore = document.getElementById("bestScore");
+    const rules = document.getElementById("rules"); 
 
     exitButton.addEventListener("click", () => {
         if (confirm("Quitter le jeu ?")) {

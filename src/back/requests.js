@@ -232,8 +232,6 @@ router.post('/update-profile', (req, res) => {
     });
 });
 
-
-
 //supprime le compte du joueur
 router.delete('/delete-account', (req, res) => {
     const pseudo = req.cookies.user; 

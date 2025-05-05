@@ -32,13 +32,14 @@ function explodeGoldPicture(goldPicture, explosionContainer) {
         pepite.style.top = (rect.top + rect.height / 2 - containerRect.top) + "px";
 
         // Déplacement aléatoire
-        const dx = (Math.random() - 0.5) * 200 + "px";
-        const dy = (Math.random() - 0.5) * 200 + "px";
+        const distance = 600; //
+        const dx = (Math.random() - 0.5) * distance  + "px";
+        const dy = (Math.random() - 0.5) * distance + "px";
         pepite.style.setProperty("--dx", dx);
         pepite.style.setProperty("--dy", dy);
 
         const size = Math.random() * 10 + 8; 
-        const duration = Math.random() * 300 + 500; 
+        const duration = Math.random() * 300 + 800; 
         pepite.style.width = `${size}px`;
         pepite.style.height = `${size}px`;
         pepite.style.animationDuration = `${duration}ms`;
