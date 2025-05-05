@@ -1,3 +1,4 @@
+//gère les automatisations du jeu
 const automations = [
     { 
         id: 'mineur', 
@@ -22,7 +23,7 @@ const automations = [
     }
 ];
 
-// Fonction d'achat d'une automation
+//fonction d'achat d'une automation
 function buyAutomation(automation, game) {
     const choice = document.getElementById(automation.id);
     const costChoice = document.getElementById(automation.costId);
@@ -45,7 +46,7 @@ function buyAutomation(automation, game) {
     });
 }
 
-
+//fonction pour démarrer l'automatisation
 function startAutomation(game) {
     automations.forEach(automation => {
         buyAutomation(automation, game); 

@@ -1,6 +1,8 @@
+//gère les notifications du jeu 1
 import { upgrades } from "./upgrade.js";
 import { automations } from "./automation.js";
 
+//fonction qui affiche les notifications
 export function checkNotifications(game) {
     const notificationList = document.getElementById("list");
     let notifications = [];

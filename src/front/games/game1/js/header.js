@@ -3,6 +3,7 @@ import { getBestScore } from "../../js/score.js";
 
 window.soundEnabled = window.soundEnabled ?? true;
 
+//fonction qui gère le header du jeu
 export function setupHeader() {
     const exitButton = document.getElementById("exit");
     const soundIcon = document.getElementById("iconSound"); 
