@@ -43,7 +43,7 @@ export default class Map {
 
     render(camera) {
         if (!this.grid) return;
-
+        
         this.ctx.save();
         // Parcourir la grille et dessiner chaque cellule
         for (let y = 0; y < this.grid.length; y++) {
@@ -65,7 +65,7 @@ export default class Map {
                 }
                 
                 if (cellValue === 1 || cellValue === 2 || cellValue === 3) {
-                    // Espace vide ou spawn
+                    
                     if (cellValue === 2) {
                         this.ctx.fillStyle = '#aaffaa'; // Couleur rouge pour le spawn
                     }
@@ -75,9 +75,11 @@ export default class Map {
                         this.ctx.fillStyle = '#eee'; // Couleur blanche pour l'espace vide
                     }
                     this.ctx.fillRect(posX, posY, CELL_SIZE, CELL_SIZE);
-                    
+
+                    // Espace vide ou spawn
                     this.ctx.strokeStyle = '#ddd';
                     this.ctx.strokeRect(posX, posY, CELL_SIZE, CELL_SIZE);
+                                
                 }
             }
         }
@@ -104,8 +106,6 @@ export default class Map {
                 CELL_SIZE / 2          
             );
 
-
-            this.ctx.stroke();
         }
         this.ctx.restore();
     }

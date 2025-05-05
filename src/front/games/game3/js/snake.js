@@ -13,7 +13,7 @@ export default class Snake {
         this.isMoving = false;
         this.speedX = 0;
         this.speedY = 0;
-        this.speedValue = 1;
+        this.speedValue = 3;
         
         this.path = [];
         this.targetNode = null;
@@ -36,7 +36,7 @@ export default class Snake {
         this.path = [];
         this.targetNode = null;
         
-        // Initialiser les segments
+        // Réinitialiser complètement tous les segments
         this.segments = [];
         for (let i = 0; i < this.segmentCount; i++) {
             this.segments.push({
