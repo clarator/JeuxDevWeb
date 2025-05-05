@@ -1,44 +1,45 @@
+// src/front/games/game2/js/Projectile.js
 export default class Projectile {
-    constructor(ctx, x, y, range) {
-        this.ctx = ctx;
-        this.x = x;
-        this.y = y;
-
-        this.hitBoxHeight = 30;
-        this.hitBoxWidth = 60;
-
-        this.range = range;
-
-        this.img = new Image();
-        this.img.src = "assets/img/game2/Animation Pack/Energy ball/EnergyBall.png";
-        this.frameX = 0;
-    }
-
-    render(removeSelf) {    
-        this.move();
-        if (this.range < 0) {
-            removeSelf();
-        }
-        this.ctx.save();
-
-        this.frameX += 0.08;
-        this.frameX = (this.frameX % 8);
-
-
-        this.ctx.drawImage(this.img, Math.floor(this.frameX) * (this.img.width/9)+5, 38, this.img.width/9, this.img.height, this.x, this.y, 80, 80);
+    constructor(x, y, direction, source = 'player', scaleRatio) {
+        this.canvasX = x;
+        this.canvasY = y;
+        this.direction = direction;
+        this.speed = 500 * scaleRatio;
+        this.width = 10 * scaleRatio;
+        this.height = 10 * scaleRatio;
+        this.source = source;
+        this.color = source === 'player' ? '#ffff00' : 'orangered';
+        this.scaleRatio = scaleRatio;
         
-        
-        this.ctx.rect(this.x, this.y, this.hitBoxWidth, this.hitBoxHeight);
-        this.ctx.strokeStyle = "white";
-        this.ctx.stroke();
-
-        this.ctx.restore();
+        // Pour la pénétration - ennemis touchés
+        this.touchedEnemies = []; // Tableau des instances des ennemis déjà touchés
     }
-
-    move() {
-        const speed = 3;
-        this.x += speed;
-        this.range -= speed;
+    
+    resize(scaleRatio) {
+        this.speed = 500 * scaleRatio;
+        this.width = 10 * scaleRatio;
+        this.height = 10 * scaleRatio;
+        this.scaleRatio = scaleRatio;
     }
-
+    
+    update(deltaTime) {
+        this.canvasX += this.direction.x * this.speed * deltaTime;
+        this.canvasY += this.direction.y * this.speed * deltaTime;
+    }
+    
+    isInBounds(canvasWidth, canvasHeight) {
+        return (
+            this.canvasX > -this.width &&
+            this.canvasX < canvasWidth + this.width &&
+            this.canvasY > -this.height &&
+            this.canvasY < canvasHeight + this.height
+        );
+    }
+    
+    render(ctx) {
+        ctx.save();
+        ctx.fillStyle = this.color;
+        ctx.fillRect(this.canvasX, this.canvasY, this.width, this.height);
+        ctx.restore();
+    }
 }

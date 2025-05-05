@@ -1,9 +1,44 @@
-html, body {
-    overflow: hidden;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-#canvasGame2 {
-    height: 100%;
-    width: 100%;
-    background-color: black;
+body {
+    overflow: hidden;
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+#gameCanvas {
+    display: block;
+    background-color: #000;
+    cursor: crosshair;
+}
+
+#menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+#menu button {
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#menu button:hover {
+    background-color: #555;
 }
