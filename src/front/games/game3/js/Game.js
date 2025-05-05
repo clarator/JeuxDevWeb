@@ -33,6 +33,7 @@ export default class Game {
         window.addEventListener('resize', () => this.resizeCanvas());
 
         this.loopStarted = false;
+        this.levelNumber = null;
     }
     
     resizeCanvas() {
@@ -40,11 +41,12 @@ export default class Game {
         this.canvas.height = window.innerHeight;
     }
 
-    loadLevel(level) {
+    loadLevel(level, levelNumber) {
         this.map.loadMap(level);
         this.player.startLevel(this.map.spawnX, this.map.spawnY);
         this.snake.startLevel(this.map.spawnX, this.map.spawnY);
         this.gameStatus = 'playing';
+        this.levelNumber = levelNumber;
     }
 
     start() {
@@ -55,24 +57,38 @@ export default class Game {
     }
 
     gameLoop(timestamp) {
-        if (this.gameStateManager.currentState === 'game') {
-            const now = timestamp || performance.now();
-            this.deltaTime = now - this.lastTime;
-            this.lastTime = now;
-            
-            this.frameCount++;
-            if (now - this.fpsUpdateTime >= 1000) { // Mettre à jour le FPS toutes les secondes
-                this.fps = this.frameCount;
-                this.frameCount = 0;
-                this.fpsUpdateTime = now;
-            }
-
-            this.update();
-
-            this.render();
+        // Calculer le deltaTime
+        const now = timestamp || performance.now();
+        this.deltaTime = (now - this.lastTime) / 1000; // Convertir en secondes
+        this.lastTime = now;
+        
+        // Calculer les FPS
+        this.frameCount++;
+        if (now - this.fpsUpdateTime >= 1000) {
+            this.fps = this.frameCount;
+            this.frameCount = 0;
+            this.fpsUpdateTime = now;
         }
-        this.renderHUD();
+        
+        // Adapter le comportement selon l'état du jeu
+        if (this.gameStateManager.currentState === 'game') {
+            // Mode jeu normal - update et render
+            this.update();
+            this.render();
+        } else if (this.gameStateManager.currentState === 'pause') {
+            // Mode pause - seulement render (pas de update)
+            this.render();
+            this.renderPauseOverlay();
+        }
+        
+        // Continuer la boucle de jeu
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
+    }
+
+    // Afficher un overlay pour la pause
+    renderPauseOverlay() {
+        // Pas besoin de code ici car le menu pause est géré par HTML/CSS
+        // Mais on pourrait ajouter des effets spéciaux si souhaité
     }
 
     update() {
@@ -87,6 +103,11 @@ export default class Game {
             return;
         }
     
+        if (this.inputManager.isKeyPressed('Escape') || this.inputManager.isKeyPressed('KeyP')) {
+            this.gameStateManager.switchToPause();
+            return;
+        }
+
         // Vérifier si le joueur a atteint la sortie
         if (this.map.grid[
             Math.floor((this.player.canvasY + CELL_SIZE/2) / CELL_SIZE)
@@ -99,10 +120,10 @@ export default class Game {
         }
     
         const right = this.inputManager.isKeyJustPressed('ArrowRight') || this.inputManager.isKeyJustPressed('KeyD');
-        const left = this.inputManager.isKeyJustPressed('ArrowLeft') || this.inputManager.isKeyJustPressed('KeyA');
-        const up = this.inputManager.isKeyJustPressed('ArrowUp') || this.inputManager.isKeyJustPressed('KeyW');
+        const left = this.inputManager.isKeyJustPressed('ArrowLeft') || this.inputManager.isKeyJustPressed('KeyQ');
+        const up = this.inputManager.isKeyJustPressed('ArrowUp') || this.inputManager.isKeyJustPressed('KeyZ');
         const down = this.inputManager.isKeyJustPressed('ArrowDown') || this.inputManager.isKeyJustPressed('KeyS');
-
+    
         if (right && this.player.lastDirection !== 'right') {
             if (!this.player.isMoving) {
                 this.player.speedX = this.player.speedValue;
@@ -136,7 +157,7 @@ export default class Game {
             }
         }
     
-        this.player.update();
+        this.player.update(this.deltaTime);
     
         const gridXLeft = Math.floor((this.player.canvasX+1)/CELL_SIZE);
         const gridXRight = Math.floor((this.player.canvasX + CELL_SIZE-1)/CELL_SIZE);
@@ -145,7 +166,7 @@ export default class Game {
     
         this.checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown);
         this.checkCollisionsWithMap(gridXLeft, gridXRight, gridYUp, gridYDown);
-
+    
         this.snake.update(this.deltaTime, this.player, this.map);
         
         if (this.snake.checkCollision(this.player.canvasX, this.player.canvasY)) {
@@ -153,11 +174,11 @@ export default class Game {
             this.gameStatus = 'lost';
             return;
         }
-
+    
         // Update camera to follow player
-        this.camera.updateCameraPosition(this.player);
+        this.camera.updateCameraPosition(this.player, this.deltaTime);
     }
-
+    
     checkCollectionsWithCollectibles(gridXLeft, gridXRight, gridYUp, gridYDown) {
         const collectibles = this.map.collectibles;
         for (let i = collectibles.length - 1; i >= 0; i--) {
@@ -233,6 +254,8 @@ export default class Game {
             
             this.ctx.restore();
         }
+        
+        this.renderHUD();
     }
 
     renderHUD() {
@@ -241,6 +264,11 @@ export default class Game {
         this.ctx.fillStyle = '#ffff00';
         this.ctx.fillText(`FPS: ${this.fps}`, 10, 30);
         this.ctx.fillText(`Score: ${this.player.score}`, 10, 50);
+        
+        // Ajouter instruction pour pause
+        this.ctx.fillStyle = '#aaaaaa';
+        this.ctx.fillText('ESC/P: Pause', 10, 70);
+        
         this.ctx.restore();
     }
 }
