@@ -15,7 +15,7 @@ export default class Player {
         this.speedX = 0;
         this.speedY = 0;
 
-        this.speedValue = 14;
+        this.speedValue = 6;
 
         this.image = new Image();
         this.image.src = "../../../assets/img/game3/chevalier.png";

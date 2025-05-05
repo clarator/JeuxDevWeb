@@ -78,7 +78,6 @@ export default class Game {
     update() {
         // Ne pas mettre à jour si le jeu est terminé
         if (this.gameStatus !== 'playing') {
-            this.snake.isActive = false; // Désactiver le serpent
             // Permettre de retourner au menu après un court délai
             if ((this.gameStatus === 'won' || this.gameStatus === 'lost') && 
                 this.inputManager.isKeyJustPressed('Space')) {

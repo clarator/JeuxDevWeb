@@ -13,7 +13,7 @@ export default class Snake {
         this.isMoving = false;
         this.speedX = 0;
         this.speedY = 0;
-        this.speedValue = 3;
+        this.speedValue = 1;
         
         this.path = [];
         this.targetNode = null;
