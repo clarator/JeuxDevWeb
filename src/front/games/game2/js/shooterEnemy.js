@@ -7,7 +7,7 @@ export default class ShooterEnemy extends Enemy {
         
         // Image du shooter
         this.image = new Image();
-        this.image.src = '../../assets/img/game2/ShooterEnemy.png';
+        this.image.src = '/assets/img/game2/ShooterEnemy.png';
         this.imageLoaded = false;
         this.image.onload = () => {
             this.imageLoaded = true;

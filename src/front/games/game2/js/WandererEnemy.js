@@ -8,7 +8,7 @@ export default class WandererEnemy extends Enemy {
         
         // Image du wanderer
         this.image = new Image();
-        this.image.src = '../../assets/img/game2/WandererEnemy.png';
+        this.image.src = '/assets/img/game2/WandererEnemy.png';
         this.imageLoaded = false;
         this.image.onload = () => {
             this.imageLoaded = true;
