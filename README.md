@@ -1,101 +1,122 @@
 # JeuxDevWeb
 
-## Projet réaliser en HTML, CSS, JS
+## Projet réalisé en HTML, CSS et JavaScript
 
-## Membre du groupe
+## Membres du groupe
 
-- Romain STEFANI
-- Clara TORRI
+- Romain STEFANI  
+- Clara TORRI  
 
-# Site
+---
 
-Réalisé par Clara
+# Site Web
 
-### Front
+**Développé par Clara**
 
-- header.html utiliser par toutes les pages du site ce qui permet d'éviter la répétition dans le code
+## Frontend
 
-- Page Principal :
-    - index.html ==> site permettant d'accéder aux jeux ainsi qu'à leurs règles des jeux et l'historique des scores
-    - website.js ==> utiliser pour faire les redirections sur les jeux, les règles des jeux et les scores des joueurs
-    - website.css ==> style
+- `header.html`  
+  Utilisé par toutes les pages du site pour éviter la répétition de code.
 
-- Page Secondaire :
+### Page principale
 
-  - Profil :
-        - profile.html ==> affiche le pseudo du joueur, lui permettant de modifier son pseudo et/ou son mot de passe et de supprimer son compte s'il le souhaite
-        - profile.js ==> recupère le pseudo du joueur grâce au cookie, envoie au serveur les nouvelles données ou la suppresion du compte
-        - profile.css ==> style
+- `index.html`  
+  Page d'accueil permettant d'accéder aux jeux, à leurs règles et à l'historique des scores.
+- `website.js`  
+  Fichier JavaScript pour gérer les redirections vers les jeux, les règles et les scores.
+- `website.css`  
+  Feuille de style principale du site.
 
-  - Contact :
-        - contact.html ==> pour afficher les informations des développeurs
-        - contact.css ==> style
+### Pages secondaires
 
-  - Connection :
-        - login.html ==> pour se connecter et sauvegarder ses scores dans les jeux
-        - login.js ==> gère le changement entre Inscription et Connexion + l'envoie des informations d'inscription et de connexion au serveur
-        - login.css ==> style
+#### Profil
+- `profile.html`  
+  Affiche le pseudo du joueur, permet de modifier les informations ou de supprimer le compte.
+- `profile.js`  
+  Récupère le pseudo depuis les cookies, envoie les modifications ou la suppression au serveur.
+- `profile.css`  
+  Feuille de style de la page profil.
 
-### Back
+#### Contact
+- `contact.html`  
+  Affiche les informations des développeurs.
+- `contact.css`  
+  Style de la page contact.
 
-- server.js
-    - fichier principal du serveur
+#### Connexion / Inscription
+- `login.html`  
+  Permet à l'utilisateur de se connecter ou de créer un compte.
+- `login.js`  
+  Gère l'alternance entre inscription et connexion, envoie les données au serveur.
+- `login.css`  
+  Feuille de style pour la page de connexion.
 
-- db.js
-    - fichier pour se connecter à la base de donnée (MySQL) hébergé chez Railway
+## Backend
 
-(mettre schema BD)
+- `server.js`  
+  Fichier principal du serveur Node.js.
 
-- request.js
-    - fichier avec toute les requêtes d'insertion, modification, recherche et suppresion
+- `db.js`  
+  Connexion à la base de données MySQL (hébergée sur Railway).
 
-## DOM : Minor clicker
+- `request.js`  
+  Contient toutes les requêtes SQL : insertion, modification, suppression, recherche.
 
-Réalisé par Clara
+**À faire : ajouter le schéma de la base de données**
 
-- Site : index.html
-- Code du jeu :
+---
 
-  - script.js
-        - fichier avec la fonction d'initialisation du jeu
+# Jeu DOM : Minor Clicker
 
-  - Game.js
-        - classe principal du jeu
-        - contructor() permettant l'initialisation des variables, du header, la mise à jour du score, la gestion du score, des notifications, des améliorations et des automatisations
-        - fonction mineClick() qui gère le clic sur l'image de la pépite d'or, avec le sons, l'explosion, la vibration et l'ajout d'argent dans le porte-monnaie
-        - fonction update() pour mettre à jour l'affichage de l'or et du score
-        - fonction addGoldWallet() pour gérer le porte-monnaie
-        - fontion addSound() pour ajouter le son lors de l'ajout d'or dans le porte-monnaie
-        - fonction triggerExplosion() pour gérer l'explosion à partir de l'image de la pépite d'or
-        - fonction saveScoreFinal() pour gérer la sauvegarde du score
+**Développé par Clara**
 
-  - animation.js
-        - fichier qui gère l'animation de la pépite
-        - la vibration lorsqu'on clique avec vibrateGold() ==- l'explosion de mini pépite avec explodeGoldPicture()
+## Fichiers du jeu
 
-  - automation.js
-        - fichier qui gère les automatisations du jeu
-        - variable automation pour initialisé les automatisations
-        - fonction buyAutomation() pour l'achat d'une automatisation
-        - fonction startAutomation() pour démarrer l'automatisation
+- `index.html`  
+  Point d'entrée du jeu Minor Clicker.
 
-  - upgrade.js
-        - fichier qui gère les améliorations du jeu
-        - fonction buyUpgrade() pour l'achat d'une amélioration
-        - fonction applyUpgrade() pour appliquer l'effet de l'amélioration
-        - fonction startUpgrade() pour lancer les améliorations
+### `script.js`
+- Initialise le jeu.
 
-  - notification.js
-        - fonction checkNotifications() pour afficher la liste des notifications
+### `Game.js`
+- Classe principale du jeu.
+- `constructor()` : initialise les variables, le header, les scores, notifications, améliorations et automatisations.  
+- `mineClick()` : gère le clic sur la pépite d’or (son, explosion, vibration, gain d’or).  
+- `update()` : met à jour l’affichage de l’or et du score.  
+- `addGoldWallet()` : ajoute de l’or au porte-monnaie.  
+- `addSound()` : joue le son de gain.  
+- `triggerExplosion()` : déclenche une animation d’explosion.  
+- `saveScoreFinal()` : sauvegarde le score (si différent de 0).
 
-  - header.js
-        - gère le fichier du jeu
-        - fonction setupHeader() qui gère le bouton quitter, l'activation et la désactivation du son, l'affichage du meilleur score
+### `animation.js`
+- Gère les animations liées à la pépite.
+- `vibrateGold()` : animation de vibration.  
+- `explodeGoldPicture()` : explosion en mini pépites.
 
-## Canvas :
+### `automation.js`
+- Gère les automatisations.
+- `automations[]` : tableau contenant les objets d'automatisation.  
+- `buyAutomation()` : permet l'achat d'une automatisation.  
+- `startAutomation()` : démarre le gain passif toutes les secondes.
 
-Réalisé par Romain
+### `upgrade.js`
+- Gère les améliorations.
+- `buyUpgrade()` : achat d’une amélioration.  
+- `applyUpgrade()` : applique les effets.  
+- `startUpgrade()` : initialise les améliorations.
 
-## Canvas :
+### `notification.js`
+- `checkNotifications()` : affiche les notifications.
 
-Réalisé par Romain
+### `header.js`
+- Gère l’en-tête du jeu.
+- `setupHeader()` : initialise les boutons (quitter, son, meilleur score).
+
+---
+
+# Jeu Canvas
+
+
+**Développé par Romain**
+
+
