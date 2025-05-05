@@ -1,47 +1,62 @@
-import { getCookie } from "./cookies.js"; 
+import { getCookie } from "../../games/js/cookie.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const pseudo = getCookie("user");
+    const pseudoDisplay = document.getElementById("pseudoDisplay");
     const usernameInput = document.getElementById("username");
     const passwordInput = document.getElementById("password");
     const updateForm = document.getElementById("updateForm");
 
-    // Si un pseudo est déjà enregistré dans le cookie, le remplir dans le formulaire
-    if (pseudo) {
-        usernameInput.value = pseudo;
+    //affiche le pseudo dans l'élément HTML
+    if (pseudoDisplay) {
+        pseudoDisplay.textContent = pseudo;
+    } else {
+        console.error("Erreur : élément #pseudoDisplay introuvable");
     }
 
-    // Soumission du formulaire de mise à jour du profil
+    //modifie le pseudo et/ou le mot de passe du joueur
     updateForm.addEventListener("submit", (event) => {
-        event.preventDefault();  // Empêche le rechargement de la page à la soumission du formulaire
-
-        const username = usernameInput.value;
-        const password = passwordInput.value;
-
-        // Envoie une requête POST pour mettre à jour le profil
+        event.preventDefault();
+    
+        const oldUsername = pseudo; 
+        const newUsername = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+    
+        const data = {
+            oldUsername
+        };
+    
+        if (newUsername) data.newUsername = newUsername;
+        if (password) data.password = password;
+    
+        if (!newUsername && !password) {
+            alert("Veuillez remplir au moins un champ pour mettre à jour le profil.");
+            return;
+        }
+    
         fetch('/update-profile', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username, password })
+            credentials: "include",
+            body: JSON.stringify(data)
         })
-        .then(res => res.json())
+        .then(res => res.json().catch(() => { throw new Error("Erreur serveur") }))
         .then(data => {
-            if (data.message) {
-                alert(data.message);
-                if (username) {
-                    document.cookie = `user=${username}; path=/`; // Met à jour le cookie avec le nouveau pseudo
-                }
+            alert(data.message);
+            if (data.newUsername) {
+                document.cookie = `user=${data.newUsername}; path=/`;
+                pseudoDisplay.textContent = data.newUsername;
             }
         })
         .catch(err => {
-            alert("Une erreur est survenue lors de la mise à jour du profil.");
-            console.error(err);
+            console.error("Erreur côté client :", err);
+            alert("Une erreur est survenue.");
         });
     });
-
-    // Gestion de la suppression du compte
+    
+    //supprime le compte du joueur
     document.getElementById("deleteAccount").addEventListener("click", () => {
         if (confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.")) {
             fetch(`/delete-account?pseudo=${pseudo}`, {
@@ -50,8 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => {
                 if (res.ok) {
                     alert("Compte supprimé.");
-                    document.cookie = "user=; Max-Age=0"; // Supprime le cookie
-                    window.location.href = "/"; // Redirige l'utilisateur
+                    document.cookie = "user=; Max-Age=0";
+                    window.location.href = "/";
                 } else {
                     alert("Erreur lors de la suppression du compte.");
                 }
@@ -59,4 +74,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-

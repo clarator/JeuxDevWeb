@@ -11,26 +11,30 @@
             <div id="headerContainer"></div>
         </header>
 
-        <div class="container">
+            <h1><span id="pseudoDisplay"></span></h1>
+
+            <div class="bigContainer">
+                <div class="container1">
+                    <h2>Modification</h2>
+                    <form id="updateForm" action="/update-profile" method="POST">
+                        <label for="username">Changer de pseudo :</label>
+                        <input type="text" id="username" name="username" placeholder="Laissez vide pour ne pas changer">
+    
+                        <label for="password">Changer de mot de passe :</label>
+                        <input type="password" id="password" name="password" placeholder="Laissez vide pour ne pas changer">
+    
+                        <button type="submit">Mettre à jour</button>
+                    </form>
+                </div>
+                  
+                <div class="container2">
+                    <h2>Supprimer mon compte</h2>
+                    <button id="deleteAccount" class="danger">Supprimer</button>
+                </div>
+            </div>
             
-            <h1>Mon profil</h1>
 
-            <form id="updateForm" action="/update-profile" method="POST">
-                <label for="username">Changer de pseudo :</label>
-                <input type="text" id="username" name="username" placeholder="Laissez vide pour ne pas changer">
-
-                <label for="password">Changer de mot de passe :</label>
-                <input type="password" id="password" name="password" placeholder="Laissez vide pour ne pas changer">
-
-                <button type="submit">Mettre à jour</button>
-            </form>
-
-            <hr>
-
-            <button id="deleteAccount" class="danger">Supprimer mon compte</button>
-        </div>
-
-        <script src="/site/js/header.js"></script>
-        <script src="/site/js/profile.js"></script>
+        <script src="/site/js/header.js" type="module"></script>
+        <script src="/site/js/profile.js" type="module"></script>
     </body>
 </html>

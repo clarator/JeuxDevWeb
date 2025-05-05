@@ -63,6 +63,7 @@ router.post('/login', (req, res) => {
             }
 
             if (isMatch) {
+                res.cookie("user", pseudo, { path: "/" });
                 res.send({ message: "Connexion réussie" });
                 return;
             } else {
@@ -181,55 +182,71 @@ router.get('/best-score', (req, res) => {
 });
 
 //modifie le profil du joueur
-router.post('/update-profile', (req, res) => {
-    const { username, password } = req.body;
-    const pseudo = req.cookies.user; //récupère l'ancien pseudo 
+router.post("/update-profile", async (req, res) => {
+    const { oldUsername, newUsername, password } = req.body;
 
-    //verif que le joueur soit connecté
-    if (!pseudo) {
-        res.status(400).send("Utilisateur non identifié");
-        return;
+    if (!oldUsername) {
+        return res.status(400).json({ message: "Ancien pseudo manquant." });
     }
 
-    const updates = [];
-    const values = [];
-
-    //si pseudo modif, on vérifie que le pseudo n'existe pas déjà
-    if (username) {
-        updates.push("pseudo = ?");
-        values.push(username);
+    if (!newUsername && !password) {
+        return res.status(400).json({ message: "Aucune donnée à mettre à jour." });
     }
 
-    //si mot de passe modif, ça crypte le nouveau
-    if (password) {
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(password, salt);
-        updates.push("password = ?");
-        values.push(hash);
-    }
-
-    //si rien à modifier, on renvoie une erreur
-    if (updates.length === 0) {
-        res.status(400).send("Aucune modification demandée");
-        return;
-    }
-
-    //met à jour le profil dans la BDD
-    const updateQuery = `UPDATE users SET ${updates.join(', ')} WHERE pseudo = ?`;
-    values.push(pseudo);
-
-    db.query(updateQuery, values, (err, result) => {
+    // Vérifie si l'utilisateur existe
+    db.get("SELECT * FROM users WHERE pseudo = ?", [oldUsername], async (err, row) => {
         if (err) {
-            console.error("Erreur lors de la mise à jour du profil :", err);
-            res.status(500).send("Erreur lors de la mise à jour du profil");
-            return;
+            return res.status(500).json({ message: "Erreur serveur (recherche user)" });
         }
 
-        if (username) {
-            res.cookie("user", username, { path: "/" }); //met à jour le cookie
+        if (!row) {
+            return res.status(404).json({ message: "Utilisateur introuvable." });
         }
 
-        res.status(200).send("Profil mis à jour avec succès");
+        // Préparer les valeurs à mettre à jour
+        const updates = [];
+        const values = [];
+
+        if (newUsername) {
+            updates.push("pseudo = ?");
+            values.push(newUsername);
+        }
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updates.push("password = ?");
+            values.push(hashedPassword);
+        }
+
+        if (updates.length === 0) {
+            return res.status(400).json({ message: "Aucune modification à appliquer." });
+        }
+
+        values.push(oldUsername); // pour WHERE clause
+
+        const sql = `UPDATE users SET ${updates.join(", ")} WHERE pseudo = ?`;
+
+        db.run(sql, values, function (err) {
+            if (err) {
+                return res.status(500).json({ message: "Erreur lors de la mise à jour." });
+            }
+
+            // Met à jour le cookie si le pseudo a changé
+            if (newUsername) {
+                res.cookie("user", newUsername, {
+                    path: "/",
+                    maxAge: 3600000,
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "strict"
+                });
+            }
+
+            res.json({
+                message: "Profil mis à jour avec succès.",
+                newUsername: newUsername || oldUsername
+            });
+        });
     });
 });
 
@@ -291,5 +308,27 @@ router.post("/save-score-game3", (req, res) => {
         });
     });
 });
+
+
+//retourne tout les scores de tout les joueurs pour game1
+router.get('/all-scores-game1', (req, res) => {
+    const query = `
+        SELECT u.pseudo, m.score, m.created_at
+        FROM users u
+        JOIN minorClicker m ON u.id = m.user_id
+        ORDER BY m.score DESC
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error("Erreur récupération scores game1 :", err);
+            return res.status(500).json({ message: "Erreur lors de la récupération des scores" });
+        }
+
+        console.log("Scores récupérés :", results);
+        res.status(200).json(results);
+    });
+});
+
 
 export default router;

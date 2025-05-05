@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historique des Parties</title>
+    <title>Scores</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,35 +58,17 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Date</th>
+                    <th>Pseudo</th>
                     <th>Score</th>
-                    <th>Durée</th>
+                    <th>Date</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>2023-10-01</td>
-                    <td>1500</td>
-                    <td>10:45</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>2023-10-02</td>
-                    <td>1800</td>
-                    <td>12:30</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>2023-10-03</td>
-                    <td>2000</td>
-                    <td>15:20</td>
-                </tr>
+            <tbody id="scoreTable">
+                
             </tbody>
         </table>
     </main>
-    <footer>
-        <p>&copy; 2023 JeuxDevWeb</p>
-    </footer>
+    <script src="../../js/score.js" type="module"></script>
+        
 </body>
 </html>
