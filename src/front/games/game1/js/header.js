@@ -1,5 +1,5 @@
-import { getCookie } from "../../js/cookie.js";
-import { getBestScore } from "../../js/score.js"; 
+import { getCookie } from "../../common/cookie.js";
+import { getBestScore } from "../../common/scoreManager.js"; 
 
 window.soundEnabled = window.soundEnabled ?? true;
 

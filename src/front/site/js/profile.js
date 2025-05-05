@@ -1,4 +1,4 @@
-import { getCookie } from "../../games/js/cookie.js";
+import { getCookie } from "../../games/common/cookie.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const pseudo = getCookie("user");

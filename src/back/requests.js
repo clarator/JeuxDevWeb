@@ -5,6 +5,7 @@ import db from "./db.js";
 
 const router = express.Router();
 
+//inscription
 router.post('/register', (req, res) => {
     const { pseudo, password, password2 } = req.body;
     
@@ -75,111 +76,9 @@ router.post('/login', (req, res) => {
 
 //deconnexion
 router.post('/logout', (req, res) => {
-    res.clearCookie("sessionId", { path: "/" });
     res.send({ message: "Déconnexion réussie" });
 });
 
-//sauvegarde du score du joueur
-router.post("/save-score", (req, res) => {
-    console.log("Requête reçue :", req.body);
-
-    const { pseudo } = req.body;
-    req.body.score = parseInt(req.body.score, 10);
-    const score = req.body.score;
-
-    if (!pseudo || typeof score !== "number" || isNaN(score)) {
-        console.log("Champs invalides :", { pseudo, score });
-        res.status(400).send("Champs manquants ou invalides");
-        return;
-    }
-
-    const userQuery = "SELECT id FROM users WHERE pseudo = ?";
-    db.query(userQuery, [pseudo], (err, results) => {
-        if (err || results.length === 0) {
-            console.error("Erreur récupération user :", err, "Résultats :", results);
-            res.status(500).send("Utilisateur non trouvé");
-            return;
-        }
-
-        const userId = results[0].id;
-        console.log("Utilisateur trouvé :", userId);
-
-        const bestScoreQuery = `
-            SELECT id, score FROM minorClicker
-            WHERE user_id = ? AND is_best = true
-        `;
-
-        db.query(bestScoreQuery, [userId], (err2, bestResults) => {
-            if (err2) {
-                console.error("Erreur récupération meilleur score :", err2);
-                res.status(500).send("Erreur lors de la récupération du meilleur score");
-                return;
-            }
-
-            const isBest = bestResults.length === 0 || score > bestResults[0].score;
-            console.log("Nouveau score est-il meilleur ?", isBest);
-
-            const insertScoreQuery = `
-                INSERT INTO minorClicker (user_id, score, is_best, created_at)
-                VALUES (?, ?, ?, NOW())
-            `;
-
-            db.query(insertScoreQuery, [userId, score, isBest], (err3) => {
-                if (err3) {
-                    console.error("Erreur insertion score :", err3);
-                    res.status(500).send("Erreur enregistrement score");
-                    return;
-                }
-
-                if (isBest && bestResults.length > 0) {
-                    const oldBestId = bestResults[0].id;
-                    const updateOldBestQuery = `UPDATE minorClicker SET is_best = false WHERE id = ?`;
-                    db.query(updateOldBestQuery, [oldBestId], (err4) => {
-                        if (err4) {
-                            console.warn("Erreur mise à jour ancien meilleur score :", err4);
-                        }
-                        res.status(200).send("Score enregistré (nouveau meilleur score)");
-                    });
-                } else {
-                    res.status(200).send("Score enregistré");
-                }
-            });
-        });
-    });
-});
-
-//retourne le meilleur score d'un joueur pour minorClicker
-router.get('/best-score', (req, res) => {
-    const { pseudo } = req.query;
-
-    if (!pseudo) {
-        return res.status(400).json({ message: "Pseudo requis" });
-    }
-
-    const userQuery = "SELECT id FROM users WHERE pseudo = ?";
-    db.query(userQuery, [pseudo], (err, userResults) => {
-        if (err || userResults.length === 0) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-        }
-
-        const userId = userResults[0].id;
-
-        const bestScoreQuery = `
-            SELECT score FROM minorClicker
-            WHERE user_id = ? ORDER BY score DESC LIMIT 1
-        `;
-
-        db.query(bestScoreQuery, [userId], (err2, scoreResults) => {
-            if (err2) {
-                return res.status(500).json({ message: "Erreur lors de la récupération du score" });
-            }
-
-            const bestScore = scoreResults.length > 0 ? scoreResults[0].score : null;
-            console.log("Best score pour", pseudo, ":", bestScore);
-            return res.json({ bestScore });
-        });
-    });
-});
 
 //modifie le profil du joueur
 router.post("/update-profile", async (req, res) => {
@@ -274,10 +173,155 @@ router.delete('/delete-account', (req, res) => {
     });
 });
 
+
+/* JEUX 1 */
+//sauvegarde du score du jeu1
+router.post("/save-score", (req, res) => {
+    console.log("Requête reçue :", req.body);
+
+    const { pseudo } = req.body;
+    req.body.score = parseInt(req.body.score, 10);
+    const score = req.body.score;
+
+    if (!pseudo || typeof score !== "number" || isNaN(score)) {
+        console.log("Champs invalides :", { pseudo, score });
+        res.status(400).send("Champs manquants ou invalides");
+        return;
+    }
+
+    const userQuery = "SELECT id FROM users WHERE pseudo = ?";
+    db.query(userQuery, [pseudo], (err, results) => {
+        if (err || results.length === 0) {
+            console.error("Erreur récupération user :", err, "Résultats :", results);
+            res.status(500).send("Utilisateur non trouvé");
+            return;
+        }
+
+        const userId = results[0].id;
+        console.log("Utilisateur trouvé :", userId);
+
+        const bestScoreQuery = `
+            SELECT id, score FROM minorClicker
+            WHERE user_id = ? AND is_best = true
+        `;
+
+        db.query(bestScoreQuery, [userId], (err2, bestResults) => {
+            if (err2) {
+                console.error("Erreur récupération meilleur score :", err2);
+                res.status(500).send("Erreur lors de la récupération du meilleur score");
+                return;
+            }
+
+            const isBest = bestResults.length === 0 || score > bestResults[0].score;
+            console.log("Nouveau score est-il meilleur ?", isBest);
+
+            const insertScoreQuery = `
+                INSERT INTO minorClicker (user_id, score, is_best, created_at)
+                VALUES (?, ?, ?, NOW())
+            `;
+
+            db.query(insertScoreQuery, [userId, score, isBest], (err3) => {
+                if (err3) {
+                    console.error("Erreur insertion score :", err3);
+                    res.status(500).send("Erreur enregistrement score");
+                    return;
+                }
+
+                if (isBest && bestResults.length > 0) {
+                    const oldBestId = bestResults[0].id;
+                    const updateOldBestQuery = `UPDATE minorClicker SET is_best = false WHERE id = ?`;
+                    db.query(updateOldBestQuery, [oldBestId], (err4) => {
+                        if (err4) {
+                            console.warn("Erreur mise à jour ancien meilleur score :", err4);
+                        }
+                        res.status(200).send("Score enregistré (nouveau meilleur score)");
+                    });
+                } else {
+                    res.status(200).send("Score enregistré");
+                }
+            });
+        });
+    });
+});
+
+//retourne le meilleur score d'un joueur pour jeu1
+router.get('/best-score', (req, res) => {
+    const { pseudo } = req.query;
+
+    if (!pseudo) {
+        return res.status(400).json({ message: "Pseudo requis" });
+    }
+
+    const userQuery = "SELECT id FROM users WHERE pseudo = ?";
+    db.query(userQuery, [pseudo], (err, userResults) => {
+        if (err || userResults.length === 0) {
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+
+        const userId = userResults[0].id;
+
+        const bestScoreQuery = `
+            SELECT score FROM minorClicker
+            WHERE user_id = ? ORDER BY score DESC LIMIT 1
+        `;
+
+        db.query(bestScoreQuery, [userId], (err2, scoreResults) => {
+            if (err2) {
+                return res.status(500).json({ message: "Erreur lors de la récupération du score" });
+            }
+
+            const bestScore = scoreResults.length > 0 ? scoreResults[0].score : null;
+            console.log("Best score pour", pseudo, ":", bestScore);
+            return res.json({ bestScore });
+        });
+    });
+});
+
+/* JEU 2 */
+//sauvegarde les vagues de game2
+router.post("/save-waves", (req, res) => {
+    const { pseudo, waves } = req.body;
+
+    if (!pseudo || !waves || !Array.isArray(waves)) {
+        res.status(400).send("Champs invalides");
+        return;
+    }
+
+    const userQuery = "SELECT id FROM users WHERE pseudo = ?";
+    db.query(userQuery, [pseudo], (err, results) => {
+        if (err || results.length === 0) {
+            res.status(500).send("Utilisateur non trouvé");
+            return;
+        }
+
+        const userId = results[0].id;
+
+        const insertQuery = `
+            INSERT INTO deepSpaceSurvivor (playerID, wave, created_at)
+            VALUES (?, ?, NOW())
+        `;
+
+        db.query(insertQuery, [userId, JSON.stringify(waves)], (err2) => {
+            if (err2) {
+                console.error("Erreur enregistrement vagues :", err2);
+                res.status(500).send("Erreur enregistrement vagues");
+                return;
+            }
+
+            res.status(200).send("Vagues enregistrées");
+        });
+    });
+});
+
+
+
+
+/* JEU 3 */
 //sauvegarde le score de game3
 router.post("/save-score-game3", (req, res) => {
     const { pseudo, score, level } = req.body;
 
+    console.log(pseudo, score, level);
     if (!pseudo || typeof score !== "number" || isNaN(score) || typeof level !== "number") {
         res.status(400).send("Champs invalides");
         return;
@@ -293,7 +337,7 @@ router.post("/save-score-game3", (req, res) => {
         const userId = results[0].id;
 
         const insertQuery = `
-            INSERT INTO game3_scores (user_id, score, level, created_at)
+            INSERT INTO serpentRush (id_player, score, level, created_at)
             VALUES (?, ?, ?, NOW())
         `;
 

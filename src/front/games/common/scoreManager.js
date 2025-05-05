@@ -44,7 +44,6 @@ function getAllScoresGame1() {
             return response.json();
         })
         .then(scores => {
-            console.log(scores);  // Ajouter un log ici pour vérifier les données reçues
             const tableBody = document.getElementById('scoreTable');
             scores.forEach((score, index) => {
                 const row = document.createElement('tr');
@@ -63,11 +62,45 @@ function getAllScoresGame1() {
         });
 }
 
+/* JEU 2 */
+//fonction pour sauvegarder la wave du joueur game2
+function saveWaveGame2(pseudo, wave) {
+    //verif des données avant envoi
+    if (typeof wave !== "number" || isNaN(wave) || !pseudo) {
+        console.error("Erreur : données invalides.");
+        return;
+    }
+
+    console.log("Envoi des données :", { pseudo, wave });
+    //envoi des données au serveur
+    fetch("http://localhost:4000/save-waves", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            pseudo: pseudo,
+            wave: wave,
+        }),
+    })
+    .then(res => res.text())
+    .then(data => {
+        console.log("Réponse serveur :", data);
+    })
+    .catch(err => console.error("Erreur de sauvegarde :", err));
+}
 
 
-
+/* JEU 3 */
 //fonction pour sauvegarder le score du joueur game3
 function saveScoreGame3(pseudo, score, level) {
+    //verif des données avant envoi
+    if (typeof score !== "number" || isNaN(score) || typeof level !== "number" || isNaN(level) || !pseudo) {
+        console.error("Erreur : données invalides.");
+        return;
+    }
+
+    //envoi des données au serveur
     fetch("http://localhost:4000/save-score-game3", {
         method: "POST",
         headers: {
@@ -85,4 +118,6 @@ function saveScoreGame3(pseudo, score, level) {
     })
     .catch(err => console.error("Erreur de sauvegarde :", err));
 }
-export { saveScore, getBestScore, saveScoreGame3, getAllScoresGame1 };
+
+
+export { saveScore, getBestScore, saveWaveGame2, saveScoreGame3, getAllScoresGame1 };

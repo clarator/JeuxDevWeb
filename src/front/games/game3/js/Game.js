@@ -4,6 +4,8 @@ import Player from './player.js';
 import Camera from './camera.js';
 import GameStateManager from './gameStateManager.js';
 import Snake from './snake.js';
+import { saveScoreGame3 } from '../../common/scoreManager.js';
+import { getCookie } from '../../common/cookie.js';
 
 export const CELL_SIZE = 40;
 
@@ -97,6 +99,12 @@ export default class Game {
             // Permettre de retourner au menu après un court délai
             if ((this.gameStatus === 'won' || this.gameStatus === 'lost') && 
                 this.inputManager.isKeyJustPressed('Space')) {
+
+                // Sauvegarder le score avant de revenir au menu
+                const pseudo = getCookie('user');
+        
+                saveScoreGame3(pseudo, this.player.score, this.levelNumber);
+
                 this.gameStateManager.switchToMenu();
                 return;
             }
