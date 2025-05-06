@@ -12,7 +12,6 @@ fetch('/site/html/header.html')
     const userIcon = document.getElementById("userIcon");
     const menu = document.getElementById("menu");
     const logout = document.getElementById("logout");
-    const profile = document.getElementById("profile");
 
     //redirige vers la page de connexion
     if (login) {
@@ -35,14 +34,7 @@ fetch('/site/html/header.html')
       });
     }
 
-    //redirige vers la page de profil
-    if (profile) {
-      profile.addEventListener("click", () => {
-        window.location.href = "/site/html/profile.html";
-      });
-    }
-
-      // Fonction utilitaire pour lire un cookie
+     // Fonction utilitaire pour lire un cookie
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);

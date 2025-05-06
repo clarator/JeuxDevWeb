@@ -4,7 +4,7 @@ import { startAutomation } from "./automation.js";
 import { vibrateGold,explodeGoldPicture } from "./animation.js";
 import { setupHeader } from "./header.js";
 import { saveScore } from "../../common/scoreManager.js";
-import { getCookie } from "../../common/cookie.js";
+import { getCookie } from "./cookies.js";
 
 export default class Game {
     constructor(){

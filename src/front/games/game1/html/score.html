@@ -1,74 +1,49 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scores</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-        }
-        header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
-        table {
-            width: 80%;
-            margin: 2rem auto;
-            border-collapse: collapse;
-            background: white;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #ddd;
-        }
-        footer {
-            text-align: center;
-            padding: 1rem;
-            background-color: #4CAF50;
-            color: white;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Historique des Parties</h1>
-    </header>
-    <main>
-        <table>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Pseudo</th>
-                    <th>Score</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody id="scoreTable">
-                
-            </tbody>
-        </table>
-    </main>
-    <script src="../../js/score.js" type="module"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Scores</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f9;
+            }
+            header {
+                background-color: #4CAF50;
+                color: white;
+                padding: 1rem;
+                text-align: center;
+            }
+            table {
+                width: 80%;
+                margin: 2rem auto;
+                border-collapse: collapse;
+                background: white;
+            }
         
-</body>
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Historique des Parties</h1>
+        </header>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Pseudo</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreTable"></tbody>
+            </table>
+
+        <script src="../js/scores.js" type="module"></script>
+            
+    </body>
 </html>
