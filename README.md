@@ -1,122 +1,54 @@
 # JeuxDevWeb
 
-## Projet réalisé en HTML, CSS et JavaScript
+Ce projet est une collection de trois jeux web développés en HTML, CSS et JavaScript avec un backend Node.js et une base de données MySQL.
 
-## Membres du groupe
+## 🎮 Les Jeux
 
-- Romain STEFANI  
-- Clara TORRI  
+### 1. Minor Clicker
+Un jeu de type clicker où vous devez cliquer sur une pépite d'or pour gagner des points et améliorer votre production.
 
----
+![Minor Clicker](public/assets/img/game1/or.png)
 
-# Site Web
+### 2. Deep Space Survivor
+Un jeu de survie spatial où vous contrôlez un vaisseau qui doit survivre à des vagues d'ennemis de plus en plus difficiles.
 
-**Développé par Clara**
+![Deep Space Survivor](public/assets/img/game2/player.png)
 
-## Frontend
+### 3. Serpent Rush
+Un jeu de labyrinthe où vous devez atteindre la sortie tout en évitant un serpent qui vous poursuit.
 
-- `header.html`  
-  Utilisé par toutes les pages du site pour éviter la répétition de code.
+![Serpent Rush](public/assets/img/game3/serpent.png)
 
-### Page principale
+## 👥 Membres du groupe
 
-- `index.html`  
-  Page d'accueil permettant d'accéder aux jeux, à leurs règles et à l'historique des scores.
-- `website.js`  
-  Fichier JavaScript pour gérer les redirections vers les jeux, les règles et les scores.
-- `website.css`  
-  Feuille de style principale du site.
+- Romain STEFANI (Alternant)
+- Clara TORRI (Alternante)
 
-### Pages secondaires
+## 📖 Règles des jeux
 
-#### Profil
-- `profile.html`  
-  Affiche le pseudo du joueur, permet de modifier les informations ou de supprimer le compte.
-- `profile.js`  
-  Récupère le pseudo depuis les cookies, envoie les modifications ou la suppression au serveur.
-- `profile.css`  
-  Feuille de style de la page profil.
+- [Règles de Minor Clicker](docs/rules-game1.md)
+- [Règles de Deep Space Survivor](docs/rules-game2.md)
+- [Règles de Serpent Rush](docs/rules-game3.md)
 
-#### Contact
-- `contact.html`  
-  Affiche les informations des développeurs.
-- `contact.css`  
-  Style de la page contact.
+## 🔧 Documentation technique
 
-#### Connexion / Inscription
-- `login.html`  
-  Permet à l'utilisateur de se connecter ou de créer un compte.
-- `login.js`  
-  Gère l'alternance entre inscription et connexion, envoie les données au serveur.
-- `login.css`  
-  Feuille de style pour la page de connexion.
+Pour plus de détails techniques sur chaque jeu, consultez les README dédiés:
 
-## Backend
+- [Documentation technique de Minor Clicker](src/front/games/game1/README.md)
+- [Documentation technique de Deep Space Survivor](src/front/games/game2/README.md)
+- [Documentation technique de Serpent Rush](src/front/games/game3/README.md)
 
-- `server.js`  
-  Fichier principal du serveur Node.js.
+## 📝 Fonctionnalités
 
-- `db.js`  
-  Connexion à la base de données MySQL (hébergée sur Railway).
+- Système d'authentification (inscription/connexion)
+- Sauvegarde des scores
+- Interface responsive
+- Backend Node.js
+- Base de données MySQL
 
-- `request.js`  
-  Contient toutes les requêtes SQL : insertion, modification, suppression, recherche.
+## 🎨 Technologies utilisées
 
-**À faire : ajouter le schéma de la base de données**
-
----
-
-# Jeu DOM : Minor Clicker
-
-**Développé par Clara**
-
-## Fichiers du jeu
-
-- `index.html`  
-  Point d'entrée du jeu Minor Clicker.
-
-### `script.js`
-- Initialise le jeu.
-
-### `Game.js`
-- Classe principale du jeu.
-- `constructor()` : initialise les variables, le header, les scores, notifications, améliorations et automatisations.  
-- `mineClick()` : gère le clic sur la pépite d’or (son, explosion, vibration, gain d’or).  
-- `update()` : met à jour l’affichage de l’or et du score.  
-- `addGoldWallet()` : ajoute de l’or au porte-monnaie.  
-- `addSound()` : joue le son de gain.  
-- `triggerExplosion()` : déclenche une animation d’explosion.  
-- `saveScoreFinal()` : sauvegarde le score (si différent de 0).
-
-### `animation.js`
-- Gère les animations liées à la pépite.
-- `vibrateGold()` : animation de vibration.  
-- `explodeGoldPicture()` : explosion en mini pépites.
-
-### `automation.js`
-- Gère les automatisations.
-- `automations[]` : tableau contenant les objets d'automatisation.  
-- `buyAutomation()` : permet l'achat d'une automatisation.  
-- `startAutomation()` : démarre le gain passif toutes les secondes.
-
-### `upgrade.js`
-- Gère les améliorations.
-- `buyUpgrade()` : achat d’une amélioration.  
-- `applyUpgrade()` : applique les effets.  
-- `startUpgrade()` : initialise les améliorations.
-
-### `notification.js`
-- `checkNotifications()` : affiche les notifications.
-
-### `header.js`
-- Gère l’en-tête du jeu.
-- `setupHeader()` : initialise les boutons (quitter, son, meilleur score).
-
----
-
-# Jeu Canvas
-
-
-**Développé par Romain**
-
-
+- Frontend: HTML, CSS, JavaScript
+- Backend: Node.js, Express
+- Base de données: MySQL
+- Déploiement: Railway (BDD)
