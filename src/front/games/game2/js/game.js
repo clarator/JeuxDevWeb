@@ -1,5 +1,5 @@
 import GameStateManager from './GameStateManager.js';
-import InputManager from '../../common/inputManager.js';
+import InputManager from '../../../../../public/front/games/common/inputManager.js';
 import Player from './Player.js';
 import WaveManager from './WaveManager.js';
 import ExperienceManager from './ExperienceManager.js';

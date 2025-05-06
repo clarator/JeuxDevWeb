@@ -1,4 +1,4 @@
-import { getCookie } from '../../common/cookie.js';
+import { getCookie } from '../../../../../public/front/games/common/cookie.js';
 import WaveManager from './WaveManager.js';
 
 export default class GameStateManager {

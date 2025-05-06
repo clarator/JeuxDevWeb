@@ -1,7 +1,7 @@
 import ChaserEnemy from './chaserEnemy.js';
 import ShooterEnemy from './shooterEnemy.js';
 import WandererEnemy from './WandererEnemy.js';
-import { saveWaveGame2 } from '../../common/scoreManager.js';
+import { saveWaveGame2 } from '../../../../../public/front/games/common/scoreManager.js';
 
 export default class WaveManager {
     constructor(game, pseudo) {

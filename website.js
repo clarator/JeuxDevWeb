@@ -7,7 +7,7 @@ const rules3 = document.getElementById("rules3");
 const score1 = document.getElementById("score1");
 
 game1.addEventListener("click", function () {
-    window.location.href = "games/game1/index.html";
+    window.location.href = "./front/games/game1/index.html";
 });
 
 game2.addEventListener("click", function () {
