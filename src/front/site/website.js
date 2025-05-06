@@ -7,30 +7,30 @@ const rules3 = document.getElementById("rules3");
 const score1 = document.getElementById("score1");
 
 game1.addEventListener("click", function () {
-    window.location.href = "./games/game1/index.html";
+    window.location.href = "games/game1/index.html";
 });
 
 game2.addEventListener("click", function () {
-    window.location.href = "./games/game2/index.html";
+    window.location.href = "games/game2/index.html";
 });
 
 game3.addEventListener("click", function () {
-    window.location.href = "./games/game3/index.html";
+    window.location.href = "games/game3/index.html";
 });
 
 rules1.addEventListener("click", function () {
-    window.location.href = "./games/game1/html/rules.html";
+    window.location.href = "games/game1/html/rules.html";
 });
 
 rules2.addEventListener("click", function () {
-    window.location.href = "./games/game2/html/rules.html";
+    window.location.href = "games/game2/html/rules.html";
 });
 
 rules3.addEventListener("click", function () {
-    window.location.href = "./games/game3/html/rules.html";
+    window.location.href = "games/game3/html/rules.html";
 });
 
 score1.addEventListener("click", function () {
-    window.location.href = "./games/game1/html/score.html";
+    window.location.href = "games/game1/html/score.html";
 });
 
