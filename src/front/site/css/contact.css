@@ -1,0 +1,79 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Press Start 2P', cursive;
+    background: #1e1e2f;
+    color: #fff;
+    min-height: 100vh;
+}
+
+h1{
+    text-align: center;
+    margin: 20px 0;
+    font-size: 2.5em;
+    color: #fff;
+}
+
+.teamContainer {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.memberCard {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.memberCard:hover {
+    transform: translateY(-5px);
+}
+
+.profile {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    border: 3px solid #fff;
+    object-fit: cover;
+}
+
+.memberName {
+    color: #fff;
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.memberRole {
+    color: #3498db;
+    font-size: 0.8em;
+    margin: 10px 0;
+}
+
+.memberEmail {
+    color: #fff;
+    font-size: 0.7em;
+    margin: 10px 0;
+    word-break: break-all;
+}
+
+.memberStatut {
+    color: #fff;
+    font-size: 0.7em;
+    margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+    .team-container {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+}

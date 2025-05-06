@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    font-family: Arial, sans-serif;
+}
+
+#gameCanvas {
+    display: block;
+    background-color: #000;
+    cursor: crosshair;
+}
+
+#menu, #pauseMenu {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 40px;
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+    animation: pulse 2s infinite;
+}
+
+h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #4CAF50;
+    text-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+}
+
+@keyframes pulse {
+    0% { text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); }
+    50% { text-shadow: 0 0 20px rgba(76, 175, 80, 1); }
+    100% { text-shadow: 0 0 10px rgba(76, 175, 80, 0.7); }
+}
+
+button {
+    background-color: #333;
+    color: white;
+    border: 2px solid #4CAF50;
+    padding: 15px 30px;
+    font-size: 22px;
+    margin: 10px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    min-width: 220px;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #4CAF50;
+    transform: scale(1.05);
+}
