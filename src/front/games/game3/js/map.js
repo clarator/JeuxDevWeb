@@ -6,19 +6,22 @@ export default class Map {
         this.ctx = canvas.getContext('2d');
         this.grid = null;
 
-        //charger l'image des pieces
+        // Chargement de l'image des pièces d'or
         this.collectibleImage = new Image();
         this.collectibleImage.src = '../../assets/img/game3/pieceOr.png';
         
-        // Position du point de spawn (sera déterminée lors du chargement de la carte)
+        // Position du point de départ du joueur
         this.spawnX = 0;
         this.spawnY = 0;
     }
 
+    // Charge une carte à partir des données de niveau
     loadMap(level) {
+        // Copie profonde de la grille et des collectibles pour éviter les références
         this.grid = level.grid.map(row => [...row]);
         this.collectibles = level.collectibles.map(collectible => ({ ...collectible }));
-        // Chercher le point de spawn (valeur 2) dans la grille
+        
+        // Recherche du point de départ (valeur 2) dans la grille
         for (let y = 0; y < this.grid.length; y++) {
             for (let x = 0; x < this.grid[y].length; x++) {
                 if (this.grid[y][x] === 2) {
@@ -29,7 +32,7 @@ export default class Map {
             }
         }
         
-        // Si aucun point de spawn n'est trouvé, on utilise la première cellule vide
+        // Si aucun point de départ n'est trouvé, utilise la première cellule disponible
         for (let y = 0; y < this.grid.length; y++) {
             for (let x = 0; x < this.grid[y].length; x++) {
                 if (this.grid[y][x] === 1) {
@@ -41,63 +44,67 @@ export default class Map {
         }
     }
 
+    // Dessine la carte à l'écran en fonction de la position de la caméra
     render(camera) {
         if (!this.grid) return;
         
         this.ctx.save();
-        // Parcourir la grille et dessiner chaque cellule
+        // Parcours la grille et dessine chaque cellule
         for (let y = 0; y < this.grid.length; y++) {
             for (let x = 0; x < this.grid[y].length; x++) {
                 const cellValue = this.grid[y][x];
                 
-                // Calculer la position de la cellule ajustée à la caméra
+                // Calcule la position de la cellule en tenant compte de la caméra
                 const posX = x * CELL_SIZE - camera.cameraX;
                 const posY = y * CELL_SIZE - camera.cameraY;
                 
-                // Vérifier si la cellule est visible à l'écran
+                // Optimisation : ne dessine que les cellules visibles à l'écran
                 if (
                     posX + CELL_SIZE < 0 || 
                     posX > this.canvas.width || 
                     posY + CELL_SIZE < 0 || 
                     posY > this.canvas.height
                 ) {
-                    continue; // Ne pas dessiner les cellules hors écran
+                    continue; // Ignore les cellules hors écran
                 }
                 
+                // Dessine les cellules de chemin, de départ et de sortie
                 if (cellValue === 1 || cellValue === 2 || cellValue === 3) {
                     
                     if (cellValue === 2) {
-                        this.ctx.fillStyle = '#aaffaa'; // Couleur rouge pour le spawn
+                        this.ctx.fillStyle = '#aaffaa'; // Vert clair pour le point de départ
                     }
                     else if (cellValue === 3) {
-                        this.ctx.fillStyle = '#6f61c2'; // Couleur bleue pour le spawn
+                        this.ctx.fillStyle = '#6f61c2'; // Violet pour la sortie
                     } else {
-                        this.ctx.fillStyle = '#eee'; // Couleur blanche pour l'espace vide
+                        this.ctx.fillStyle = '#eee'; // Blanc cassé pour les chemins
                     }
                     this.ctx.fillRect(posX, posY, CELL_SIZE, CELL_SIZE);
 
-                    // Espace vide ou spawn
+                    // Contour léger pour toutes les cellules
                     this.ctx.strokeStyle = '#ddd';
                     this.ctx.strokeRect(posX, posY, CELL_SIZE, CELL_SIZE);
                                 
                 }
             }
         }
+        
+        // Dessine les objets collectables (pièces d'or)
         for (let collectible of this.collectibles) {
             const posX = collectible.x * CELL_SIZE - camera.cameraX;
             const posY = collectible.y * CELL_SIZE - camera.cameraY;
             
-            // Vérifier si la cellule est visible à l'écran
+            // Optimisation : ne dessine que les collectibles visibles à l'écran
             if (
                 posX + CELL_SIZE < 0 || 
                 posX > this.canvas.width || 
                 posY + CELL_SIZE < 0 || 
                 posY > this.canvas.height
             ) {
-                continue; // Ne pas dessiner les cellules hors écran
+                continue; // Ignore les collectibles hors écran
             }
            
-            // Dessiner l'image du collectible
+            // Dessine l'image de la pièce d'or centrée dans la cellule
             this.ctx.drawImage(
                 this.collectibleImage,          
                 posX + CELL_SIZE / 4,                
@@ -105,8 +112,8 @@ export default class Map {
                 CELL_SIZE / 2,                       
                 CELL_SIZE / 2          
             );
-
         }
+        
         this.ctx.restore();
     }
 }
