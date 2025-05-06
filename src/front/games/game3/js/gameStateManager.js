@@ -4,10 +4,11 @@ export default class GameStateManager {
     constructor(game) {
         this.canvas = game.canvas;
         this.game = game;
-        this.currentState = null; // 'game' ou 'menu' ou 'pause'
+        this.currentState = null; // État actuel : 'game', 'menu' ou 'pause'
         this.menuElement = null;
         this.pauseMenuElement = null;
         
+        // Configuration des boutons du menu pause
         const resumeButton = document.getElementById('resumeButton');
         const returnToMenuButton = document.getElementById('returnToMenuButton');
         if (resumeButton) {
@@ -23,11 +24,14 @@ export default class GameStateManager {
         }
     }
 
+    // Passe à l'état menu
     switchToMenu() {
         this.currentState = 'menu';
+        // Efface le canvas
         this.game.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.canvas.style.display = 'none';
         
+        // Récupère les éléments du DOM si nécessaire
         if (!this.menuElement) {
             this.menuElement = document.getElementById('menu');
         }
@@ -35,9 +39,11 @@ export default class GameStateManager {
             this.pauseMenuElement = document.getElementById('pauseMenu');
         }
         
+        // Affiche le menu et cache le menu de pause
         this.menuElement.style.display = 'block';
         this.pauseMenuElement.style.display = 'none';
 
+        // Génère dynamiquement les boutons de niveau
         const levelsElement = document.getElementById("levels");
         levelsElement.innerHTML = "";
 
@@ -52,10 +58,12 @@ export default class GameStateManager {
         });
     }
 
+    // Passe à l'état jeu
     switchToGame() {
         this.currentState = 'game';
         this.canvas.style.display = 'block';
         
+        // Récupère les éléments du DOM si nécessaire
         if (!this.menuElement) {
             this.menuElement = document.getElementById('menu');
         }
@@ -63,10 +71,12 @@ export default class GameStateManager {
             this.pauseMenuElement = document.getElementById('pauseMenu');
         }
         
+        // Cache les deux menus
         this.menuElement.style.display = 'none';
         this.pauseMenuElement.style.display = 'none';
     }
     
+    // Passe à l'état pause
     switchToPause() {
         this.currentState = 'pause';
         
@@ -74,6 +84,7 @@ export default class GameStateManager {
             this.pauseMenuElement = document.getElementById('pauseMenu');
         }
         
+        // Affiche le menu de pause
         this.pauseMenuElement.style.display = 'flex';
     }
 }

@@ -3,32 +3,39 @@ import { CELL_SIZE } from "./Game.js";
 export default class Snake {
     constructor() {
         this.color = '#ff0000';
+        
+        // Délai d'activation du serpent pour laisser au joueur un peu d'avance
         this.activationTimer = 0;
-        this.activationDelay = 1000;
+        this.activationDelay = 1000; // Délai en millisecondes
         this.isActive = false;
         this.playerHasMoved = false;
         
+        // Position et mouvement du serpent
         this.canvasX = 0;
         this.canvasY = 0;
         this.isMoving = false;
         this.speedX = 0;
         this.speedY = 0;
-        this.speedValue = 150; // En pixels par seconde au lieu de pixels par frame
+        this.speedValue = 150; // Vitesse en pixels par seconde
         
+        // Variables pour le pathfinding
         this.path = [];
         this.targetNode = null;
         
-        // Variables pour les segments du serpent
+        // Segments du corps du serpent
         this.segments = [];
-        this.segmentCount = 5; // Nombre de segments
+        this.segmentCount = 5; // Nombre de segments formant le corps
         this.direction = 'right'; // Direction actuelle du serpent
-        this.followSpeed = 10.0; // Vitesse de suivi des segments (indépendante des FPS)
+        this.followSpeed = 10.0; // Vitesse à laquelle les segments suivent la tête
     }
     
-
+    // Initialise le serpent au début d'un niveau
     startLevel(x, y) {
+        // Position initiale identique à celle du joueur
         this.canvasX = x * CELL_SIZE;
         this.canvasY = y * CELL_SIZE;
+        
+        // Réinitialisation des variables d'activation
         this.activationTimer = 0;
         this.isActive = false;
         this.playerHasMoved = false;
@@ -38,7 +45,7 @@ export default class Snake {
         this.path = [];
         this.targetNode = null;
         
-        // Réinitialiser complètement tous les segments
+        // Réinitialisation des segments du corps
         this.segments = [];
         for (let i = 0; i < this.segmentCount; i++) {
             this.segments.push({
@@ -49,15 +56,16 @@ export default class Snake {
         this.direction = 'right';
     }
 
+    // Met à jour l'état du serpent à chaque frame
     update(deltaTime, player, map) {
-        // Vérifier si le joueur a bougé pour démarrer le timer d'activation
+        // Active le timer quand le joueur commence à bouger
         if (!this.playerHasMoved && player.isMoving) {
             this.playerHasMoved = true;
         }
     
-        // Ne pas mettre à jour si le serpent n'est pas encore activé
+        // Compteur d'activation après le premier mouvement du joueur
         if (this.playerHasMoved && !this.isActive) {
-            this.activationTimer += deltaTime * 1000; // Convertir en ms
+            this.activationTimer += deltaTime * 1000; // Conversion en millisecondes
             if (this.activationTimer >= this.activationDelay) {
                 this.isActive = true;
             }
@@ -65,53 +73,59 @@ export default class Snake {
         }
         if (!this.isActive) return;
     
+        // Convertit les positions en coordonnées de la grille
         const snakeGridX = Math.floor(this.canvasX / CELL_SIZE);
         const snakeGridY = Math.floor(this.canvasY / CELL_SIZE);
         const playerGridX = Math.floor(player.canvasX / CELL_SIZE);
         const playerGridY = Math.floor(player.canvasY / CELL_SIZE);
         
+        // Calcule un nouveau chemin vers le joueur si le serpent n'est pas déjà en déplacement
         if (!this.isMoving) {
             this.findPath(snakeGridX, snakeGridY, playerGridX, playerGridY, map.grid);
         }
     
+        // Déplace le serpent vers sa prochaine cible
         this.moveToTargetNode();
     
-        // Mettre à jour la position du serpent avec delta time
+        // Met à jour la position de la tête du serpent
         this.canvasX += this.speedX * deltaTime;
         this.canvasY += this.speedY * deltaTime;
         
-        // Mettre à jour les segments avec delta time
+        // Met à jour les segments du corps
         this.updateSegments(deltaTime);
         
-        // Mettre à jour la direction
+        // Met à jour la direction visuelle du serpent
         this.updateDirection();
     
+        // Vérifie si le serpent a atteint son prochain point de déplacement
         this.checkTargetNodeCollision();
     }
 
+    // Met à jour la position des segments du corps pour qu'ils suivent la tête
     updateSegments(deltaTime) {
-        // Facteur de suivi adapté au delta time
+        // Facteur de suivi adapté au deltaTime pour des mouvements fluides
         const followFactor = 1.0 - Math.pow(0.5, deltaTime * this.followSpeed);
         
-        // Déplacer chaque segment vers la position du segment précédent
+        // Déplace chaque segment vers la position du segment précédent
         for (let i = this.segments.length - 1; i > 0; i--) {
             this.segments[i].x += (this.segments[i-1].x - this.segments[i].x) * followFactor;
             this.segments[i].y += (this.segments[i-1].y - this.segments[i].y) * followFactor;
         }
         
-        // La tête suit la position actuelle
+        // La tête du serpent suit directement la position actuelle
         this.segments[0].x = this.canvasX;
         this.segments[0].y = this.canvasY;
     }
 
+    // Met à jour la direction visuelle en fonction de la vitesse
     updateDirection() {
-        // Déterminer la direction en fonction de la vitesse
         if (this.speedX > 0) this.direction = 'right';
         else if (this.speedX < 0) this.direction = 'left';
         else if (this.speedY > 0) this.direction = 'down';
         else if (this.speedY < 0) this.direction = 'up';
     }
 
+    // Configure le déplacement vers le prochain nœud du chemin
     moveToTargetNode() {
         if (this.isMoving) return;
         if (this.path.length === 0) {
@@ -121,21 +135,26 @@ export default class Snake {
         if (this.targetNode === null) {
             this.targetNode = this.path[0];
         }
+        
+        // Détermine la vitesse en fonction de la direction vers le nœud cible
         this.speedX = (this.targetNode.x - Math.floor(this.canvasX / CELL_SIZE)) * this.speedValue;        
         this.speedY = (this.targetNode.y - Math.floor(this.canvasY / CELL_SIZE)) * this.speedValue;
         this.isMoving = true;
     }
 
+    // Vérifie si le serpent a atteint son nœud cible
     checkTargetNodeCollision() {
         if (this.targetNode === null) return;
 
         var targetReached = false;
 
+        // Vérifie si la position actuelle correspond exactement à la cible
         if (this.targetNode.x * CELL_SIZE === this.canvasX &&
             this.targetNode.y * CELL_SIZE === this.canvasY) {
             targetReached = true;
         }
         
+        // Vérifie si le serpent a dépassé la cible (selon sa direction)
         if (!targetReached && (
             this.speedX>0 && this.canvasX >= this.targetNode.x * CELL_SIZE ||
             this.speedX<0 && this.canvasX <= this.targetNode.x * CELL_SIZE ||
@@ -143,10 +162,12 @@ export default class Snake {
             this.speedY<0 && this.canvasY <= this.targetNode.y * CELL_SIZE
         )) {
             targetReached = true;
+            // Ajuste la position exactement sur la cible pour éviter les décalages
             this.canvasX = this.targetNode.x * CELL_SIZE;
             this.canvasY = this.targetNode.y * CELL_SIZE;
         }
 
+        // Si la cible est atteinte, passe au nœud suivant
         if (targetReached) {
             this.path.shift();
             this.targetNode = null;
@@ -154,38 +175,39 @@ export default class Snake {
         }
     }
 
+    // Arrête le mouvement du serpent
     stopMoving() {
         this.speedX = 0;
         this.speedY = 0;
         this.isMoving = false;
     }
 
-    // Algorithme de pathfinding A* // Fais par l'ia
+    // Algorithme de recherche de chemin A* pour trouver le chemin vers le joueur
     findPath(startX, startY, targetX, targetY, grid) {
-        // Ignorer si déjà à la cible
+        // Ignore si déjà à la cible
         if (startX === targetX && startY === targetY) {
             this.path = [];
             return;
         }
 
-        // Créer les listes ouvertes et fermées
+        // Initialisation des listes pour l'algorithme A*
         const openList = [];
         const closedList = [];
         const startNode = {
             x: startX,
             y: startY,
-            g: 0,
-            h: this.heuristic(startX, startY, targetX, targetY),
-            f: 0,
+            g: 0, // Coût depuis le départ
+            h: this.heuristic(startX, startY, targetX, targetY), // Estimation vers la cible
+            f: 0, // Score total (g + h)
             parent: null
         };
         startNode.f = startNode.g + startNode.h;
         
         openList.push(startNode);
         
-        // Traiter les nœuds jusqu'à trouver le chemin ou épuiser toutes les possibilités
+        // Boucle principale de l'algorithme A*
         while (openList.length > 0) {
-            // Trouver le nœud avec le score f le plus bas
+            // Trouve le nœud avec le meilleur score f dans la liste ouverte
             let currentIndex = 0;
             for (let i = 0; i < openList.length; i++) {
                 if (openList[i].f < openList[currentIndex].f) {
@@ -195,11 +217,11 @@ export default class Snake {
             
             const currentNode = openList[currentIndex];
             
-            // Retirer le nœud actuel de la liste ouverte et l'ajouter à la liste fermée
+            // Retire le nœud actuel de la liste ouverte et l'ajoute à la liste fermée
             openList.splice(currentIndex, 1);
             closedList.push(currentNode);
             
-            // Si nous avons atteint la cible, retracer le chemin
+            // Si on a atteint la cible, reconstruit le chemin en remontant les parents
             if (currentNode.x === targetX && currentNode.y === targetY) {
                 const path = [];
                 let current = currentNode;
@@ -213,7 +235,7 @@ export default class Snake {
                 return;
             }
             
-            // Vérifier les voisins
+            // Analyse les 4 directions possibles (haut, droite, bas, gauche)
             const directions = [
                 { x: 0, y: -1 }, // Haut
                 { x: 1, y: 0 },  // Droite
@@ -225,30 +247,30 @@ export default class Snake {
                 const neighborX = currentNode.x + dir.x;
                 const neighborY = currentNode.y + dir.y;
                 
-                // Ignorer si hors limites
+                // Ignore les cellules hors limites de la grille
                 if (neighborY < 0 || neighborY >= grid.length || 
                     neighborX < 0 || neighborX >= grid[0].length) {
                     continue;
                 }
                 
-                // Ignorer si mur ou dans la liste fermée
+                // Ignore les murs et les nœuds déjà visités
                 if (grid[neighborY][neighborX] === 0 || 
                     closedList.some(node => node.x === neighborX && node.y === neighborY)) {
                     continue;
                 }
                 
-                // Calculer les coûts
+                // Calcule les scores pour ce voisin
                 const gCost = currentNode.g + 1;
                 const hCost = this.heuristic(neighborX, neighborY, targetX, targetY);
                 const fCost = gCost + hCost;
                 
-                // Vérifier si déjà dans la liste ouverte avec un meilleur chemin
+                // Vérifie si ce nœud est déjà dans la liste ouverte avec un meilleur chemin
                 const existingNode = openList.find(node => node.x === neighborX && node.y === neighborY);
                 if (existingNode && gCost >= existingNode.g) {
                     continue;
                 }
                 
-                // Ajouter à la liste ouverte
+                // Ajoute ce nœud à la liste ouverte
                 openList.push({
                     x: neighborX,
                     y: neighborY,
@@ -260,38 +282,41 @@ export default class Snake {
             }
         }
         
-        // Si nous arrivons ici, aucun chemin n'a été trouvé
+        // Si aucun chemin n'a été trouvé, renvoie un tableau vide
         this.path = [];
     }
     
-    // Heuristique de distance de Manhattan
+    // Calcule l'heuristique (distance de Manhattan) entre deux points
     heuristic(x1, y1, x2, y2) {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
 
+    // Vérifie si le serpent est en collision avec le joueur
     checkCollision(playerX, playerY) {
         if (!this.isActive) return false;
         
-        // Vérifier si la tête du serpent est sur la même case que le joueur
+        // Conversion des positions en coordonnées de la grille
         const playerGridX = Math.floor(playerX / CELL_SIZE);
         const playerGridY = Math.floor(playerY / CELL_SIZE);
         const snakeGridX = Math.floor(this.canvasX / CELL_SIZE);
         const snakeGridY = Math.floor(this.canvasY / CELL_SIZE);
         
+        // Vérifie si le joueur et le serpent sont sur la même case
         return (playerGridX === snakeGridX && playerGridY === snakeGridY);
     }
 
+    // Dessine le serpent à l'écran
     render(ctx, camera) {
         if (!this.isActive) return;
         ctx.save();
         
-        // Dessiner les segments du serpent (du corps à la tête)
+        // Dessine les segments du corps du serpent (du dernier au premier)
         for (let i = this.segments.length - 1; i >= 0; i--) {
             const segment = this.segments[i];
             const screenX = segment.x - camera.cameraX;
             const screenY = segment.y - camera.cameraY;
             
-            // Dessiner un segment
+            // Dessine un segment circulaire
             ctx.beginPath();
             ctx.fillStyle = i === 0 ? '#ff0000' : '#ff8888'; // Tête rouge vif, corps plus clair
             ctx.arc(
@@ -303,17 +328,17 @@ export default class Snake {
             );
             ctx.fill();
             
-            // Contour pour le segment
+            // Ajoute un contour pour chaque segment
             ctx.strokeStyle = '#cc0000';
             ctx.lineWidth = 2;
             ctx.stroke();
         }
         
-        // Dessiner la tête avec les yeux orientés
+        // Dessine les yeux sur la tête du serpent
         const headX = this.segments[0].x - camera.cameraX;
         const headY = this.segments[0].y - camera.cameraY;
         
-        // Dessiner les yeux en fonction de la direction
+        // Ajuste la position des yeux selon la direction
         ctx.fillStyle = '#ffffff';
         const eyeSize = CELL_SIZE / 10;
         
@@ -372,7 +397,7 @@ export default class Snake {
                 break;
         }
         
-        // Ajouter les pupilles noires
+        // Ajoute les pupilles des yeux
         ctx.fillStyle = '#000000';
         const pupilSize = eyeSize / 2;
         
