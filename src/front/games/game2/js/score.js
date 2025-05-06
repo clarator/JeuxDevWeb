@@ -1,13 +1,16 @@
-//fonction pour sauvegarder la wave du joueur game2
+// Fonction pour sauvegarder la wave du joueur game2
 function saveWaveGame2(pseudo, wave) {
-    //verif des données avant envoi
-    if (typeof wave !== "number" || isNaN(wave) || !pseudo) {
+    console.log("Appel de saveWaveGame2 avec :", pseudo, wave);
+
+    // Vérification des données
+    if (!pseudo || isNaN(waveInt)) {
         console.error("Erreur : données invalides.");
         return;
     }
 
-    console.log("Envoi des données :", { pseudo, wave });
-    //envoi des données au serveur
+    console.log("Envoi des données :", { pseudo, wave: waveInt });
+
+    // Envoi des données au serveur
     fetch("http://localhost:4000/save-waves", {
         method: "POST",
         headers: {
@@ -15,7 +18,7 @@ function saveWaveGame2(pseudo, wave) {
         },
         body: JSON.stringify({
             pseudo: pseudo,
-            wave: wave,
+            wave: waveInt,
         }),
     })
     .then(res => res.text())

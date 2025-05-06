@@ -305,9 +305,9 @@ router.get('/all-scores-game1', (req, res) => {
 /* JEU 2 */
 //sauvegarde les vagues de game2
 router.post("/save-waves", (req, res) => {
-    const { pseudo, waves } = req.body;
+    const { pseudo, wave } = req.body; 
 
-    if (!pseudo || !waves || !Array.isArray(waves)) {
+    if (!pseudo || typeof wave !== 'number') {
         res.status(400).send("Champs invalides");
         return;
     }
@@ -326,17 +326,18 @@ router.post("/save-waves", (req, res) => {
             VALUES (?, ?, NOW())
         `;
 
-        db.query(insertQuery, [userId, JSON.stringify(waves)], (err2) => {
+        db.query(insertQuery, [userId, wave], (err2) => { 
             if (err2) {
                 console.error("Erreur enregistrement vagues :", err2);
                 res.status(500).send("Erreur enregistrement vagues");
                 return;
             }
 
-            res.status(200).send("Vagues enregistrées");
+            res.status(200).send("Vague enregistrée");
         });
     });
 });
+
 
 
 

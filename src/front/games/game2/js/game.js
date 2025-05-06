@@ -379,7 +379,8 @@ export default class Game {
                             console.log("Pseudo:", this.pseudo);
                             this.wave = this.waveManager.currentWave;
                             console.log("Vague actuelle:", this.wave);
-                            saveWaveGame2(this.pseudo, wave); 
+                            
+                            saveWaveGame2(this.pseudo,  this.wave); 
                                 
                         }
                         
