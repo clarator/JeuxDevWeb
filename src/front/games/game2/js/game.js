@@ -4,6 +4,8 @@ import Player from './Player.js';
 import WaveManager from './WaveManager.js';
 import ExperienceManager from './ExperienceManager.js';
 import Projectile from './Projectile.js';
+import { getCookie } from '../../common/cookie.js';
+import { saveWaveGame2 } from './score.js'; 
 
 export default class Game {
     constructor(canvas) {
@@ -372,6 +374,13 @@ export default class Game {
                         if (isDead) {
                             this.enemies.splice(j, 1);
                             this.waveManager.onEnemyKilled();
+                        
+                            this.pseudo = getCookie("user");
+                            console.log("Pseudo:", this.pseudo);
+                            this.wave = this.waveManager.currentWave;
+                            console.log("Vague actuelle:", this.wave);
+                            saveWaveGame2(this.pseudo, wave); 
+                                
                         }
                         
                         if (shouldDestroy) {

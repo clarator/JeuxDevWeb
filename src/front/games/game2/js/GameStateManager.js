@@ -4,14 +4,7 @@ export default class GameStateManager {
         this.currentState = null; // 'game', 'menu' ou 'pause'
         this.menuElement = document.getElementById('menu');
         this.pauseMenuElement = document.getElementById('pauseMenu');
-        
-        /*
-        // Fonctionnalité désactivée pour récupérer le pseudo
-        this.pseudo = getCookie("user");
-        console.log("Pseudo:", this.pseudo);
-        this.waveManager = new WaveManager(game, this.pseudo);
-        */
-        
+                
         // Configuration des boutons d'interface
         this.setupButtons();
     }

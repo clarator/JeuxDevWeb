@@ -3,8 +3,8 @@ import { checkNotifications } from "./notification.js";
 import { startAutomation } from "./automation.js";
 import { vibrateGold,explodeGoldPicture } from "./animation.js";
 import { setupHeader } from "./header.js";
-import { saveScore } from "../../common/scoreManager.js";
-import { getCookie } from "./cookies.js";
+import { saveScore } from "./scores.js";
+import { getCookie } from "../../common/cookie.js";
 
 export default class Game {
     constructor(){

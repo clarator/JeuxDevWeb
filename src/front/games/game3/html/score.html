@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/score.css">
+        <title>Scores</title>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar">
+              <div class="navbar-left">
+                <h1>Games</h1>
+              </div>
+      
+              <div class="navbar-right">
+                  <p id="home">Accueil</p>
+                  <p id="contact">Contact</p>
+                  
+                  <div class="loginContenair">
+                    <p id="login">Se connecter</p>
+                  </div>
+      
+                  <div id="userMenu" class="userMenu" style="display: none; position: relative;">
+                    <img src="/assets/img/login.png" id="userIcon" alt="Profil">
+                    <div id="menu" style="display: none; position: absolute;">
+                        <p id="logout">Se déconnecter</p>
+                    </div>
+                  </div>
+             </div>
+            </nav>
+          </header>
+
+        <h1>Historique des Parties</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Pseudo</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreTable"></tbody>
+            </table>
+
+        <script src="../js/score.js" type="module"></script>
+            
+    </body>
+</html>

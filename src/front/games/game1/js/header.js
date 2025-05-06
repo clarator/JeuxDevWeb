@@ -1,5 +1,4 @@
 import { getCookie } from "../../common/cookie.js";
-import { getBestScore } from "../../common/scoreManager.js"; 
 
 window.soundEnabled = window.soundEnabled ?? true;
 

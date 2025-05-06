@@ -58,12 +58,6 @@ export default class WaveManager {
     
     // Termine la vague actuelle et prépare la suivante
     endWave() {
-        /* Fonctionnalité de sauvegarde de score désactivée
-        console.log("Pseudo récupéré :", this.pseudo);
-        console.log("Vague actuelle :", wave);
-        console.log(this.pseudo, wave);
-        saveWaveGame2(this.pseudo, wave); */
-
         this.waveInProgress = false;
         this.betweenWaves = true;
         this.currentWave++;

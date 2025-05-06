@@ -1,4 +1,3 @@
-
 // Fonction pour sauvegarder un score
 function saveScore(pseudo, score) {
     fetch("http://localhost:4000/save-score", {
