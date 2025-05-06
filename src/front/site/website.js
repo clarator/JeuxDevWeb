@@ -1,4 +1,3 @@
-//redirection
 const game1 = document.getElementById("#game1");
 const game2 = document.getElementById("game2");
 const game3 = document.getElementById("game3");
