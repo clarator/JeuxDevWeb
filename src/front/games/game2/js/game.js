@@ -1,29 +1,32 @@
-// src/front/games/game2/js/game.js
 import GameStateManager from './GameStateManager.js';
 import InputManager from '../../common/inputManager.js';
-import Player from './player.js';
-import Projectile from './projectile.js';
+import Player from './Player.js';
 import WaveManager from './WaveManager.js';
 import ExperienceManager from './ExperienceManager.js';
+import Projectile from './Projectile.js';
 
 export default class Game {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         
-        // Résolution de référence
+        // Résolution de référence pour le dimensionnement
         this.REFERENCE_WIDTH = 1920;
         this.REFERENCE_HEIGHT = 1080;
         
+        // Initialisation des composants du jeu
         this.gameStateManager = new GameStateManager(this);
         this.inputManager = new InputManager();
         this.player = new Player(this.getScaleRatio());
         this.waveManager = new WaveManager(this);
         this.experienceManager = new ExperienceManager(this);
+        
+        // Collections d'objets de jeu
         this.projectiles = [];
         this.enemies = [];
         this.walls = [];
         
+        // Variables de timing et d'état
         this.lastTime = 0;
         this.deltaTime = 0;
         this.mouseX = 0;
@@ -31,48 +34,55 @@ export default class Game {
         this.mousePressed = false;
         this.isPaused = false;
         
-        // Événements souris
+        // Écouteurs d'événements souris
         this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
         this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
         this.canvas.addEventListener('mouseup', (e) => this.handleMouseUp(e));
         this.canvas.addEventListener('click', (e) => this.handleMouseClick(e));
         
+        // Configuration initiale
         this.resizeCanvas();
         window.addEventListener('resize', () => this.resizeCanvas());
         
         this.loopStarted = false;
     }
     
+    // Calcul du ratio d'échelle pour adapter à toutes les résolutions
     getScaleRatio() {
         const widthRatio = this.canvas.width / this.REFERENCE_WIDTH;
         const heightRatio = this.canvas.height / this.REFERENCE_HEIGHT;
         return Math.min(widthRatio, heightRatio);
     }
     
+    // Mise à l'échelle d'une valeur selon le ratio d'échelle
     scaleValue(value) {
         return value * this.getScaleRatio();
     }
     
+    // Gère le mouvement de la souris
     handleMouseMove(e) {
         const rect = this.canvas.getBoundingClientRect();
         this.mouseX = e.clientX - rect.left;
         this.mouseY = e.clientY - rect.top;
     }
     
+    // Gère l'appui du bouton de souris
     handleMouseDown(e) {
         if (e.button === 0) { // Clic gauche
             this.mousePressed = true;
         }
     }
     
+    // Gère le relâchement du bouton de souris
     handleMouseUp(e) {
         if (e.button === 0) { // Clic gauche
             this.mousePressed = false;
         }
     }
     
+    // Redimensionne le canvas en conservant le ratio 16:9
     resizeCanvas() {
-        // Garder le ratio 16:9
+        // Maintien du ratio 16:9
         const targetRatio = 16 / 9;
         let canvasWidth = window.innerWidth;
         let canvasHeight = canvasWidth / targetRatio;
@@ -85,7 +95,7 @@ export default class Game {
         this.canvas.width = canvasWidth;
         this.canvas.height = canvasHeight;
         
-        // Redimensionner tous les éléments
+        // Redimensionnement de tous les éléments du jeu
         const scaleRatio = this.getScaleRatio();
         
         this.player.resize(scaleRatio);
@@ -93,16 +103,17 @@ export default class Game {
         this.projectiles.forEach(projectile => projectile.resize(scaleRatio));
         this.experienceManager.resize(scaleRatio);
         
-        // Recréer les murs
+        // Recréation des murs après redimensionnement
         this.createWalls();
     }
     
+    // Crée les murs autour de l'aire de jeu
     createWalls() {
         const scaleRatio = this.getScaleRatio();
         const wallThickness = this.scaleValue(20);
         
         this.walls = [
-            // Murs du périmètre uniquement
+            // Seulement les murs extérieurs
             { canvasX: 0, canvasY: 0, width: this.canvas.width, height: wallThickness }, // Haut
             { canvasX: this.canvas.width - wallThickness, canvasY: 0, width: wallThickness, height: this.canvas.height }, // Droite
             { canvasX: 0, canvasY: this.canvas.height - wallThickness, width: this.canvas.width, height: wallThickness }, // Bas
@@ -110,27 +121,38 @@ export default class Game {
         ];
     }    
 
+    // Charge le niveau et réinitialise les éléments du jeu
     loadLevel() {
         const scaleRatio = this.getScaleRatio();
         
+        // Position initiale du joueur au centre
         this.player.canvasX = this.canvas.width / 2 - this.scaleValue(25);
         this.player.canvasY = this.canvas.height / 2 - this.scaleValue(25);
-        this.player.reset(); // Réinitialiser toutes les améliorations
+        this.player.reset(); // Réinitialisation des améliorations
+        
+        // Vidage des collections d'objets
         this.projectiles = [];
         this.enemies = [];
+        
+        // Réinitialisation des gestionnaires
         this.waveManager.reset();
         this.experienceManager.reset();
+        
+        // Création des murs
         this.createWalls();
     }
     
+    // Met le jeu en pause pour permettre la sélection d'une amélioration
     pauseForLevelUp() {
         this.isPaused = true;
     }
     
+    // Reprend le jeu après une pause
     resumeGame() {
         this.isPaused = false;
     }
     
+    // Démarre le jeu et la boucle principale
     start() {
         this.gameStateManager.switchToMenu();
         this.lastTime = performance.now();
@@ -138,47 +160,53 @@ export default class Game {
         this.gameLoop();
     }
     
+    // Boucle principale du jeu
     gameLoop(timestamp) {
         const now = timestamp || performance.now();
-        this.deltaTime = (now - this.lastTime) / 1000;
+        this.deltaTime = (now - this.lastTime) / 1000; // Conversion en secondes
         this.lastTime = now;
         
         if (this.gameStateManager.currentState === 'game') {
+            // Vérification de la touche Échap pour la pause
             if (this.inputManager.isKeyPressed('Escape')) {
                 this.gameStateManager.switchToPause();
             }
             this.update();
             this.render();
         } else if (this.gameStateManager.currentState === 'pause') {
-            // Rendre à nouveau l'écran de pause à chaque frame
+            // En pause, on continue à rendre le jeu pour montrer le menu de pause
             this.render();
         }
         
+        // Demande la prochaine frame d'animation
         requestAnimationFrame((timestamp) => this.gameLoop(timestamp));
     }
     
+    // Mise à jour de l'état du jeu à chaque frame
     update() {
-        // Ne pas mettre à jour si le jeu est en pause pour le level up
+        // Si en pause pour le niveau supérieur, on gère uniquement les entrées
         if (this.isPaused) {
-            this.handleInput(); // Pour gérer la sélection d'amélioration
+            this.handleInput(); // Pour permettre la sélection d'amélioration
             return;
         }
 
+        // Gestion des entrées joueur (clavier, souris)
         this.handleInput();
 
+        // Mise à jour du joueur
         this.player.update(this.deltaTime, this.mouseX, this.mouseY);
         
         // Mise à jour des ennemis
         for (const enemy of this.enemies) {
             enemy.update(this.deltaTime, this.player);
             
-            // Collision ennemis avec murs
+            // Collision des ennemis avec les murs
             this.checkWallCollision(enemy);
             
             // Collision entre ennemis
             this.checkEnemyCollisionsWithOthers(enemy);
             
-            // Tir des ennemis
+            // Gestion des tirs ennemis
             if (enemy.canShoot() && Math.random() < enemy.shootChance) {
                 const enemyCenter = enemy.getCenter();
                 const playerCenter = this.player.getCenter();
@@ -194,40 +222,43 @@ export default class Game {
             }
         }
         
-        // Mise à jour des projectiles
+        // Mise à jour des projectiles et vérification des limites
         this.projectiles = this.projectiles.filter(projectile => {
             projectile.update(this.deltaTime);
             
-            // Collision avec les murs
+            // Vérification des collisions avec les murs
             const collision = this.checkWallCollision(projectile);
             if (collision) return false;
             
+            // Vérification des limites du canvas
             return projectile.isInBounds(this.canvas.width, this.canvas.height);
         });
         
-        // Vérifier les collisions
+        // Vérification de toutes les collisions
         this.checkCollisions();
         
-        // Collision joueur avec les murs
+        // Collision du joueur avec les murs
         this.checkWallCollision(this.player);
         
         // Mise à jour du gestionnaire de vagues
         this.waveManager.update(this.deltaTime);
     }
     
+    // Gère les clics de souris (notamment pour le menu d'amélioration)
     handleMouseClick(e) {
         const rect = this.canvas.getBoundingClientRect();
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
         
-        // Si on est en pause pour level up, gérer le clic
+        // Si en pause pour niveau supérieur, traite le clic
         if (this.isPaused && this.experienceManager.levelUpPending) {
             this.experienceManager.handleClick(mouseX, mouseY);
         }
     }    
 
+    // Gère les entrées clavier et souris
     handleInput() {
-        // Gestion du déplacement du joueur avec WASD
+        // Gestion du déplacement avec WASD/ZQSD
         let moveX = 0;
         let moveY = 0;
         
@@ -236,10 +267,11 @@ export default class Game {
         if (this.inputManager.isKeyPressed('KeyA')) moveX = -1;
         if (this.inputManager.isKeyPressed('KeyD')) moveX = 1;
         
+        // Application de la vitesse au joueur
         this.player.speedX = moveX * this.player.speedValue;
         this.player.speedY = moveY * this.player.speedValue;
         
-        // Gestion du tir amélioré
+        // Gestion du tir avec amélioration multi-tir
         if (this.mousePressed && this.player.shootCooldown <= 0) {
             const direction = this.getShootDirection();
             if (direction.x !== 0 || direction.y !== 0) {
@@ -249,11 +281,11 @@ export default class Game {
                 const baseAngle = Math.atan2(direction.y, direction.x);
                 
                 if (multiShot === 1) {
-                    // Un seul projectile
+                    // Un seul projectile standard
                     this.projectiles.push(new Projectile(center.x, center.y, direction, 'player', this.getScaleRatio()));
                 } else if (multiShot === 2) {
-                    // Deux projectiles côte à côte vers l'avant
-                    const offset = 5 * this.getScaleRatio(); // Distance entre les projectiles
+                    // Deux projectiles côte à côte
+                    const offset = 5 * this.getScaleRatio();
                     
                     // Projectile gauche
                     const leftX = center.x + Math.cos(baseAngle - Math.PI/2) * offset;
@@ -265,8 +297,8 @@ export default class Game {
                     const rightY = center.y + Math.sin(baseAngle + Math.PI/2) * offset;
                     this.projectiles.push(new Projectile(rightX, rightY, direction, 'player', this.getScaleRatio()));
                 } else {
-                    // Pour 3+ projectiles, un au centre et les autres autour
-                    const angleSpread = Math.PI / 8; // Plus petit angle pour garder un projectile central
+                    // 3+ projectiles en éventail
+                    const angleSpread = Math.PI / 8; // Angle total de l'éventail
                     const angleStep = angleSpread / (multiShot - 1);
                     const startAngle = -angleSpread / 2;
                     
@@ -280,18 +312,19 @@ export default class Game {
                     }
                 }
                 
+                // Activation du cooldown de tir
                 this.player.shootCooldown = this.player.shootCooldownTime;
             }
         }
-        
     }
 
+    // Calcule la direction de tir basée sur la position de la souris
     getShootDirection() {
         const center = this.player.getCenter();
         const dirX = this.mouseX - center.x;
         const dirY = this.mouseY - center.y;
         
-        // Normaliser le vecteur
+        // Normalisation du vecteur (longueur = 1)
         const length = Math.sqrt(dirX * dirX + dirY * dirY);
         if (length === 0) return { x: 0, y: 0 };
         
@@ -301,6 +334,7 @@ export default class Game {
         };
     }
     
+    // Vérifie toutes les collisions entre les objets du jeu
     checkCollisions() {
         // Collision projectile-ennemi
         for (let i = this.projectiles.length - 1; i >= 0; i--) {
@@ -311,26 +345,24 @@ export default class Game {
                     const enemy = this.enemies[j];
                     
                     if (this.checkRectCollision(projectile, enemy)) {
-                        // Vérifier si cet ennemi a déjà été touché par ce projectile
+                        // Vérification si l'ennemi a déjà été touché par ce projectile
                         if (projectile.touchedEnemies.includes(enemy)) {
-                            continue; // Passer au prochain ennemi si déjà touché
+                            continue; // Passer au prochain ennemi
                         }
                         
-                        // Les dégâts sont constants, c'est la pénétration qui change
+                        // Calcul des dégâts avec pénétration
                         const damage = this.player.projectileDamage || 1;
                         
-                        // Déterminer si on doit appliquer des dégâts réduits
+                        // Détermine si c'est le dernier ennemi qui peut être touché
                         const isFinalTarget = projectile.touchedEnemies.length >= this.player.piercingLevel;
                         const finalDamage = isFinalTarget ? damage * 0.5 : damage;
                         
                         const isDead = enemy.takeDamage(finalDamage);
                         
-                        // Ajouter l'ennemi à la liste des ennemis touchés
+                        // Mémorisation de l'ennemi touché
                         projectile.touchedEnemies.push(enemy);
                         
-                        // Détruire le projectile si :
-                        // - Il n'a pas de pénétration (niveau 0) OU
-                        // - Il a fait des dégâts réduits (c'était son dernier ennemi)
+                        // Destruction du projectile dans certains cas
                         const shouldDestroy = this.player.piercingLevel === 0 || isFinalTarget;
                         
                         if (shouldDestroy) {
@@ -351,10 +383,10 @@ export default class Game {
             // Collision projectile ennemi - joueur
             else if (projectile.source === 'enemy') {
                 if (this.checkRectCollision(projectile, this.player)) {
-                    // Détruire le projectile dans tous les cas
+                    // Destruction du projectile dans tous les cas
                     this.projectiles.splice(i, 1);
                     
-                    // Ne infliger des dégâts que si le joueur n'est pas invulnérable
+                    // Dégâts seulement si joueur non invulnérable
                     if (!this.player.invulnerable) {
                         const isDead = this.player.takeDamage();
                         if (isDead) {
@@ -365,7 +397,7 @@ export default class Game {
             }
         }
         
-        // Collision ennemi-joueur
+        // Collision ennemi-joueur (contact direct)
         if (!this.player.invulnerable) {
             for (const enemy of this.enemies) {
                 if (this.checkRectCollision(this.player, enemy)) {
@@ -380,6 +412,7 @@ export default class Game {
         }
     }
     
+    // Vérifie la collision entre deux rectangles
     checkRectCollision(rect1, rect2) {
         return (
             rect1.canvasX < rect2.canvasX + rect2.width &&
@@ -389,19 +422,20 @@ export default class Game {
         );
     }
     
+    // Gère la collision avec les murs et corrige la position
     checkWallCollision(object) {
         let hasCollision = false;
         
-        // Vérifie tous les murs et corrige chaque collision
+        // Vérification avec tous les murs
         for (const wall of this.walls) {
             if (this.checkRectCollision(object, wall)) {
-                // Collision détectée
+                // Détermination du côté de collision avec le moins de pénétration
                 const overlapLeft = object.canvasX + object.width - wall.canvasX;
                 const overlapRight = wall.canvasX + wall.width - object.canvasX;
                 const overlapTop = object.canvasY + object.height - wall.canvasY;
                 const overlapBottom = wall.canvasY + wall.height - object.canvasY;
                 
-                // Corriger sur la direction avec le moins de recouvrement
+                // Correction de la position selon le côté avec le moins de pénétration
                 const minOverlap = Math.min(overlapLeft, overlapRight, overlapTop, overlapBottom);
                 
                 if (minOverlap === overlapLeft) {
@@ -421,19 +455,21 @@ export default class Game {
         return hasCollision;
     }
     
+    // Gère les collisions entre ennemis pour éviter les superpositions
     checkEnemyCollisionsWithOthers(currentEnemy) {
         for (const otherEnemy of this.enemies) {
             if (currentEnemy !== otherEnemy) {
                 if (this.checkRectCollision(currentEnemy, otherEnemy)) {
-                    // Séparer les ennemis
+                    // Calcul du vecteur de séparation
                     const dx = currentEnemy.canvasX - otherEnemy.canvasX;
                     const dy = currentEnemy.canvasY - otherEnemy.canvasY;
                     
                     const length = Math.sqrt(dx * dx + dy * dy);
-                    if (length < 1) { // Éviter division par zéro
+                    if (length < 1) { // Évite la division par zéro
                         currentEnemy.canvasX += 0.5;
                         currentEnemy.canvasY += 0.5;
                     } else {
+                        // Légère séparation dans la direction opposée
                         const pushDistance = 1;
                         currentEnemy.canvasX += (dx / length) * pushDistance;
                         currentEnemy.canvasY += (dy / length) * pushDistance;
@@ -443,17 +479,17 @@ export default class Game {
         }
     }
     
+    // Rendu de tous les éléments du jeu
     render() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Fond
+        // Fond noir
         this.ctx.save();
-        // this.ctx.fillStyle = '#222';
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.restore();
         
-        // Murs
+        // Rendu des murs
         this.ctx.save();
         this.ctx.fillStyle = 'gray';
         this.walls.forEach(wall => {
@@ -461,22 +497,23 @@ export default class Game {
         });
         this.ctx.restore();
         
-        // Joueur
+        // Rendu du joueur
         this.player.render(this.ctx);
         
-        // Ennemis
+        // Rendu des ennemis
         this.enemies.forEach(enemy => enemy.render(this.ctx));
         
-        // Projectiles
+        // Rendu des projectiles
         this.projectiles.forEach(projectile => projectile.render(this.ctx));
         
-        // Informations de vague
+        // Rendu des informations de vague
         this.waveManager.render(this.ctx);
         
-        // Expérience et niveau
+        // Rendu de l'expérience et niveau
         this.experienceManager.render(this.ctx);
     }
     
+    // Réinitialise le jeu pour une nouvelle partie
     reset() {
         this.loadLevel();
     }
