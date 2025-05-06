@@ -3,10 +3,9 @@ import ChaserEnemy from './chaserEnemy.js';
 import ShooterEnemy from './shooterEnemy.js';
 import WandererEnemy from './wandererEnemy.js';
 import { saveWaveGame2 } from '../../common/scoreManager.js';
-import { getCookie } from '../../common/cookie.js';
 
 export default class WaveManager {
-    constructor(game) {
+    constructor(game, pseudo) {
         this.game = game;
         this.currentWave = 1;
         this.enemiesRemaining = 0;
@@ -15,7 +14,6 @@ export default class WaveManager {
         this.waveInProgress = false;
         this.betweenWaves = true;
         this.baseEnemyCount = 3;
-        this.pseudo = getCookie('pseudo'); // Récupérer le pseudo du cookie
     }
     
     reset() {
@@ -40,7 +38,7 @@ export default class WaveManager {
         
         // Si une vague est en cours, vérifier si tous les ennemis sont éliminés
         if (this.waveInProgress && this.game.enemies.length === 0) {
-            this.endWave(this.pseudo);
+            this.endWave();
         }
     }
     
@@ -57,12 +55,12 @@ export default class WaveManager {
         this.enemiesRemaining = enemyCount;
     }
     
-    endWave(pseudo) {
-        console.log("Pseudo récupéré :", pseudo); // ⬅︎ ligne de debug
-
+    endWave() {
+        /*
+        console.log("Pseudo récupéré :", this.pseudo); // ⬅︎ ligne de debug
         console.log("Vague actuelle :", wave); // ⬅︎ ligne de debug  
-        console.log(pseudo, wave);
-        saveWaveGame2(pseudo, wave);  
+        console.log(this.pseudo, wave);
+        saveWaveGame2(this.pseudo, wave);  */
 
         this.waveInProgress = false;
         this.betweenWaves = true;

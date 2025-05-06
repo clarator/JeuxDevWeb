@@ -102,7 +102,6 @@ export default class Game {
 
                 // Sauvegarder le score avant de revenir au menu
                 const pseudo = getCookie('user');
-        
                 saveScoreGame3(pseudo, this.player.score, this.levelNumber);
 
                 this.gameStateManager.switchToMenu();

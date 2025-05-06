@@ -1,9 +1,15 @@
+import { getCookie } from '../../common/cookie.js';
+import WaveManager from './WaveManager.js';
 export default class GameStateManager {
     constructor(game) {
         this.game = game;
         this.currentState = null; // 'game', 'menu' ou 'pause'
         this.menuElement = document.getElementById('menu');
         this.pauseMenuElement = document.getElementById('pauseMenu');
+        
+        /*this.pseudo = getCookie("user");
+        console.log("Pseudo:", this.pseudo);
+        this.waveManager = new WaveManager(game, this.pseudo);*/
         
         // Configuration des boutons
         this.setupButtons();
