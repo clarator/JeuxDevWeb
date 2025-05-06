@@ -52,7 +52,7 @@ export default class Player {
         
         // Image du joueur
         this.image = new Image();
-        this.image.src = '/assets/img/game2/player.png'; 
+        this.image.src = '../../../public/assets/img/game2/player.png'; 
         this.imageLoaded = false;
         this.image.onload = () => {
             this.imageLoaded = true;
