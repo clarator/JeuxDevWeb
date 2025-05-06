@@ -277,6 +277,31 @@ router.get('/best-score', (req, res) => {
     });
 });
 
+//retourne tout les scores de tout les joueurs pour game1
+router.get('/all-scores-game1', (req, res) => {
+    const query = `
+        SELECT u.pseudo, m.score, m.created_at
+        FROM users u
+        JOIN minorClicker m ON u.id = m.user_id
+        ORDER BY m.score DESC
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error("Erreur récupération scores game1 :", err);
+            return res.status(500).json({ message: "Erreur lors de la récupération des scores" });
+        }
+    
+        if (!results || results.length === 0) {
+            return res.status(404).json({ message: "Aucun score trouvé" });
+        }
+    
+        console.log("Scores récupérés :", results);
+        res.status(200).json(results);
+    });
+});
+
+
 /* JEU 2 */
 //sauvegarde les vagues de game2
 router.post("/save-waves", (req, res) => {
@@ -354,25 +379,6 @@ router.post("/save-score-game3", (req, res) => {
 });
 
 
-//retourne tout les scores de tout les joueurs pour game1
-router.get('/all-scores-game1', (req, res) => {
-    const query = `
-        SELECT u.pseudo, m.score, m.created_at
-        FROM users u
-        JOIN minorClicker m ON u.id = m.user_id
-        ORDER BY m.score DESC
-    `;
-
-    db.query(query, (err, results) => {
-        if (err) {
-            console.error("Erreur récupération scores game1 :", err);
-            return res.status(500).json({ message: "Erreur lors de la récupération des scores" });
-        }
-
-        console.log("Scores récupérés :", results);
-        res.status(200).json(results);
-    });
-});
 
 
 export default router;

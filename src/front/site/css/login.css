@@ -66,21 +66,16 @@ form h2 {
 
 label {
     font-size: 14px;
-    color: #c7c7c7;
+    color: #2c2f48;
 }
 
 input {
     padding: 10px;
     border: none;
     border-radius: 6px;
-    background-color: #eaeaea;
-    color: #eaeaea;
+    color: #2c2f48;
     outline: none;
     transition: background-color 0.3s;
-}
-
-input:focus {
-    background-color: #53567b;
 }
 
 button {

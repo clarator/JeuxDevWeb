@@ -404,6 +404,7 @@ export default class Game {
                     const isDead = this.player.takeDamage();
                     if (isDead) {
                         this.gameStateManager.endGame();
+                        //mettre ici recup score
                     }
                     break;
                 }
