@@ -1,4 +1,3 @@
-//gestion du header
 fetch('/site/html/header.html')
   .then(res => res.text())
   .then(data => {

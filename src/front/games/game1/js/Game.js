@@ -59,7 +59,7 @@ export default class Game {
 
         //son
         if (window.soundEnabled) {
-            let pioche = new Audio("../../assets/sound/game1/bruitPioche.mp3");
+            let pioche = new Audio("../../../public/assets/sound/game1/bruitPioche.mp3");
             pioche.volume = 0.3;
             pioche.play();
         }

@@ -4,33 +4,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Scores</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #f4f4f9;
-            }
-            header {
-                background-color: #4CAF50;
-                color: white;
-                padding: 1rem;
-                text-align: center;
-            }
-            table {
-                width: 80%;
-                margin: 2rem auto;
-                border-collapse: collapse;
-                background: white;
-            }
-        
-        </style>
     </head>
     <body>
         <header>
-            <h1>Historique des Parties</h1>
+            <div id="headerContainer"></div>
         </header>
 
+        <h1>Historique des Parties</h1>
             <table>
                 <thead>
                     <tr>
@@ -44,6 +24,7 @@
             </table>
 
         <script src="../js/scores.js" type="module"></script>
+        <script src="../js/header.js" type="module"></script>
             
     </body>
 </html>

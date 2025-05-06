@@ -24,9 +24,9 @@ export function setupHeader() {
         window.soundEnabled = !window.soundEnabled;
 
         if (window.soundEnabled) {
-            soundIcon.src = "/assets/img/game1/sonON.png";
+            soundIcon.src = "../../../public/assets/img/game1/sonON.png";
         } else {
-            soundIcon.src = "/assets/img/game1/sonOff.png";
+            soundIcon.src = "../../../public/assets/img/game1/sonOff.png";
         }
     });
 
