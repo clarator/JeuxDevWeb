@@ -1,4 +1,3 @@
-// src/front/games/game2/js/ExperienceManager.js
 export default class ExperienceManager {
     constructor(game) {
         this.game = game;
@@ -10,15 +9,16 @@ export default class ExperienceManager {
         this.upgradeOptions = null;
         this.scaleRatio = this.game.getScaleRatio();
         
-        // Upgrades obtenues
+        // Améliorations débloquées
         this.obtainedUpgrades = {
             shield: false
         };
         
-        // Pour la détection de clic
+        // Zones cliquables pour le menu d'amélioration
         this.upgradeBoxes = [];
     }
     
+    // Réinitialise le gestionnaire d'expérience
     reset() {
         this.level = 1;
         this.experience = 0;
@@ -32,42 +32,46 @@ export default class ExperienceManager {
         this.upgradeBoxes = [];
     }
     
+    // Redimensionne les éléments d'interface
     resize(scaleRatio) {
         this.scaleRatio = scaleRatio;
     }
     
+    // Ajoute de l'expérience et gère le passage de niveau
     addExperience(amount) {
         this.experience += amount;
         this.totalExperience += amount;
         
+        // Vérifie si le joueur a atteint le niveau suivant
         while (this.experience >= this.experienceForNextLevel) {
             this.levelUp();
         }
     }
     
+    // Gère le passage au niveau supérieur
     levelUp() {
         this.experience -= this.experienceForNextLevel;
         this.level++;
         
-        // Calcul de l'expérience nécessaire pour le niveau suivant
+        // Calcul de l'expérience nécessaire pour le niveau suivant (croissance exponentielle)
         this.experienceForNextLevel = Math.floor(100 * Math.pow(1.5, this.level - 1));
         
-        // Générer les options d'amélioration
+        // Génère les options d'amélioration et met en pause pour le choix
         this.levelUpPending = true;
         this.upgradeOptions = this.generateUpgradeOptions();
-        
-        // Mettre le jeu en pause pour le choix
         this.game.pauseForLevelUp();
     }
     
+    // Génère 3 options d'amélioration aléatoires pour le joueur
     generateUpgradeOptions() {
+        // Liste de toutes les améliorations possibles
         const allUpgrades = [
-            // Upgrades de santé/défense
+            // Améliorations de santé/défense
             {
                 id: 'heal',
                 name: 'Soin',
                 description: 'Restaure 3 points de vie',
-                weight: 10,
+                weight: 10, // Probabilité d'apparition
                 apply: () => {
                     const healAmount = Math.min(3, this.game.player.maxHealth - this.game.player.health);
                     this.game.player.health += healAmount;
@@ -88,7 +92,7 @@ export default class ExperienceManager {
                 name: 'Bouclier',
                 description: 'Active les boucliers protecteurs',
                 weight: 5,
-                available: () => !this.obtainedUpgrades.shield,
+                available: () => !this.obtainedUpgrades.shield, // Disponible une seule fois
                 apply: () => {
                     this.obtainedUpgrades.shield = true;
                     this.game.player.hasShield = true;
@@ -96,14 +100,14 @@ export default class ExperienceManager {
                 }
             },
             
-            // Upgrades de tir
+            // Améliorations de tir
             {
                 id: 'fire_rate',
                 name: 'Tir Rapide',
                 description: 'Réduit le temps de rechargement',
                 weight: 8,
                 apply: () => {
-                    this.game.player.shootCooldownTime *= 0.8;
+                    this.game.player.shootCooldownTime *= 0.8; // 20% plus rapide
                 }
             },
             {
@@ -111,7 +115,7 @@ export default class ExperienceManager {
                 name: 'Tir Puissant',
                 description: 'Augmente les dégâts',
                 level: 1,
-                maxLevel: 3,
+                maxLevel: 3, // Limite maximale
                 weight: 8,
                 apply: () => {
                     this.game.player.projectileDamage = (this.game.player.projectileDamage || 1) + 1;
@@ -140,29 +144,29 @@ export default class ExperienceManager {
                 }
             },
             
-            // Upgrades de mobilité
+            // Améliorations de mobilité
             {
                 id: 'speed_boost',
                 name: 'Vitesse',
                 description: 'Augmente la vitesse de déplacement',
                 weight: 7,
                 apply: () => {
-                    this.game.player.speedValue *= 1.2;
+                    this.game.player.speedValue *= 1.2; // 20% plus rapide
                 }
             }
         ];
         
-        // Filtrer les options disponibles
+        // Filtrer les options disponibles (basé sur conditions et niveaux max)
         const availableUpgrades = allUpgrades.filter(upgrade => {
             if (upgrade.available && !upgrade.available()) return false;
             if (upgrade.level && this.getUpgradeLevel(upgrade.id) >= upgrade.maxLevel) return false;
             return true;
         });
         
-        // Sélectionner 3 options avec des poids
+        // Sélectionner 3 options avec un système de poids pour la diversité
         const options = this.selectUpgradesWithWeight(availableUpgrades, 3);
         
-        // Mettre à jour les niveaux actuels pour l'affichage
+        // Mise à jour des niveaux actuels pour l'affichage
         options.forEach(option => {
             if (option.level) {
                 option.currentLevel = this.getUpgradeLevel(option.id);
@@ -172,6 +176,7 @@ export default class ExperienceManager {
         return options;
     }
     
+    // Sélectionne des améliorations avec un système de probabilité pondérée
     selectUpgradesWithWeight(upgrades, count) {
         const selected = [];
         const available = [...upgrades];
@@ -184,7 +189,7 @@ export default class ExperienceManager {
                 random -= available[j].weight;
                 if (random <= 0) {
                     selected.push(available[j]);
-                    available.splice(j, 1);
+                    available.splice(j, 1); // Retire l'amélioration sélectionnée
                     break;
                 }
             }
@@ -193,8 +198,8 @@ export default class ExperienceManager {
         return selected;
     }
     
+    // Récupère le niveau actuel d'une amélioration
     getUpgradeLevel(upgradeId) {
-        // Retour des niveaux actuels des upgrades
         switch(upgradeId) {
             case 'powerful_shot':
                 return (this.game.player.projectileDamage || 1) - 1;
@@ -207,6 +212,7 @@ export default class ExperienceManager {
         }
     }
     
+    // Applique l'amélioration choisie
     chooseUpgrade(index) {
         if (this.upgradeOptions && this.upgradeOptions[index]) {
             this.upgradeOptions[index].apply();
@@ -217,7 +223,7 @@ export default class ExperienceManager {
         }
     }
     
-    // Nouvelle méthode pour gérer les clics
+    // Gère les clics sur le menu d'amélioration
     handleClick(mouseX, mouseY) {
         if (!this.levelUpPending) return;
         
@@ -231,64 +237,66 @@ export default class ExperienceManager {
         }
     }
     
+    // Affiche la barre d'expérience et le menu de niveau supérieur
     render(ctx) {
         const scaleRatio = this.game.getScaleRatio();
         
-        // Afficher la barre d'expérience au centre en bas, plus discrète et semi-transparente
+        // Affichage de la barre d'expérience en bas
         ctx.save();
-        const barWidth = 350 * scaleRatio; // Largeur modérée
-        const barHeight = 25 * scaleRatio; // Hauteur modérée
-        const barX = (ctx.canvas.width - barWidth) / 2; // Centrer horizontalement
-        const barY = ctx.canvas.height - 50 * scaleRatio; // Position en bas
+        const barWidth = 350 * scaleRatio;
+        const barHeight = 25 * scaleRatio;
+        const barX = (ctx.canvas.width - barWidth) / 2; // Centré horizontalement
+        const barY = ctx.canvas.height - 50 * scaleRatio; // En bas
         
-        // Fond de la barre semi-transparent
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'; // Fond semi-transparent
+        // Fond semi-transparent
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
         ctx.fillRect(barX, barY, barWidth, barHeight);
         
-        // Barre d'expérience avec un vert semi-transparent
+        // Progression d'expérience
         const expProgress = this.experience / this.experienceForNextLevel;
         ctx.fillStyle = 'rgba(76, 175, 80, 0.6)'; // Vert semi-transparent
         ctx.fillRect(barX, barY, barWidth * expProgress, barHeight);
         
-        // Bordure fine et discrète
+        // Bordure fine
         ctx.lineWidth = 1 * scaleRatio;
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)'; // Blanc semi-transparent
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
         ctx.strokeRect(barX, barY, barWidth, barHeight);
         
-        // Texte niveau discret
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'; // Blanc semi-transparent
-        ctx.font = `${Math.floor(18 * scaleRatio)}px Arial`; // Police modérée
-        ctx.textAlign = 'center'; // Centrer le texte
+        // Texte niveau
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        ctx.font = `${Math.floor(18 * scaleRatio)}px Arial`;
+        ctx.textAlign = 'center';
         ctx.fillText(`Niveau ${this.level}`, ctx.canvas.width / 2, barY - 8 * scaleRatio);
         
-        // Texte expérience centré dans la barre et semi-transparent
-        ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`; // Police modérée
+        // Texte expérience
+        ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`;
         ctx.fillText(`${this.experience}/${this.experienceForNextLevel}`, barX + barWidth / 2, barY + 17 * scaleRatio);
         ctx.restore();
         
-        // Afficher le menu de niveau si une amélioration est en attente
+        // Affichage du menu d'amélioration si niveau supérieur
         if (this.levelUpPending && this.upgradeOptions) {
             this.renderUpgradeMenu(ctx);
         }
-    }    
-
+    }
+    
+    // Affiche le menu d'amélioration avec les 3 options
     renderUpgradeMenu(ctx) {
         const scaleRatio = this.game.getScaleRatio();
         
         ctx.save();
-        // Fond semi-transparent (conserver le style original)
+        // Fond semi-transparent pour la pause
         ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         
-        // Titre - garder le style original mais légèrement plus grand
+        // Titre du menu
         ctx.fillStyle = '#4CAF50';
         ctx.font = `${Math.floor(40 * scaleRatio)}px Arial`;
         ctx.textAlign = 'center';
         ctx.fillText('NIVEAU SUPÉRIEUR !', ctx.canvas.width / 2, ctx.canvas.height / 5);
         
-        // Options d'amélioration - garder le style original mais légèrement agrandir pour accommoder le texte plus grand
-        const optionWidth = 230 * scaleRatio; // Légèrement plus large pour accommoder les textes plus grands
-        const optionHeight = 150 * scaleRatio; // Légèrement plus haut pour accommoder les textes plus grands
+        // Configuration des options d'amélioration
+        const optionWidth = 230 * scaleRatio;
+        const optionHeight = 150 * scaleRatio;
         const optionSpacing = 50 * scaleRatio;
         const totalWidth = optionWidth * this.upgradeOptions.length + optionSpacing * (this.upgradeOptions.length - 1);
         const startX = (ctx.canvas.width - totalWidth) / 2;
@@ -296,11 +304,12 @@ export default class ExperienceManager {
         
         this.upgradeBoxes = []; // Réinitialiser les zones cliquables
         
+        // Dessiner chaque option d'amélioration
         this.upgradeOptions.forEach((option, index) => {
             const x = startX + index * (optionWidth + optionSpacing);
             const y = startY;
             
-            // Sauvegarder la zone cliquable
+            // Enregistrer la zone cliquable
             this.upgradeBoxes.push({
                 x: x,
                 y: y,
@@ -308,35 +317,33 @@ export default class ExperienceManager {
                 height: optionHeight
             });
             
-            // Vérifier si la souris survole (style original)
+            // Vérifier si la souris survole
             const isHovered = this.game.mouseX >= x && this.game.mouseX <= x + optionWidth &&
                              this.game.mouseY >= y && this.game.mouseY <= y + optionHeight;
             
-            // Fond de l'option (style original)
+            // Fond de l'option
             ctx.fillStyle = isHovered ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)';
             ctx.fillRect(x, y, optionWidth, optionHeight);
             
-            // Bordure (style original)
+            // Bordure (jaune si survolée)
             ctx.strokeStyle = isHovered ? 'yellow' : 'white';
             ctx.lineWidth = 2 * scaleRatio;
             ctx.strokeRect(x, y, optionWidth, optionHeight);
             
-            // Nom - plus grand mais ajusté pour tenir dans le bloc
-            ctx.font = `${Math.floor(22 * scaleRatio)}px Arial`; // Légèrement réduit pour tenir dans le bloc
+            // Nom de l'amélioration
+            ctx.font = `${Math.floor(22 * scaleRatio)}px Arial`;
             ctx.fillStyle = 'white';
             ctx.fillText(option.name, x + optionWidth / 2, y + 35 * scaleRatio);
             
-            // Niveau pour les améliorations à niveaux - plus grand mais ajusté
+            // Affichage du niveau pour les améliorations progressives
             if (option.level) {
-                ctx.font = `${Math.floor(18 * scaleRatio)}px Arial`; // Légèrement réduit
+                ctx.font = `${Math.floor(18 * scaleRatio)}px Arial`;
                 const levelText = `Niveau ${option.currentLevel + 1}/${option.maxLevel}`;
                 ctx.fillText(levelText, x + optionWidth / 2, y + 65 * scaleRatio);
             }
             
-            // Description - beaucoup plus grande mais avec ligne-height ajusté
-            ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`; // Légèrement réduit
-            
-            // Pour les descriptions longues, gérer le multi-lignes
+            // Description de l'amélioration (avec gestion multi-lignes si nécessaire)
+            ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`;
             const desc = option.description;
             const maxWidth = optionWidth - 20 * scaleRatio;
             
@@ -347,13 +354,13 @@ export default class ExperienceManager {
                 let line2 = '';
                 let i = 0;
                 
-                // Construire la première ligne
+                // Construction de la première ligne
                 while (i < words.length && ctx.measureText(line1 + ' ' + words[i]).width <= maxWidth) {
                     line1 += (line1 ? ' ' : '') + words[i];
                     i++;
                 }
                 
-                // Construire la deuxième ligne avec les mots restants
+                // Construction de la deuxième ligne
                 while (i < words.length) {
                     line2 += (line2 ? ' ' : '') + words[i];
                     i++;
@@ -362,12 +369,12 @@ export default class ExperienceManager {
                 ctx.fillText(line1, x + optionWidth / 2, y + optionHeight - 45 * scaleRatio);
                 ctx.fillText(line2, x + optionWidth / 2, y + optionHeight - 25 * scaleRatio);
             } else {
-                // Si elle tient sur une ligne
+                // Si la description tient sur une ligne
                 ctx.fillText(desc, x + optionWidth / 2, y + optionHeight - 35 * scaleRatio);
             }
             
-            // Instruction (cliquez) - plus grande mais ajustée
-            ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`; // Légèrement réduit
+            // Instruction pour la sélection
+            ctx.font = `${Math.floor(16 * scaleRatio)}px Arial`;
             ctx.fillText('Cliquez pour sélectionner', x + optionWidth / 2, y + optionHeight + 25 * scaleRatio);
         });
         ctx.restore();

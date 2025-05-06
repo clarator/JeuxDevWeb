@@ -1,11 +1,12 @@
-import Enemy from './enemy.js';
+import Enemy from './Enemy.js';
 
 export default class ChaserEnemy extends Enemy {
     constructor(x, y, scaleRatio, game) {
+        // Appel du constructeur parent (ennemi sans tir)
         super(x, y, 40, 40, 150, 3, 'crimson', 0, scaleRatio, game);
         this.baseSpeed = 150;
         
-        // Image du chaser
+        // Chargement de l'image de l'ennemi "chasseur"
         this.image = new Image();
         this.image.src = '/assets/img/game2/ChaserEnemy.png';
         this.imageLoaded = false;
@@ -14,15 +15,16 @@ export default class ChaserEnemy extends Enemy {
         };
     }
     
+    // Mise à jour spécifique : poursuite du joueur
     update(deltaTime, player) {
         const playerCenter = player.getCenter();
         const enemyCenter = this.getCenter();
         
-        // Calculer la direction vers le joueur
+        // Calcul de la direction vers le joueur
         const dirX = playerCenter.x - enemyCenter.x;
         const dirY = playerCenter.y - enemyCenter.y;
         
-        // Normaliser et appliquer la vitesse
+        // Normalisation et application de la vitesse
         const length = Math.sqrt(dirX * dirX + dirY * dirY);
         if (length > 0) {
             this.speedX = (dirX / length) * this.speedValue;

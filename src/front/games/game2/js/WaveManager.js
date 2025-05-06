@@ -1,7 +1,6 @@
-// src/front/games/game2/js/WaveManager.js
 import ChaserEnemy from './chaserEnemy.js';
 import ShooterEnemy from './shooterEnemy.js';
-import WandererEnemy from './wandererEnemy.js';
+import WandererEnemy from './WandererEnemy.js';
 import { saveWaveGame2 } from '../../common/scoreManager.js';
 
 export default class WaveManager {
@@ -13,9 +12,10 @@ export default class WaveManager {
         this.waveDelay = 3; // Délai entre les vagues en secondes
         this.waveInProgress = false;
         this.betweenWaves = true;
-        this.baseEnemyCount = 3;
+        this.baseEnemyCount = 3; // Nombre initial d'ennemis
     }
     
+    // Réinitialise le gestionnaire de vagues
     reset() {
         this.currentWave = 1;
         this.enemiesRemaining = 0;
@@ -24,6 +24,7 @@ export default class WaveManager {
         this.betweenWaves = true;
     }
     
+    // Mise à jour du gestionnaire à chaque frame
     update(deltaTime) {
         // Si nous sommes entre deux vagues, décompter le timer
         if (this.betweenWaves) {
@@ -42,11 +43,12 @@ export default class WaveManager {
         }
     }
     
+    // Démarre une nouvelle vague d'ennemis
     startWave() {
         this.waveInProgress = true;
         this.betweenWaves = false;
         
-        // Déterminer le nombre d'ennemis pour cette vague
+        // Calcul du nombre d'ennemis pour cette vague
         const enemyCount = this.calculateEnemyCount();
         
         // Faire apparaître les ennemis
@@ -55,12 +57,13 @@ export default class WaveManager {
         this.enemiesRemaining = enemyCount;
     }
     
+    // Termine la vague actuelle et prépare la suivante
     endWave() {
-        /*
-        console.log("Pseudo récupéré :", this.pseudo); // ⬅︎ ligne de debug
-        console.log("Vague actuelle :", wave); // ⬅︎ ligne de debug  
+        /* Fonctionnalité de sauvegarde de score désactivée
+        console.log("Pseudo récupéré :", this.pseudo);
+        console.log("Vague actuelle :", wave);
         console.log(this.pseudo, wave);
-        saveWaveGame2(this.pseudo, wave);  */
+        saveWaveGame2(this.pseudo, wave); */
 
         this.waveInProgress = false;
         this.betweenWaves = true;
@@ -68,6 +71,7 @@ export default class WaveManager {
         this.waveTimer = this.waveDelay;
     }
     
+    // Calcule le nombre d'ennemis en fonction de la vague
     calculateEnemyCount() {
         // Progression douce pour les premières vagues
         if (this.currentWave === 1) {
@@ -82,13 +86,14 @@ export default class WaveManager {
         }
     }
     
+    // Fait apparaître les ennemis pour la vague actuelle
     spawnEnemies(count) {
         const scaleRatio = this.game.getScaleRatio();
         
         for (let i = 0; i < count; i++) {
             const type = this.getEnemyType();
             
-            // Position aléatoire loin du joueur
+            // Position aléatoire suffisamment loin du joueur
             let x, y;
             let tooClose = true;
             
@@ -96,27 +101,28 @@ export default class WaveManager {
                 x = Math.random() * (this.game.canvas.width - 40 * scaleRatio);
                 y = Math.random() * (this.game.canvas.height - 40 * scaleRatio);
                 
-                // Distance du joueur
+                // Calcul de la distance par rapport au joueur
                 const distX = x - this.game.player.canvasX;
                 const distY = y - this.game.player.canvasY;
                 const distance = Math.sqrt(distX * distX + distY * distY);
                 
-                if (distance > 200 * scaleRatio) { // Au moins 200 pixels du joueur
+                if (distance > 200 * scaleRatio) { // Distance minimale de sécurité
                     tooClose = false;
                 }
             }
             
-            // Créer et ajouter l'ennemi
+            // Créer et ajouter l'ennemi au jeu
             this.game.enemies.push(this.createEnemy(x, y, type, scaleRatio));
         }
     }
     
+    // Détermine le type d'ennemi en fonction de la vague
     getEnemyType() {
         if (this.currentWave === 1) {
-            // Vague 1: Uniquement des wanderers
+            // Vague 1: Uniquement des wanderers (errants)
             return 'wanderer';
         } else if (this.currentWave <= 3) {
-            // Vagues 2-3: Wanderers et chasers
+            // Vagues 2-3: Wanderers et chasers (chasseurs)
             return Math.random() < 0.5 ? 'wanderer' : 'chaser';
         } else if (this.currentWave <= 5) {
             // Vagues 4-5: Tous les types
@@ -125,7 +131,7 @@ export default class WaveManager {
             if (rand < 0.7) return 'chaser';
             return 'shooter';
         } else {
-            // Vague 6+: Plus de shooters
+            // Vague 6+: Plus de shooters (tireurs)
             const rand = Math.random();
             if (rand < 0.2) return 'wanderer';
             if (rand < 0.4) return 'chaser';
@@ -133,10 +139,12 @@ export default class WaveManager {
         }
     }
     
+    // Appelé quand un ennemi est tué
     onEnemyKilled() {
         this.enemiesRemaining--;
     }
     
+    // Crée un ennemi du type spécifié
     createEnemy(x, y, type, scaleRatio) {
         switch(type) {
             case 'chaser':
@@ -150,6 +158,7 @@ export default class WaveManager {
         }
     }
     
+    // Affiche les informations sur la vague actuelle
     render(ctx) {
         ctx.save();
         const scaleRatio = this.game.getScaleRatio();
@@ -158,13 +167,13 @@ export default class WaveManager {
         ctx.font = `${Math.floor(20 * scaleRatio)}px Arial`;
         ctx.textAlign = 'right';
         
-        // Afficher le numéro de vague
+        // Affichage du numéro de vague
         ctx.fillText(`Vague: ${this.currentWave}`, ctx.canvas.width - 20 * scaleRatio, 30 * scaleRatio);
         
-        // Afficher les ennemis restants
+        // Affichage du nombre d'ennemis restants
         ctx.fillText(`Ennemis: ${this.game.enemies.length}`, ctx.canvas.width - 20 * scaleRatio, 60 * scaleRatio);
         
-        // Si entre deux vagues, afficher le compte à rebours
+        // Si entre deux vagues, affichage du compte à rebours
         if (this.betweenWaves) {
             ctx.textAlign = 'center';
             ctx.font = `${Math.floor(40 * scaleRatio)}px Arial`;

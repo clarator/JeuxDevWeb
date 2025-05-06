@@ -1,27 +1,35 @@
-// src/front/games/game2/js/Player.js
 export default class Player {
     constructor(scaleRatio) {
+        // Position et dimensions
         this.canvasX = 0;
         this.canvasY = 0;
         this.width = 50 * scaleRatio;
         this.height = 50 * scaleRatio;
+        
+        // Vitesse et direction
         this.speedX = 0;
         this.speedY = 0;
         this.speedValue = 300 * scaleRatio;
+        
+        // Apparence et combat
         this.color = '#ff5555';
         this.shootCooldown = 0;
         this.shootCooldownTime = 0.2;
+        
+        // Santé et invulnérabilité
         this.health = 6;
         this.maxHealth = 6;
         this.invulnerable = false;
         this.invulnerableTime = 0;
+        
+        // Mise à l'échelle
         this.scaleRatio = scaleRatio;
         
-        // Valeurs de base pour le reset
+        // Valeurs de base pour la réinitialisation
         this.baseSpeedValue = 300 * scaleRatio;
         this.baseShootCooldownTime = 0.2;
         
-        // Améliorations
+        // Améliorations des armes
         this.projectileDamage = 1;
         this.multiShot = 1;
         this.piercingLevel = 0;
@@ -29,17 +37,17 @@ export default class Player {
         // Système de bouclier
         this.hasShield = false;
         this.shieldActive = false;
-        this.shieldActiveTime = 0; // Durée actuelle du shield
-        this.shieldDuration = 1.0; // Durée totale du shield
-        this.shieldTimer = 0; // Timer entre les shields
-        this.shieldMinCooldown = 4.0;
-        this.shieldMaxCooldown = 6.0;
+        this.shieldActiveTime = 0; // Durée actuelle du bouclier
+        this.shieldDuration = 1.0; // Durée totale du bouclier
+        this.shieldTimer = 0; // Temps entre les boucliers
+        this.shieldMinCooldown = 4.0; // Temps minimum avant réactivation
+        this.shieldMaxCooldown = 6.0; // Temps maximum avant réactivation
         
-        // État d'invulnérabilité due aux dégâts
+        // Invulnérabilité après dégâts
         this.damagedInvulnerable = false;
         this.damagedInvulnerableTime = 0;
         
-        // Pour la rotation
+        // Rotation
         this.angle = 0; // Angle en radians
         
         // Image du joueur
@@ -51,21 +59,22 @@ export default class Player {
         };
     }
 
+    // Réinitialise le joueur au début d'une nouvelle partie
     reset() {
-        // Réinitialiser toutes les améliorations
+        // Réinitialisation des améliorations
         this.speedValue = this.baseSpeedValue;
         this.shootCooldownTime = this.baseShootCooldownTime;
         this.projectileDamage = 1;
         this.multiShot = 1;
         this.piercingLevel = 0;
         
-        // Réinitialiser le bouclier
+        // Réinitialisation du bouclier
         this.hasShield = false;
         this.shieldActive = false;
         this.shieldActiveTime = 0;
         this.shieldTimer = 0;
         
-        // Réinitialiser la santé
+        // Réinitialisation de la santé
         this.health = 6;
         this.maxHealth = 6;
         this.invulnerable = false;
@@ -73,71 +82,75 @@ export default class Player {
         this.damagedInvulnerable = false;
         this.damagedInvulnerableTime = 0;
         
-        // Réinitialiser le position et mouvement
+        // Réinitialisation de la position et mouvement
         this.speedX = 0;
         this.speedY = 0;
         this.shootCooldown = 0;
         this.angle = 0;
     }
     
+    // Redimensionne le joueur lors du changement de taille d'écran
     resize(scaleRatio) {
         this.width = 50 * scaleRatio;
         this.height = 50 * scaleRatio;
-        // Garder le ratio de vitesse
+        // Maintient le ratio de vitesse
         const speedRatio = this.speedValue / this.scaleRatio;
         this.speedValue = speedRatio * scaleRatio;
         this.baseSpeedValue = 300 * scaleRatio;
         this.scaleRatio = scaleRatio;
     }
     
+    // Mise à jour du joueur à chaque frame
     update(deltaTime, mouseX, mouseY) {
+        // Déplacement selon la vitesse
         this.canvasX += this.speedX * deltaTime;
         this.canvasY += this.speedY * deltaTime;
         
+        // Réduction du temps de recharge du tir
         if (this.shootCooldown > 0) {
             this.shootCooldown -= deltaTime;
         }
         
-        // Calculer l'angle basé sur la position de la souris
+        // Calcul de l'angle en fonction de la position de la souris
         if (mouseX !== undefined && mouseY !== undefined) {
             const center = this.getCenter();
             this.angle = Math.atan2(mouseY - center.y, mouseX - center.x);
         }
         
-        // Gestion de l'invulnérabilité due aux dégâts
+        // Gestion de l'invulnérabilité après dégâts
         if (this.damagedInvulnerable) {
             this.damagedInvulnerableTime -= deltaTime;
             if (this.damagedInvulnerableTime <= 0) {
                 this.damagedInvulnerable = false;
-                // Si le shield n'est pas actif non plus, on est plus invulnérable
+                // Fin de l'invulnérabilité si le bouclier n'est pas actif
                 if (!this.shieldActive) {
                     this.invulnerable = false;
                 }
             }
         }
         
-        // Gestion du bouclier
+        // Gestion du système de bouclier
         if (this.hasShield) {
             if (this.shieldActive) {
-                // Le shield est actif, on compte le temps
+                // Le bouclier est actif, on compte la durée
                 this.shieldActiveTime += deltaTime;
                 
-                // Le shield dure 1 seconde
+                // Le bouclier dure 1 seconde
                 if (this.shieldActiveTime >= this.shieldDuration) {
                     this.shieldActive = false;
                     this.shieldActiveTime = 0;
                     
-                    // Désactive le bouclier et programme le prochain
+                    // Programme le prochain bouclier
                     this.shieldTimer = this.shieldMinCooldown + 
                         Math.random() * (this.shieldMaxCooldown - this.shieldMinCooldown);
                     
-                    // Si on n'est pas invulnérable à cause des dégâts, on redevient vulnérable
+                    // Désactive l'invulnérabilité si pas de dégâts récents
                     if (!this.damagedInvulnerable) {
                         this.invulnerable = false;
                     }
                 }
             } else {
-                // Le shield n'est pas actif, on attend le prochain
+                // Le bouclier n'est pas actif, on attend le prochain
                 this.shieldTimer -= deltaTime;
                 if (this.shieldTimer <= 0) {
                     this.shieldActive = true;
@@ -148,12 +161,13 @@ export default class Player {
         }
     }
     
+    // Initialise le système de bouclier
     startShieldSystem() {
-        // Initialise le système de bouclier
         this.shieldTimer = this.shieldMinCooldown;
         this.shieldActive = false;
     }
     
+    // Gère les dégâts infligés au joueur
     takeDamage() {
         if (!this.invulnerable) {
             this.health--;
@@ -161,11 +175,12 @@ export default class Player {
             this.damagedInvulnerable = true;
             this.invulnerableTime = 1.0;
             this.damagedInvulnerableTime = 1.0;
-            return this.health <= 0;
+            return this.health <= 0; // Indique si le joueur est mort
         }
-        return false;
+        return false; // Le joueur n'a pas été touché
     }
     
+    // Retourne le centre du joueur
     getCenter() {
         return {
             x: this.canvasX + this.width / 2,
@@ -173,12 +188,13 @@ export default class Player {
         };
     }
     
+    // Affichage du joueur et de son bouclier
     render(ctx) {
         ctx.save();
         
         const center = this.getCenter();
         
-        // Dessiner le bouclier si actif (toujours visible, jamais clignotant)
+        // Affichage du bouclier si actif
         if (this.shieldActive) {
             ctx.strokeStyle = 'cyan';
             ctx.lineWidth = 5 * this.scaleRatio;
@@ -193,12 +209,12 @@ export default class Player {
             ctx.stroke();
         }
         
-        // Appliquer la rotation et dessiner l'image si chargée
+        // Rotation et affichage du joueur
         ctx.translate(center.x, center.y);
         ctx.rotate(this.angle);
         
         if (this.imageLoaded) {
-            // Si l'image est chargée, la dessiner
+            // Si l'image est chargée, l'afficher
             ctx.drawImage(
                 this.image,
                 -this.width / 2,
@@ -207,8 +223,7 @@ export default class Player {
                 this.height
             );
         } else {
-            // Sinon, dessiner un rectangle pour le fallback
-            // Clignoter uniquement si invulnérable à cause des dégâts (pas du shield)
+            // Sinon, afficher un rectangle avec effet de clignotement si invulnérable
             if (this.damagedInvulnerable && Math.floor(Date.now() / 100) % 2 === 0) {
                 ctx.fillStyle = 'rgba(255, 85, 85, 0.5)';
             } else {
@@ -219,42 +234,37 @@ export default class Player {
         
         ctx.restore();
         
-        // Dessiner la barre de vie
+        // Affichage de la barre de vie
         this.renderHealth(ctx);
     }
+    
+    // Affiche les coeurs de vie du joueur
     renderHealth(ctx) {
         ctx.save();
-        const heartSize = 40 * this.scaleRatio; // Taille des coeurs encore plus grande
-        const startX = 20 * this.scaleRatio; // Position un peu plus éloignée du bord
-        const startY = 20 * this.scaleRatio; // Position un peu plus éloignée du bord
-        const spacing = 10 * this.scaleRatio; // Espace entre les coeurs
+        const heartSize = 40 * this.scaleRatio;
+        const startX = 20 * this.scaleRatio;
+        const startY = 20 * this.scaleRatio;
+        const spacing = 10 * this.scaleRatio;
         
-        // Dessiner les coeurs plus visibles avec une meilleure forme
+        // Dessin des coeurs pour représenter la vie
         for (let i = 0; i < this.maxHealth; i++) {
             const x = startX + (i % 6) * (heartSize + spacing);
             const y = startY + Math.floor(i / 6) * (heartSize + spacing);
             
-            // Dessiner un contour pour tous les coeurs
+            // Contour des coeurs
             ctx.lineWidth = 2 * this.scaleRatio;
             ctx.strokeStyle = 'white';
             
-            // Dessiner une forme de coeur au lieu d'un rectangle
-            ctx.beginPath();
-            const centerX = x + heartSize / 2;
-            const centerY = y + heartSize / 2;
-            const radiusX = heartSize / 2;
-            const radiusY = heartSize / 2;
+            // Dessin d'un coeur stylisé
+            this.drawHeart(ctx, x + heartSize / 2, y + heartSize / 2, heartSize / 2, heartSize / 2);
             
-            // Dessiner un coeur stylisé
-            this.drawHeart(ctx, centerX, centerY, radiusX, radiusY);
-            
-            // Remplir avec la couleur appropriée
+            // Couleur selon l'état du coeur
             if (i < this.health) {
                 // Coeur plein
-                ctx.fillStyle = '#ff3333'; // Rouge vif
+                ctx.fillStyle = '#ff3333';
             } else {
                 // Coeur vide
-                ctx.fillStyle = 'rgba(150, 0, 0, 0.5)'; // Rouge foncé semi-transparent
+                ctx.fillStyle = 'rgba(150, 0, 0, 0.5)';
             }
             
             ctx.fill();
@@ -264,12 +274,12 @@ export default class Player {
         ctx.restore();
     }
     
-    // Ajouter cette nouvelle méthode à la classe Player
+    // Dessine un coeur avec des courbes de Bézier
     drawHeart(ctx, x, y, width, height) {
         const topCurveHeight = height * 0.3;
         
         ctx.beginPath();
-        // Dessiner le côté gauche du coeur
+        // Côté gauche du coeur
         ctx.moveTo(x, y);
         ctx.bezierCurveTo(
             x - width * 0.5, y - topCurveHeight, 
@@ -277,7 +287,7 @@ export default class Player {
             x, y + height
         );
         
-        // Dessiner le côté droit du coeur
+        // Côté droit du coeur
         ctx.bezierCurveTo(
             x + width, y + height * 0.3, 
             x + width * 0.5, y - topCurveHeight, 
