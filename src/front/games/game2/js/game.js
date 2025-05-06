@@ -3,9 +3,6 @@ import GameStateManager from './GameStateManager.js';
 import InputManager from '../../common/inputManager.js';
 import Player from './player.js';
 import Projectile from './projectile.js';
-import ChaserEnemy from './chaserEnemy.js';
-import ShooterEnemy from './shooterEnemy.js';
-import WandererEnemy from './wandererEnemy.js';
 import WaveManager from './WaveManager.js';
 import ExperienceManager from './ExperienceManager.js';
 
