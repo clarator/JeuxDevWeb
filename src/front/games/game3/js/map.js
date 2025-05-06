@@ -8,7 +8,7 @@ export default class Map {
 
         // Chargement de l'image des pièces d'or
         this.collectibleImage = new Image();
-        this.collectibleImage.src = '../../assets/img/game3/pieceOr.png';
+        this.collectibleImage.src = '/assets/img/game3/pieceOr.png';
         
         // Position du point de départ du joueur
         this.spawnX = 0;

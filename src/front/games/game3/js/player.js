@@ -22,7 +22,7 @@ export default class Player {
     
         // Chargement de l'image du joueur
         this.image = new Image();
-        this.image.src = "../../../assets/img/game3/chevalier.png";
+        this.image.src = "/assets/img/game3/chevalier.png";
     }
 
     // Initialise le joueur au début d'un niveau

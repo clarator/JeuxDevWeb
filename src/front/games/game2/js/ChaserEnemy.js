@@ -8,7 +8,7 @@ export default class ChaserEnemy extends Enemy {
         
         // Chargement de l'image de l'ennemi "chasseur"
         this.image = new Image();
-        this.image.src = '../../../public/assets/img/game2/ChaserEnemy.png';
+        this.image.src = '/assets/img/game2/ChaserEnemy.png';
         this.imageLoaded = false;
         this.image.onload = () => {
             this.imageLoaded = true;

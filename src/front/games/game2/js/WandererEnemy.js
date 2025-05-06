@@ -9,7 +9,7 @@ export default class WandererEnemy extends Enemy {
         
         // Chargement de l'image de l'ennemi "vagabond"
         this.image = new Image();
-        this.image.src = '../../../public/assets/img/game2/WandererEnemy.png';
+        this.image.src = '/assets/img/game2/WandererEnemy.png';
         this.imageLoaded = false;
         this.image.onload = () => {
             this.imageLoaded = true;

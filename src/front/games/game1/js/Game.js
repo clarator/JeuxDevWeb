@@ -59,7 +59,7 @@ export default class Game {
 
         //son
         if (window.soundEnabled) {
-            let pioche = new Audio("../../../public/assets/sound/game1/bruitPioche.mp3");
+            let pioche = new Audio("/assets/sound/game1/bruitPioche.mp3");
             pioche.volume = 0.3;
             pioche.play();
         }
@@ -82,7 +82,7 @@ export default class Game {
             explodeGoldPicture(goldPicture, explosionContainer);
             
             if (window.soundEnabled) {
-                let explo = new Audio("../../assets/sound/game1/explosion-VEED.mp3");
+                let explo = new Audio("/assets/sound/game1/explosion-VEED.mp3");
                 explo.volume = 0.5;
                 explo.play();
             }
@@ -126,7 +126,7 @@ export default class Game {
     //gere le bruit de l'ajout de piece dans le porte feuille
     addSound(){
         if (window.soundEnabled) {
-            let sound = new Audio("../../assets/sound/game1/piecesPorteFeuille.mp3");
+            let sound = new Audio("/assets/sound/game1/piecesPorteFeuille.mp3");
             sound.volume = 0.2;
             sound.play();
         }
